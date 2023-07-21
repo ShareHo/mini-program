@@ -1,4 +1,4 @@
 <!--pages/index/index.wxml-->
-<button class="btn" type="primary" bindtap="handleAdd">
+<button class="btn" size="mini" type="primary" bindtap="handleAdd">
   新增数据
 </button>

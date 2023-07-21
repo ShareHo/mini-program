@@ -1,6 +1,6 @@
 // pages/index/index.js
-const db = wx.cloud.database();
-const collection = db.collection('test-collection');
+// const db = wx.cloud.database();
+// const collection = db.collection('test-collection');
 Page({
   /**
    * 页面的初始数据
@@ -8,22 +8,22 @@ Page({
   data: {},
 
   async handleAdd() {
-    const res = await collection.add({
-      data: {
-        name: 'hzx',
-        address: [
-          {
-            place: 'china',
-            num: 44465,
-          },
-          {
-            place: 'america',
-            num: 123,
-          },
-        ],
-      },
-    });
-    console.log(res);
+    // const res = await collection.add({
+    //   data: {
+    //     name: 'hzx',
+    //     address: [
+    //       {
+    //         place: 'china',
+    //         num: 44465,
+    //       },
+    //       {
+    //         place: 'america',
+    //         num: 123,
+    //       },
+    //     ],
+    //   },
+    // });
+    // console.log(res);
   },
 
   /**

@@ -1,4 +1,6 @@
 /* pages/index/index.wxss */
 .btn {
+  display: inline-block;
   margin-top: 20px;
+  margin-left: 0;
 }
