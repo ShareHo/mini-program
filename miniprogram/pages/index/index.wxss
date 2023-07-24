@@ -1,6 +1,81 @@
 /* pages/index/index.wxss */
-.btn {
+page {
+  padding-bottom: 100rpx;
+}
+.flex {
+  display: flex;
+  align-items: center;
+}
+.idcard-upload-wrap {
+  width: 100%;
+  text-align: center;
+  margin-top: 10rpx;
+  display: flex;
+  justify-content: center;
+}
+.idcard-upload-wrap .van-uploader__preview-image {
+  width: 320rpx !important;
+}
+.idcard-upload-wrap .idcard-upload {
+  position: relative;
+  display: block;
+  width: 320rpx;
+  height: 210rpx;
+  border: 4rpx dashed gray;
+  border-radius: 10rpx;
+  background-color: #fff;
+  margin: 0 16rpx;
+}
+.idcard-upload-wrap .idcard-upload .idcard-upload-img {
+  position: absolute;
+  top: 30rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100rpx;
+  height: 100rpx;
+}
+.idcard-upload-wrap .idcard-upload .idcard-desc {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 20rpx;
+  white-space: nowrap;
+  color: gray;
+}
+.house-item {
+  position: relative;
+}
+.house-item .house-title .van-cell-group__title {
+  color: red;
+}
+.house-item .icon-delete {
+  position: absolute;
+  right: 50rpx;
+  top: 30rpx;
+  color: red;
+}
+.btn-add-house {
+  width: 440rpx;
+  height: 60rpx;
+  margin: 28rpx auto;
+  border-radius: 20rpx;
+  border: 4rpx dashed gray;
+  text-align: center;
+  line-height: 52rpx;
+  font-size: 50rpx;
+  color: gray;
+}
+.btn-add-house .small-size {
   display: inline-block;
-  margin-top: 20px;
-  margin-left: 0;
+  font-size: 30rpx;
+  vertical-align: middle;
+}
+.sms-wrap {
+  margin-top: 40rpx;
+}
+.btn-smsCode {
+  vertical-align: top;
+}
+.btn-apply {
+  margin-top: 80rpx;
 }
