@@ -7,6 +7,7 @@ import {
   isValidityBrithBy18IdCard,
   dateFormatter,
   validateRealName,
+  validatePhone,
 } from '../../utils/index';
 import Toast from '@vant/weapp/toast/toast';
 import { areaList } from '@vant/area-data';
@@ -136,10 +137,10 @@ Page({
     hasCar: true,
     carList: [
       {
-        carBrand: '',
-        carBrandMessage: '',
-        carMark: '',
-        carMarkMessage: '',
+        carModel: '',
+        carModelMessage: '',
+        // carMark: '',
+        // carMarkMessage: '',
         totalAmount: '',
         totalAmountMessage: '',
         hasCert: true,
@@ -184,16 +185,7 @@ Page({
   // 手机号校验
   phoneChange(event) {
     const phone = event.detail || '';
-    let message = '';
-    if (phone) {
-      if (/^1[3-9]\d{9}$/.test(phone)) {
-        message = '';
-      } else {
-        message = '您输入的手机号码有误';
-      }
-    } else {
-      message = '输入的手机号不能为空';
-    }
+    const message = validatePhone(phone);
     this.setData({
       phoneMessage: message,
       phone: phone,
@@ -262,6 +254,7 @@ Page({
       Toast.loading({
         message: '识别中...',
         forbidClick: false,
+        duration: 0,
       });
       const fs = wx.getFileSystemManager();
       const base64File = fs.readFileSync(event.detail.file.url, 'base64');
@@ -275,10 +268,12 @@ Page({
       if (result.code === 0) {
         console.log(result);
         this.setData({
-          username: result.data.Name,
-          idCard: result.data.IdNum,
-          bornDateTxt: result.data.Birth,
-          bornDate: new Date(result.data.Birth).getTime(),
+          username: this.data.username || result.data.Name,
+          idCard: this.data.idCard || result.data.IdNum,
+          bornDateTxt: this.data.bornDateTxt || result.data.Birth,
+          bornDate: this.data.bornDateTxt
+            ? this.data.bornDate
+            : new Date(result.data.Birth).getTime(),
         });
       }
     } catch (e) {
@@ -544,10 +539,10 @@ Page({
   },
   addCar() {
     const car = {
-      carBrand: '',
-      carBrandMessage: '',
-      carMark: '',
-      carMarkMessage: '',
+      carModel: '',
+      carModelMessage: '',
+      // carMark: '',
+      // carMarkMessage: '',
       totalAmount: '',
       totalAmountMessage: '',
       hasCert: true,
@@ -560,13 +555,14 @@ Page({
     const name = event.detail || '';
     const carIndex = event.target.dataset.carIndex.split('-');
     const item = this.data.carList[carIndex[1]];
-    if (carIndex[0] === 'carBrand') {
-      item.carBrand = name;
-      item.carBrandMessage = name.trim() ? '' : '车辆品牌不能为空';
-    } else if (carIndex[0] === 'carMark') {
-      item.carMark = name;
-      item.carMarkMessage = name.trim() ? '' : '车辆型号不能为空';
-    }
+    // if (carIndex[0] === 'carBrand') {
+    item.carModel = name;
+    item.carModelMessage = name.trim() ? '' : '品牌型号不能为空';
+    // }
+    // else if (carIndex[0] === 'carMark') {
+    //   item.carMark = name;
+    //   item.carMarkMessage = name.trim() ? '' : '车辆型号不能为空';
+    // }
     this.setData({ carList: this.data.carList });
   },
   hasCarCertChange(event) {
@@ -575,11 +571,39 @@ Page({
     item.hasCert = event.detail;
     this.setData({ carList: this.data.carList });
   },
-  afterCarCertRead(event) {
-    const index = event.target.dataset.carIndex;
-    const item = this.data.carList[index.split('-')[1]];
-    item[index.split('-')[0]] = [{ ...event.detail.file, isImage: true }];
+  async afterCarCertRead(event) {
+    // vehicleLicenseOcr
+    const index = event.target.dataset.carIndex.split('-');
+    const item = this.data.carList[index[1]];
+    item[index[0]] = [{ ...event.detail.file, isImage: true }];
     this.setData({ carList: this.data.carList });
+    if (index[0] === 'certFront') {
+      // 同步接口
+      try {
+        Toast.loading({
+          message: '识别中...',
+          forbidClick: false,
+          duration: 0,
+        });
+        const fs = wx.getFileSystemManager();
+        const base64File = fs.readFileSync(event.detail.file.url, 'base64');
+        const { result } = await wx.cloud.callFunction({
+          name: 'vehicleLicenseOcr',
+          data: {
+            ImageBase64: wx.cloud.CDN(base64File),
+            CardSide: 'FRONT',
+          },
+        });
+        if (result.code === 0) {
+          item.carModel = item.carModel || result.data.FrontInfo.Model;
+          this.setData({ carList: this.data.carList });
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        Toast.clear();
+      }
+    }
   },
   deleteCarCert(event) {
     const index = event.target.dataset.carIndex;
@@ -619,15 +643,25 @@ Page({
   },
   async sendSmsCode() {
     if (this.data.smsTimer) return;
-    if (!this.data.phone.trim() || this.data.phoneMessage) {
+    const phoneMessage = validatePhone(this.data.phone);
+    if (phoneMessage) {
       Toast('请检查手机号码是否正确');
+      this.setData({ phoneMessage }, () => {
+        wx.pageScrollTo({ selector: '#phone' });
+      });
       return;
     }
     Toast.loading({
       message: '发送中...',
       forbidClick: true,
+      duration: 0,
     });
-    setTimeout(() => {
+    const { result: res } = await wx.cloud.callFunction({
+      name: 'sendSms',
+      data: { phone: this.data.phone, test: true },
+    });
+    if (res.code === 0) {
+      Toast.clear();
       this.setData({ smsTips: this.data.smsCount + 's' });
       this.data.smsTimer = setInterval(() => {
         this.data.smsCount -= 1;
@@ -640,8 +674,9 @@ Page({
           this.setData({ smsTips: this.data.smsCount + 's' });
         }
       }, 1000);
-      Toast.clear();
-    }, 1000);
+    } else {
+      Toast(res.msg);
+    }
   },
   smsCodeChange(event) {
     const smsCode = event.detail || '';

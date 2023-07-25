@@ -58,6 +58,7 @@ export const dateFormatter = (type, value) => {
   return value;
 };
 
+// 校验真实名字
 export const validateRealName = (name) => {
   let message = '';
   if (name) {
@@ -68,6 +69,21 @@ export const validateRealName = (name) => {
     }
   } else {
     message = '输入的姓名不能为空';
+  }
+  return message;
+};
+
+// 校验手机号
+export const validatePhone = (phone) => {
+  let message = '';
+  if (phone) {
+    if (/^1[3-9]\d{9}$/.test(phone)) {
+      message = '';
+    } else {
+      message = '您输入的手机号码有误';
+    }
+  } else {
+    message = '输入的手机号不能为空';
   }
   return message;
 };

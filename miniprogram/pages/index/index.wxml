@@ -1,592 +1,598 @@
 <!--pages/index/index.wxml-->
 <!-- 客户信息 -->
 <van-toast id="van-toast" />
-<van-cell-group inset title="客户信息">
-  <van-field
-    id="username"
-    size="large"
-    required
-    clearable
-    model:value="{{ username }}"
-    name="username"
-    label="客户姓名"
-    placeholder="(上传身份证可识别)"
-    error-message="{{nameMessage}}"
-    data-nametype="username"
-    bind:change="nameChange"
-  />
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ phone }}"
-    name="phone"
-    type="number"
-    label="手机号码"
-    placeholder="请输入手机号码"
-    error-message="{{phoneMessage}}"
-    bind:change="phoneChange"
-  />
-  <van-field
-    size="large"
-    required
-    clearable
-    name="idcard"
-    type="idcard"
-    model:value="{{ idCard }}"
-    label="身份证号"
-    placeholder="(上传身份证可识别)"
-    error-message="{{idCardMessage}}"
-    bind:change="idCardChange"
-  />
-  <van-field
-    readonly
-    required
-    size="large"
-    label="出生日期"
-    is-link
-    value="{{bornDateTxt}}"
-    placeholder="(上传身份证可识别)"
-    error-message="{{bornDateMessage}}"
-    bind:tap="openBornPicker"
-  />
-  <van-field
-    readonly
-    required
-    size="large"
-    label="现住家庭地址"
-    is-link
-    value="{{areaTxt}}"
-    placeholder="请选择省市区"
-    error-message="{{areaMessage}}"
-    data-area-show-type="address"
-    bind:tap="openAreaPicker"
-  />
-  <van-field
-    required
-    size="large"
-    value="{{ address }}"
-    name="address"
-    label="详细地址"
-    type="textarea"
-    placeholder="请输入详细地址"
-    data-nametype="address"
-    bind:change="textChange"
-    error-message="{{addressMessage}}"
-    autosize
-  />
-  <van-field
-    readonly
-    required
-    size="large"
-    label="婚姻状况"
-    is-link
-    value="{{marryStatusTxt}}"
-    placeholder="请选择婚姻状况"
-    error-message="{{marryStatusMessage}}"
-    bind:tap="openMarryPicker"
-  />
-  <van-field
-    wx:if="{{marryStatus===0}}"
-    size="large"
-    required
-    clearable
-    model:value="{{ marryname }}"
-    name="marryname"
-    label="配偶姓名"
-    placeholder="请输入配偶姓名"
-    error-message="{{marrynameMessage}}"
-    data-nametype="marryname"
-    bind:change="nameChange"
-  />
-</van-cell-group>
-<!-- 身份证正反面 -->
-<van-cell-group inset title="上传身份证" border="{{false}}"> </van-cell-group>
-<view class="idcard-upload-wrap">
-  <van-uploader
-    accept="image"
-    sizeType="{{['compressed']}}"
-    capture="{{['camera']}}"
-    max-count="1"
-    deletable="{{ true }}"
-    file-list="{{ idCardFront }}"
-    bind:after-read="afterIdCardFrontRead"
-    show-upload="{{false}}"
-    preview-size="210rpx"
-    image-fit="aspectFit"
-    bind:delete="deleteIdCardFront"
-  >
-    <view class="idcard-upload">
-      <image class="idcard-upload-img" src="../../images/idcard_add.png" />
-      <view class="idcard-desc">身份证人像面</view>
-    </view>
-  </van-uploader>
-  <van-uploader
-    accept="image"
-    sizeType="{{['compressed']}}"
-    capture="{{['camera']}}"
-    max-count="1"
-    deletable="{{ true }}"
-    file-list="{{ idCardBack }}"
-    bind:after-read="afterIdCardBackRead"
-    show-upload="{{false}}"
-    preview-size="210rpx"
-    image-fit="aspectFit"
-    bind:delete="deleteIdCardBack"
-  >
-    <view class="idcard-upload">
-      <image class="idcard-upload-img" src="../../images/idcard_add.png" />
-      <view class="idcard-desc">身份证国徽面</view>
-    </view>
-  </van-uploader>
-</view>
-<!-- 申请资料 -->
-<van-cell-group inset title="申请资料">
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ loanAmount }}"
-    name="loanAmount"
-    type="digit"
-    label="申请额度"
-    placeholder="请输入申请额度"
-    error-message="{{loanAmountMessage}}"
-    data-amounttype="loanAmount"
-    bind:change="amountChange"
-    right-icon="after-sale"
-  />
-  <van-field
-    readonly
-    required
-    size="large"
-    label="借款用途"
-    is-link
-    value="{{useWayTxt}}"
-    placeholder="请选择借款用途"
-    error-message="{{useWayMessage}}"
-    bind:tap="openUseWayPicker"
-  />
-  <van-field
-    size="large"
-    model:value="{{ useWayMark }}"
-    label="备注"
-    type="textarea"
-    placeholder="请输入备注（借款用途）"
-    autosize
-  />
-  <van-cell required size="large">
-    <view slot="title">
-      <view class="van-cell-text">家人是否支持贷款</view>
-    </view>
-    <van-switch
-      slot="right-icon"
-      size="40rpx"
-      checked="{{ isFamilySupport }}"
-      bind:change="familySupportChange"
+<view class="home-page">
+  <van-cell-group inset title="客户信息">
+    <van-field
+      id="username"
+      size="large"
+      required
+      clearable
+      model:value="{{ username }}"
+      name="username"
+      label="客户姓名"
+      placeholder="(上传身份证可识别)"
+      error-message="{{nameMessage}}"
+      data-nametype="username"
+      bind:change="nameChange"
     />
-  </van-cell>
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ companyName }}"
-    name="companyName"
-    data-nametype="companyName"
-    label="公司全称"
-    placeholder="请输入公司全称"
-    error-message="{{companyNameMessage}}"
-    bind:change="textChange"
-  />
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ companyMaster }}"
-    name="companyMaster"
-    data-nametype="companyMaster"
-    label="公司法人"
-    placeholder="请输入公司法人"
-    error-message="{{companyMasterMessage}}"
-    bind:change="nameChange"
-  />
-  <van-cell required size="large" title="经营年限">
-    <van-stepper
-      name="operYears"
-      slot="right-icon"
-      min="{{0}}"
-      step="{{0.5}}"
-      decimal-length="{{1}}"
-      input-width="100rpx"
-      value="{{ operYears }}"
-      bind:change="operYearsChange"
+    <van-field
+      id="phone"
+      size="large"
+      required
+      clearable
+      model:value="{{ phone }}"
+      name="phone"
+      type="number"
+      label="手机号码"
+      placeholder="请输入手机号码"
+      error-message="{{phoneMessage}}"
+      bind:change="phoneChange"
     />
-  </van-cell>
-  <van-cell required size="large" title="员工人数">
-    <van-stepper
-      name="companyMember"
-      slot="right-icon"
-      min="{{1}}"
-      step="{{10}}"
-      integer
-      input-width="150rpx"
-      value="{{ companyMember }}"
-      bind:change="companyMemberChange"
+    <van-field
+      size="large"
+      required
+      clearable
+      name="idcard"
+      type="idcard"
+      model:value="{{ idCard }}"
+      label="身份证号"
+      placeholder="(上传身份证可识别)"
+      error-message="{{idCardMessage}}"
+      bind:change="idCardChange"
     />
-  </van-cell>
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ salary }}"
-    name="salary"
-    type="digit"
-    label="员工工资"
-    placeholder="请输入员工工资"
-    error-message="{{salaryMessage}}"
-    data-amounttype="salary"
-    bind:change="amountChange"
-    right-icon="after-sale"
-  />
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ flowingWater }}"
-    name="flowingWater"
-    type="digit"
-    label="月均流水"
-    placeholder="请输入月均流水"
-    error-message="{{flowingWaterMessage}}"
-    data-amounttype="flowingWater"
-    bind:change="amountChange"
-    right-icon="after-sale"
-  />
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ annualTurnover }}"
-    name="annualTurnover"
-    type="digit"
-    label="年营业额"
-    placeholder="请输入年营业额"
-    error-message="{{annualTurnoverMessage}}"
-    data-amounttype="annualTurnover"
-    bind:change="amountChange"
-    right-icon="after-sale"
-  />
-  <van-cell required size="large" title="订单是否充足">
-    <van-switch
-      slot="right-icon"
-      size="40rpx"
-      checked="{{ isSufficient }}"
-      bind:change="sufficientChange"
+    <van-field
+      readonly
+      required
+      size="large"
+      label="出生日期"
+      is-link
+      value="{{bornDateTxt}}"
+      placeholder="(上传身份证可识别)"
+      error-message="{{bornDateMessage}}"
+      bind:tap="openBornPicker"
     />
-  </van-cell>
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ equipmentPrice }}"
-    name="equipmentPrice"
-    type="digit"
-    label="设备价值"
-    placeholder="请输入设备价值"
-    error-message="{{equipmentPriceMessage}}"
-    data-amounttype="equipmentPrice"
-    bind:change="amountChange"
-    right-icon="after-sale"
-  />
-  <van-cell required size="large" title="设备是否在押">
-    <van-switch
-      slot="right-icon"
-      size="40rpx"
-      checked="{{ isEquipmentDetain }}"
-      bind:change="equipmentDetainChange"
+    <van-field
+      readonly
+      required
+      size="large"
+      label="现住家庭地址"
+      is-link
+      value="{{areaTxt}}"
+      placeholder="请选择省市区"
+      error-message="{{areaMessage}}"
+      data-area-show-type="address"
+      bind:tap="openAreaPicker"
     />
-  </van-cell>
-  <van-field
-    readonly
-    required
-    size="large"
-    label="企业规模"
-    is-link
-    value="{{businessScaleTxt}}"
-    placeholder="请选择企业规模"
-    error-message="{{businessScaleMessage}}"
-    bind:tap="openbusinessScalePicker"
-  />
-  <van-cell required size="large" title="占股百分比">
-    <view class="flex" slot="right-icon">
-      <van-stepper
-        name="sharePercent"
-        min="{{0}}"
-        max="{{100}}"
-        step="{{1}}"
-        decimal-length="{{2}}"
-        input-width="150rpx"
-        value="{{ sharePercent }}"
-        bind:change="sharePercentChange"
-      />
-      <text>%</text>
-    </view>
-  </van-cell>
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ siteArea }}"
-    name="siteArea"
-    type="digit"
-    label="场地面积"
-    placeholder="请输入场地面积"
-    error-message="{{siteAreaMessage}}"
-    data-amounttype="siteArea"
-    bind:change="amountChange"
-  >
-    <text slot="right-icon">㎡</text>
-  </van-field>
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ monthlyRent }}"
-    name="monthlyRent"
-    type="digit"
-    label="场地月缴租金"
-    placeholder="请输入场地月缴租金"
-    bind:change="monthlyRentChange"
-    right-icon="after-sale"
-  />
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ annualIncome }}"
-    name="annualIncome"
-    type="digit"
-    label="年收入金额"
-    placeholder="请输入年收入金额"
-    bind:change="annualIncomeChange"
-    right-icon="after-sale"
-  />
-  <van-cell required size="large" title="是否有案件">
-    <van-switch
-      slot="right-icon"
-      size="40rpx"
-      checked="{{ isInCase }}"
-      bind:change="inCaseChange"
+    <van-field
+      required
+      size="large"
+      value="{{ address }}"
+      name="address"
+      label="详细地址"
+      type="textarea"
+      placeholder="请输入详细地址"
+      data-nametype="address"
+      bind:change="textChange"
+      error-message="{{addressMessage}}"
+      autosize
     />
-  </van-cell>
-  <van-cell required size="large" title="是否有高息私人贷">
-    <van-switch
-      slot="right-icon"
-      size="40rpx"
-      checked="{{ isIndebt }}"
-      bind:change="indebtChange"
+    <van-field
+      readonly
+      required
+      size="large"
+      label="婚姻状况"
+      is-link
+      value="{{marryStatusTxt}}"
+      placeholder="请选择婚姻状况"
+      error-message="{{marryStatusMessage}}"
+      bind:tap="openMarryPicker"
     />
-  </van-cell>
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ bankDebt }}"
-    name="bankDebt"
-    type="digit"
-    label="银行总贷款额度"
-    placeholder="请输入银行总贷款额度"
-    error-message="{{bankDebtMessage}}"
-    data-amounttype="bankDebt"
-    bind:change="amountChange"
-    right-icon="after-sale"
-    title-width="7.2em"
-  />
-  <van-field
-    size="large"
-    required
-    clearable
-    model:value="{{ creditCardDebt }}"
-    name="creditCardDebt"
-    type="digit"
-    label="信用卡总额度"
-    placeholder="请输入信用卡总额度"
-    error-message="{{creditCardDebtMessage}}"
-    data-amounttype="creditCardDebt"
-    bind:change="amountChange"
-    right-icon="after-sale"
-  />
-</van-cell-group>
-<van-cell-group inset title="名下房产">
-  <van-cell required size="large" title="名下有无房产">
-    <van-switch
-      slot="right-icon"
-      size="40rpx"
-      checked="{{ hasHouse }}"
-      bind:change="hasHouseChange"
+    <van-field
+      wx:if="{{marryStatus===0}}"
+      size="large"
+      required
+      clearable
+      model:value="{{ marryname }}"
+      name="marryname"
+      label="配偶姓名"
+      placeholder="请输入配偶姓名"
+      error-message="{{marrynameMessage}}"
+      data-nametype="marryname"
+      bind:change="nameChange"
     />
-  </van-cell>
-</van-cell-group>
-<block wx:if="{{hasHouse}}">
-  <view class="house-item" wx:for="{{houseList}}" wx:key="index">
-    <van-icon
-      wx:if="{{index!==0}}"
-      class="icon-delete"
-      name="clear"
-      size="40rpx"
-      data-house-index="{{index}}"
-      bindtap="deleteHouse"
-    />
-    <van-cell-group class="house-title" inset title="{{'房产'+(index+1)}}">
-      <van-cell required size="large" title="本地/异地房产">
-        <van-radio-group
-          slot="right-icon"
-          value="{{ item.isLocal }}"
-          direction="horizontal"
-          data-house-index="{{index}}"
-          bind:change="localChange"
-        >
-          <van-radio name="{{true}}">本地</van-radio>
-          <van-radio name="{{false}}">异地</van-radio>
-        </van-radio-group>
-      </van-cell>
-      <van-field
-        readonly
-        required
-        size="large"
-        label="房屋地址"
-        is-link
-        value="{{item.areaTxt}}"
-        placeholder="请选择省市区"
-        error-message="{{item.areaMessage}}"
-        data-area-show-type="{{'houseList-'+index}}"
-        bind:tap="openAreaPicker"
-      />
-      <van-field
-        required
-        size="large"
-        value="{{ item.address }}"
-        label="详细地址"
-        type="textarea"
-        placeholder="请输入详细地址"
-        data-nametype="{{'houseList-'+index}}"
-        bind:change="textChange"
-        error-message="{{item.addressMessage}}"
-        autosize
-      />
-      <van-field
-        size="large"
-        required
-        clearable
-        model:value="{{ item.totalAmount }}"
-        type="digit"
-        label="全款/按揭金额"
-        placeholder="请输入全款/按揭金额"
-        error-message="{{item.totalAmountMessage}}"
-        data-amounttype="{{'houseList-'+index}}"
-        bind:change="amountChange"
-        right-icon="after-sale"
-        title-width="6.7em"
-      />
-      <van-cell required size="large" title="有无房产证在手">
-        <van-switch
-          slot="right-icon"
-          size="40rpx"
-          checked="{{ item.hasCert }}"
-          data-house-index="{{index}}"
-          bind:change="hasCertChange"
-        />
-      </van-cell>
-    </van-cell-group>
-    <block wx:if="{{item.hasCert}}">
-      <!-- 房产证正反面 -->
-      <van-cell-group inset title="上传房产证" border="{{false}}">
-      </van-cell-group>
-      <view class="idcard-upload-wrap">
-        <van-uploader
-          accept="image"
-          sizeType="{{['compressed']}}"
-          capture="{{['camera']}}"
-          max-count="1"
-          deletable="{{ true }}"
-          file-list="{{ item.certFront }}"
-          data-house-index="{{'certFront-'+index}}"
-          bind:after-read="afterCertRead"
-          show-upload="{{false}}"
-          preview-size="210rpx"
-          image-fit="aspectFit"
-          bind:delete="deleteCert"
-        >
-          <view class="idcard-upload">
-            <image
-              class="idcard-upload-img"
-              src="../../images/idcard_add.png"
-            />
-            <view class="idcard-desc">房产证正面</view>
-          </view>
-        </van-uploader>
-        <van-uploader
-          accept="image"
-          sizeType="{{['compressed']}}"
-          capture="{{['camera']}}"
-          max-count="1"
-          deletable="{{ true }}"
-          file-list="{{ item.certBack }}"
-          data-house-index="{{'certBack-'+index}}"
-          bind:after-read="afterCertRead"
-          show-upload="{{false}}"
-          preview-size="210rpx"
-          image-fit="aspectFit"
-          bind:delete="deleteCert"
-        >
-          <view class="idcard-upload">
-            <image
-              class="idcard-upload-img"
-              src="../../images/idcard_add.png"
-            />
-            <view class="idcard-desc">房产证反面</view>
-          </view>
-        </van-uploader>
+  </van-cell-group>
+  <!-- 身份证正反面 -->
+  <van-cell-group inset title="上传身份证" border="{{false}}"> </van-cell-group>
+  <view class="idcard-upload-wrap">
+    <van-uploader
+      accept="image"
+      sizeType="{{['compressed']}}"
+      capture="{{['camera']}}"
+      max-count="1"
+      deletable="{{ true }}"
+      file-list="{{ idCardFront }}"
+      bind:after-read="afterIdCardFrontRead"
+      show-upload="{{false}}"
+      preview-size="210rpx"
+      image-fit="aspectFit"
+      bind:delete="deleteIdCardFront"
+    >
+      <view class="idcard-upload">
+        <image class="idcard-upload-img" src="../../images/idcard_add.png" />
+        <view class="idcard-desc">身份证人像面</view>
       </view>
-    </block>
+    </van-uploader>
+    <van-uploader
+      accept="image"
+      sizeType="{{['compressed']}}"
+      capture="{{['camera']}}"
+      max-count="1"
+      deletable="{{ true }}"
+      file-list="{{ idCardBack }}"
+      bind:after-read="afterIdCardBackRead"
+      show-upload="{{false}}"
+      preview-size="210rpx"
+      image-fit="aspectFit"
+      bind:delete="deleteIdCardBack"
+    >
+      <view class="idcard-upload">
+        <image class="idcard-upload-img" src="../../images/idcard_add.png" />
+        <view class="idcard-desc">身份证国徽面</view>
+      </view>
+    </van-uploader>
   </view>
-  <view wx:if="{{houseList.length<5}}" bindtap="addHouse" class="btn-add-house">
-    + <text class="small-size">添加房产</text>
-  </view>
-</block>
-<van-cell-group inset title="名下车产">
-  <van-cell required size="large" title="名下有无车产">
-    <van-switch
-      slot="right-icon"
-      size="40rpx"
-      checked="{{ hasCar }}"
-      bind:change="hasCarChange"
+  <!-- 申请资料 -->
+  <van-cell-group inset title="申请资料">
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ loanAmount }}"
+      name="loanAmount"
+      type="digit"
+      label="申请额度"
+      placeholder="请输入申请额度"
+      error-message="{{loanAmountMessage}}"
+      data-amounttype="loanAmount"
+      bind:change="amountChange"
+      right-icon="after-sale"
     />
-  </van-cell>
-</van-cell-group>
-<block wx:if="{{hasCar}}">
-  <view class="house-item" wx:for="{{carList}}" wx:key="index">
-    <van-icon
-      wx:if="{{index!==0}}"
-      class="icon-delete"
-      name="clear"
-      size="40rpx"
-      data-car-index="{{index}}"
-      bindtap="deleteCar"
+    <van-field
+      readonly
+      required
+      size="large"
+      label="借款用途"
+      is-link
+      value="{{useWayTxt}}"
+      placeholder="请选择借款用途"
+      error-message="{{useWayMessage}}"
+      bind:tap="openUseWayPicker"
     />
-    <van-cell-group class="house-title" inset title="{{'车辆'+(index+1)}}">
-      <van-field
-        size="large"
-        required
-        clearable
-        value="{{ item.carBrand }}"
-        data-car-index="{{'carBrand-'+index}}"
-        label="车辆品牌"
-        placeholder="请输入车辆品牌"
-        error-message="{{item.carBrandMessage}}"
-        bind:change="carChange"
+    <van-field
+      size="large"
+      model:value="{{ useWayMark }}"
+      label="备注"
+      type="textarea"
+      placeholder="请输入备注（借款用途）"
+      autosize
+    />
+    <van-cell required size="large">
+      <view slot="title">
+        <view class="van-cell-text">家人是否支持贷款</view>
+      </view>
+      <van-switch
+        slot="right-icon"
+        size="40rpx"
+        checked="{{ isFamilySupport }}"
+        bind:change="familySupportChange"
       />
-      <van-field
+    </van-cell>
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ companyName }}"
+      name="companyName"
+      data-nametype="companyName"
+      label="公司全称"
+      placeholder="请输入公司全称"
+      error-message="{{companyNameMessage}}"
+      bind:change="textChange"
+    />
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ companyMaster }}"
+      name="companyMaster"
+      data-nametype="companyMaster"
+      label="公司法人"
+      placeholder="请输入公司法人"
+      error-message="{{companyMasterMessage}}"
+      bind:change="nameChange"
+    />
+    <van-cell required size="large" title="经营年限">
+      <van-stepper
+        name="operYears"
+        slot="right-icon"
+        min="{{0}}"
+        step="{{0.5}}"
+        decimal-length="{{1}}"
+        input-width="100rpx"
+        value="{{ operYears }}"
+        bind:change="operYearsChange"
+      />
+    </van-cell>
+    <van-cell required size="large" title="员工人数">
+      <van-stepper
+        name="companyMember"
+        slot="right-icon"
+        min="{{1}}"
+        step="{{10}}"
+        integer
+        input-width="150rpx"
+        value="{{ companyMember }}"
+        bind:change="companyMemberChange"
+      />
+    </van-cell>
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ salary }}"
+      name="salary"
+      type="digit"
+      label="员工工资"
+      placeholder="请输入员工工资"
+      error-message="{{salaryMessage}}"
+      data-amounttype="salary"
+      bind:change="amountChange"
+      right-icon="after-sale"
+    />
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ flowingWater }}"
+      name="flowingWater"
+      type="digit"
+      label="月均流水"
+      placeholder="请输入月均流水"
+      error-message="{{flowingWaterMessage}}"
+      data-amounttype="flowingWater"
+      bind:change="amountChange"
+      right-icon="after-sale"
+    />
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ annualTurnover }}"
+      name="annualTurnover"
+      type="digit"
+      label="年营业额"
+      placeholder="请输入年营业额"
+      error-message="{{annualTurnoverMessage}}"
+      data-amounttype="annualTurnover"
+      bind:change="amountChange"
+      right-icon="after-sale"
+    />
+    <van-cell required size="large" title="订单是否充足">
+      <van-switch
+        slot="right-icon"
+        size="40rpx"
+        checked="{{ isSufficient }}"
+        bind:change="sufficientChange"
+      />
+    </van-cell>
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ equipmentPrice }}"
+      name="equipmentPrice"
+      type="digit"
+      label="设备价值"
+      placeholder="请输入设备价值"
+      error-message="{{equipmentPriceMessage}}"
+      data-amounttype="equipmentPrice"
+      bind:change="amountChange"
+      right-icon="after-sale"
+    />
+    <van-cell required size="large" title="设备是否在押">
+      <van-switch
+        slot="right-icon"
+        size="40rpx"
+        checked="{{ isEquipmentDetain }}"
+        bind:change="equipmentDetainChange"
+      />
+    </van-cell>
+    <van-field
+      readonly
+      required
+      size="large"
+      label="企业规模"
+      is-link
+      value="{{businessScaleTxt}}"
+      placeholder="请选择企业规模"
+      error-message="{{businessScaleMessage}}"
+      bind:tap="openbusinessScalePicker"
+    />
+    <van-cell required size="large" title="占股百分比">
+      <view class="flex" slot="right-icon">
+        <van-stepper
+          name="sharePercent"
+          min="{{0}}"
+          max="{{100}}"
+          step="{{1}}"
+          decimal-length="{{2}}"
+          input-width="150rpx"
+          value="{{ sharePercent }}"
+          bind:change="sharePercentChange"
+        />
+        <text>%</text>
+      </view>
+    </van-cell>
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ siteArea }}"
+      name="siteArea"
+      type="digit"
+      label="场地面积"
+      placeholder="请输入场地面积"
+      error-message="{{siteAreaMessage}}"
+      data-amounttype="siteArea"
+      bind:change="amountChange"
+    >
+      <text slot="right-icon">㎡</text>
+    </van-field>
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ monthlyRent }}"
+      name="monthlyRent"
+      type="digit"
+      label="场地月缴租金"
+      placeholder="请输入场地月缴租金"
+      bind:change="monthlyRentChange"
+      right-icon="after-sale"
+    />
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ annualIncome }}"
+      name="annualIncome"
+      type="digit"
+      label="年收入金额"
+      placeholder="请输入年收入金额"
+      bind:change="annualIncomeChange"
+      right-icon="after-sale"
+    />
+    <van-cell required size="large" title="是否有案件">
+      <van-switch
+        slot="right-icon"
+        size="40rpx"
+        checked="{{ isInCase }}"
+        bind:change="inCaseChange"
+      />
+    </van-cell>
+    <van-cell required size="large" title="是否有高息私人贷">
+      <van-switch
+        slot="right-icon"
+        size="40rpx"
+        checked="{{ isIndebt }}"
+        bind:change="indebtChange"
+      />
+    </van-cell>
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ bankDebt }}"
+      name="bankDebt"
+      type="digit"
+      label="银行总贷款额度"
+      placeholder="请输入银行总贷款额度"
+      error-message="{{bankDebtMessage}}"
+      data-amounttype="bankDebt"
+      bind:change="amountChange"
+      right-icon="after-sale"
+      title-width="7.2em"
+    />
+    <van-field
+      size="large"
+      required
+      clearable
+      model:value="{{ creditCardDebt }}"
+      name="creditCardDebt"
+      type="digit"
+      label="信用卡总额度"
+      placeholder="请输入信用卡总额度"
+      error-message="{{creditCardDebtMessage}}"
+      data-amounttype="creditCardDebt"
+      bind:change="amountChange"
+      right-icon="after-sale"
+    />
+  </van-cell-group>
+  <van-cell-group inset title="名下房产">
+    <van-cell required size="large" title="名下有无房产">
+      <van-switch
+        slot="right-icon"
+        size="40rpx"
+        checked="{{ hasHouse }}"
+        bind:change="hasHouseChange"
+      />
+    </van-cell>
+  </van-cell-group>
+  <block wx:if="{{hasHouse}}">
+    <view class="house-item" wx:for="{{houseList}}" wx:key="index">
+      <van-icon
+        wx:if="{{index!==0}}"
+        class="icon-delete"
+        name="clear"
+        size="40rpx"
+        data-house-index="{{index}}"
+        bindtap="deleteHouse"
+      />
+      <van-cell-group class="house-title" inset title="{{'房产'+(index+1)}}">
+        <van-cell required size="large" title="本地/异地房产">
+          <van-radio-group
+            slot="right-icon"
+            value="{{ item.isLocal }}"
+            direction="horizontal"
+            data-house-index="{{index}}"
+            bind:change="localChange"
+          >
+            <van-radio name="{{true}}">本地</van-radio>
+            <van-radio name="{{false}}">异地</van-radio>
+          </van-radio-group>
+        </van-cell>
+        <van-field
+          readonly
+          required
+          size="large"
+          label="房屋地址"
+          is-link
+          value="{{item.areaTxt}}"
+          placeholder="请选择省市区"
+          error-message="{{item.areaMessage}}"
+          data-area-show-type="{{'houseList-'+index}}"
+          bind:tap="openAreaPicker"
+        />
+        <van-field
+          required
+          size="large"
+          value="{{ item.address }}"
+          label="详细地址"
+          type="textarea"
+          placeholder="请输入详细地址"
+          data-nametype="{{'houseList-'+index}}"
+          bind:change="textChange"
+          error-message="{{item.addressMessage}}"
+          autosize
+        />
+        <van-field
+          size="large"
+          required
+          clearable
+          model:value="{{ item.totalAmount }}"
+          type="digit"
+          label="全款/按揭金额"
+          placeholder="请输入全款/按揭金额"
+          error-message="{{item.totalAmountMessage}}"
+          data-amounttype="{{'houseList-'+index}}"
+          bind:change="amountChange"
+          right-icon="after-sale"
+          title-width="6.7em"
+        />
+        <van-cell required size="large" title="有无房产证在手">
+          <van-switch
+            slot="right-icon"
+            size="40rpx"
+            checked="{{ item.hasCert }}"
+            data-house-index="{{index}}"
+            bind:change="hasCertChange"
+          />
+        </van-cell>
+      </van-cell-group>
+      <block wx:if="{{item.hasCert}}">
+        <!-- 房产证正反面 -->
+        <van-cell-group inset title="上传房产证" border="{{false}}">
+        </van-cell-group>
+        <view class="idcard-upload-wrap">
+          <van-uploader
+            accept="image"
+            sizeType="{{['compressed']}}"
+            capture="{{['camera']}}"
+            max-count="1"
+            deletable="{{ true }}"
+            file-list="{{ item.certFront }}"
+            data-house-index="{{'certFront-'+index}}"
+            bind:after-read="afterCertRead"
+            show-upload="{{false}}"
+            preview-size="210rpx"
+            image-fit="aspectFit"
+            bind:delete="deleteCert"
+          >
+            <view class="idcard-upload">
+              <image
+                class="idcard-upload-img"
+                src="../../images/idcard_add.png"
+              />
+              <view class="idcard-desc">房产证正面</view>
+            </view>
+          </van-uploader>
+          <van-uploader
+            accept="image"
+            sizeType="{{['compressed']}}"
+            capture="{{['camera']}}"
+            max-count="1"
+            deletable="{{ true }}"
+            file-list="{{ item.certBack }}"
+            data-house-index="{{'certBack-'+index}}"
+            bind:after-read="afterCertRead"
+            show-upload="{{false}}"
+            preview-size="210rpx"
+            image-fit="aspectFit"
+            bind:delete="deleteCert"
+          >
+            <view class="idcard-upload">
+              <image
+                class="idcard-upload-img"
+                src="../../images/idcard_add.png"
+              />
+              <view class="idcard-desc">房产证反面</view>
+            </view>
+          </van-uploader>
+        </view>
+      </block>
+    </view>
+    <view
+      wx:if="{{houseList.length<5}}"
+      bindtap="addHouse"
+      class="btn-add-house"
+    >
+      + <text class="small-size">添加房产</text>
+    </view>
+  </block>
+  <van-cell-group inset title="名下车产">
+    <van-cell required size="large" title="名下有无车产">
+      <van-switch
+        slot="right-icon"
+        size="40rpx"
+        checked="{{ hasCar }}"
+        bind:change="hasCarChange"
+      />
+    </van-cell>
+  </van-cell-group>
+  <block wx:if="{{hasCar}}">
+    <view class="house-item" wx:for="{{carList}}" wx:key="index">
+      <van-icon
+        wx:if="{{index!==0}}"
+        class="icon-delete"
+        name="clear"
+        size="40rpx"
+        data-car-index="{{index}}"
+        bindtap="deleteCar"
+      />
+      <van-cell-group class="house-title" inset title="{{'车辆'+(index+1)}}">
+        <van-field
+          size="large"
+          required
+          clearable
+          value="{{ item.carModel }}"
+          data-car-index="{{'carModel-'+index}}"
+          label="品牌型号"
+          placeholder="（上传行驶证可识别）"
+          error-message="{{item.carModelMessage}}"
+          bind:change="carChange"
+        />
+        <!-- <van-field
         size="large"
         required
         clearable
@@ -596,145 +602,148 @@
         placeholder="请输入车辆型号"
         error-message="{{item.carMarkMessage}}"
         bind:change="carChange"
-      />
-      <van-field
-        size="large"
-        required
-        clearable
-        model:value="{{ item.totalAmount }}"
-        type="digit"
-        label="全款/按揭金额"
-        placeholder="请输入全款/按揭金额"
-        error-message="{{item.totalAmountMessage}}"
-        data-amounttype="{{'carList-'+index}}"
-        bind:change="amountChange"
-        right-icon="after-sale"
-        title-width="6.7em"
-      />
-      <van-cell required size="large" title="有无行驶证在手">
-        <van-switch
-          slot="right-icon"
-          size="40rpx"
-          checked="{{ item.hasCert }}"
-          data-car-index="{{index}}"
-          bind:change="hasCarCertChange"
+      /> -->
+        <van-field
+          size="large"
+          required
+          clearable
+          model:value="{{ item.totalAmount }}"
+          type="digit"
+          label="全款/按揭金额"
+          placeholder="请输入全款/按揭金额"
+          error-message="{{item.totalAmountMessage}}"
+          data-amounttype="{{'carList-'+index}}"
+          bind:change="amountChange"
+          right-icon="after-sale"
+          title-width="6.7em"
         />
-      </van-cell>
-    </van-cell-group>
-    <block wx:if="{{item.hasCert}}">
-      <!-- 行驶证正反面 -->
-      <van-cell-group inset title="上传行驶证" border="{{false}}">
+        <van-cell required size="large" title="有无行驶证在手">
+          <van-switch
+            slot="right-icon"
+            size="40rpx"
+            checked="{{ item.hasCert }}"
+            data-car-index="{{index}}"
+            bind:change="hasCarCertChange"
+          />
+        </van-cell>
       </van-cell-group>
-      <view class="idcard-upload-wrap">
-        <van-uploader
-          accept="image"
-          sizeType="{{['compressed']}}"
-          capture="{{['camera']}}"
-          max-count="1"
-          deletable="{{ true }}"
-          file-list="{{ item.certFront }}"
-          data-car-index="{{'certFront-'+index}}"
-          bind:after-read="afterCarCertRead"
-          show-upload="{{false}}"
-          preview-size="210rpx"
-          image-fit="aspectFit"
-          bind:delete="deleteCarCert"
-        >
-          <view class="idcard-upload">
-            <image
-              class="idcard-upload-img"
-              src="../../images/idcard_add.png"
-            />
-            <view class="idcard-desc">行驶证主页</view>
-          </view>
-        </van-uploader>
-        <van-uploader
-          accept="image"
-          sizeType="{{['compressed']}}"
-          capture="{{['camera']}}"
-          max-count="1"
-          deletable="{{ true }}"
-          file-list="{{ item.certBack }}"
-          data-car-index="{{'certBack-'+index}}"
-          bind:after-read="afterCarCertRead"
-          show-upload="{{false}}"
-          preview-size="210rpx"
-          image-fit="aspectFit"
-          bind:delete="deleteCarCert"
-        >
-          <view class="idcard-upload">
-            <image
-              class="idcard-upload-img"
-              src="../../images/idcard_add.png"
-            />
-            <view class="idcard-desc">行驶证副页</view>
-          </view>
-        </van-uploader>
-      </view>
-    </block>
-  </view>
-  <view wx:if="{{carList.length<5}}" bindtap="addCar" class="btn-add-house">
-    + <text class="small-size">添加车辆</text>
-  </view>
-</block>
-<van-cell-group inset>
-  <van-field
-    size="large"
-    model:value="{{ otherMark }}"
-    label="其他优势"
-    type="textarea"
-    placeholder="请输入其他优势"
-    autosize
-  />
-  <van-field
-    size="large"
-    clearable
-    model:value="{{ reference }}"
-    label="推荐人"
-    placeholder="请输入推荐人"
-    autosize
-  />
-  <van-field
-    readonly
-    required
-    size="large"
-    label="填表日期"
-    is-link
-    value="{{applyDateTxt}}"
-    placeholder="请选择填表日期"
-    error-message="{{applyDateMessage}}"
-    bind:tap="openApplyPicker"
-  />
-</van-cell-group>
+      <block wx:if="{{item.hasCert}}">
+        <!-- 行驶证正反面 -->
+        <van-cell-group inset title="上传行驶证" border="{{false}}">
+        </van-cell-group>
+        <view class="idcard-upload-wrap">
+          <van-uploader
+            accept="image"
+            sizeType="{{['compressed']}}"
+            capture="{{['camera']}}"
+            max-count="1"
+            deletable="{{ true }}"
+            file-list="{{ item.certFront }}"
+            data-car-index="{{'certFront-'+index}}"
+            bind:after-read="afterCarCertRead"
+            show-upload="{{false}}"
+            preview-size="210rpx"
+            image-fit="aspectFit"
+            bind:delete="deleteCarCert"
+          >
+            <view class="idcard-upload">
+              <image
+                class="idcard-upload-img"
+                src="../../images/idcard_add.png"
+              />
+              <view class="idcard-desc">行驶证主页</view>
+            </view>
+          </van-uploader>
+          <van-uploader
+            accept="image"
+            sizeType="{{['compressed']}}"
+            capture="{{['camera']}}"
+            max-count="1"
+            deletable="{{ true }}"
+            file-list="{{ item.certBack }}"
+            data-car-index="{{'certBack-'+index}}"
+            bind:after-read="afterCarCertRead"
+            show-upload="{{false}}"
+            preview-size="210rpx"
+            image-fit="aspectFit"
+            bind:delete="deleteCarCert"
+          >
+            <view class="idcard-upload">
+              <image
+                class="idcard-upload-img"
+                src="../../images/idcard_add.png"
+              />
+              <view class="idcard-desc">行驶证副页</view>
+            </view>
+          </van-uploader>
+        </view>
+      </block>
+    </view>
+    <view wx:if="{{carList.length<5}}" bindtap="addCar" class="btn-add-house">
+      + <text class="small-size">添加车辆</text>
+    </view>
+  </block>
+  <van-cell-group inset>
+    <van-field
+      size="large"
+      model:value="{{ otherMark }}"
+      label="其他优势"
+      type="textarea"
+      placeholder="请输入其他优势"
+      autosize
+    />
+    <van-field
+      size="large"
+      clearable
+      model:value="{{ reference }}"
+      label="推荐人"
+      placeholder="请输入推荐人"
+      autosize
+    />
+    <van-field
+      readonly
+      required
+      size="large"
+      label="填表日期"
+      is-link
+      value="{{applyDateTxt}}"
+      placeholder="请选择填表日期"
+      error-message="{{applyDateMessage}}"
+      bind:tap="openApplyPicker"
+    />
+  </van-cell-group>
 
-<van-cell-group class="sms-wrap" inset>
-  <van-field
-    size="large"
-    model:value="{{ smsCode }}"
-    required
-    center
-    clearable
-    label="短信验证码"
-    placeholder="请输入短信验证码"
-    border="{{ false }}"
-    use-button-slot
-    error="{{smsCodeMessage}}"
-    bind:change="smsCodeChange"
-  >
-    <button
-      class="btn-smsCode"
-      slot="button"
-      size="mini"
-      plain
-      type="primary"
-      bindtap="sendSmsCode"
+  <van-cell-group class="sms-wrap" inset>
+    <van-field
+      size="large"
+      model:value="{{ smsCode }}"
+      required
+      center
+      clearable
+      label="短信验证码"
+      placeholder="请输入短信验证码"
+      border="{{ false }}"
+      use-button-slot
+      error="{{smsCodeMessage}}"
+      bind:change="smsCodeChange"
     >
-      {{smsTips}}
-    </button>
-  </van-field>
-</van-cell-group>
+      <button
+        class="btn-smsCode"
+        slot="button"
+        size="mini"
+        plain
+        type="primary"
+        bindtap="sendSmsCode"
+      >
+        {{smsTips}}
+      </button>
+    </van-field>
+  </van-cell-group>
 
-<button type="primary" class="btn-apply" bindtap="handleApply">提交申请</button>
+  <button type="primary" class="btn-apply" bindtap="handleApply">
+    提交申请
+  </button>
+</view>
 
 <!-- 滑动选项 -->
 <block>

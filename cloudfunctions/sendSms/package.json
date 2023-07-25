@@ -1,0 +1,15 @@
+{
+  "name": "sendSms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tencentcloud-sdk-nodejs-sms": "^4.0.649",
+    "wx-server-sdk": "~2.6.3"
+  }
+}

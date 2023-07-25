@@ -34,13 +34,14 @@ exports.main = async (event, context) => {
   // 通过client对象调用想要访问的接口（Action），需要传入请求对象（Params）以及响应回调函数
   // 即：client.Action(Params).then(res => console.log(res), err => console.error(err))
   try {
-    if (event.test) return { code: 0, data: {} };
     const res = await axios.get(event.ImageBase64);
     const params = {
       ImageBase64: res.data,
       CardSide: event.CardSide,
     };
-    const data = await client.IDCardOCR(params);
+    console.log(res);
+    const data = await client.VehicleLicenseOCR(params);
+    console.log(data);
     return { code: 0, data };
   } catch (err) {
     return { code: 2, msg: '请求错误' };

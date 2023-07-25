@@ -6,6 +6,9 @@ page {
   display: flex;
   align-items: center;
 }
+.van-field__icon-container .van-icon-after-sale {
+  font-size: 50rpx;
+}
 .idcard-upload-wrap {
   width: 100%;
   text-align: center;
