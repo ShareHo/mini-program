@@ -2,15 +2,17 @@
 // const db = wx.cloud.database();
 // const collection = db.collection('test-collection');
 import {
-  isValidityBrithBy15IdCard,
-  isTrueValidateCodeBy18IdCard,
-  isValidityBrithBy18IdCard,
   dateFormatter,
   validateRealName,
   validatePhone,
+  validateIdCard,
+  validateAmount,
+  validateNumber,
+  validateSmsCode,
 } from '../../utils/index';
 import Toast from '@vant/weapp/toast/toast';
 import { areaList } from '@vant/area-data';
+const date = new Date();
 Page({
   /**
    * 页面的初始数据
@@ -20,7 +22,7 @@ Page({
     // 日期选择器
     bornPickerShow: false,
     bornDateTxt: '',
-    bornMaxDate: new Date().getTime(),
+    bornMaxDate: date.getTime(),
     bornMinDate: new Date('1900/01/01').getTime(),
     // 婚姻状况选择器
     marryShow: false,
@@ -54,9 +56,10 @@ Page({
     ],
     businessScaleTxt: '',
     // 申请日期
-    applyDate: new Date().getTime(),
     applyPickerShow: false,
-    applyDateTxt: '',
+    applyDateTxt: `${date.getFullYear()}/${
+      date.getMonth() + 1
+    }/${date.getDate()}`,
     // 验证码倒计时
     smsTips: '发送',
     smsTimer: null,
@@ -79,6 +82,8 @@ Page({
     equipmentPriceMessage: '',
     businessScaleMessage: '',
     siteAreaMessage: '',
+    monthlyRentMessage: '',
+    annualIncomeMessage: '',
     bankDebtMessage: '',
     creditCardDebtMessage: '',
     applyDateMessage: '',
@@ -150,27 +155,31 @@ Page({
     ],
     otherMark: '',
     reference: '',
+    applyDate: date.getTime(),
     smsCode: '',
   },
 
   // 用户名校验
   nameChange(event) {
     const name = event.detail || '';
-    const message = validateRealName(name);
+    let message = '';
     switch (event.target.dataset.nametype) {
       case 'username':
+        message = validateRealName(name, '姓名');
         this.setData({
           nameMessage: message,
           username: name,
         });
         break;
       case 'marryname':
+        message = validateRealName(name, '配偶姓名');
         this.setData({
           marrynameMessage: message,
           marryname: name,
         });
         break;
       case 'companyMaster':
+        message = validateRealName(name, '公司法人');
         this.setData({
           companyMasterMessage: message,
           companyMaster: name,
@@ -185,45 +194,15 @@ Page({
   // 手机号校验
   phoneChange(event) {
     const phone = event.detail || '';
-    const message = validatePhone(phone);
-    this.setData({
-      phoneMessage: message,
-      phone: phone,
-    });
+    const phoneMessage = validatePhone(phone);
+    this.setData({ phone, phoneMessage });
   },
 
   // 身份证校验
   idCardChange: function (event) {
     const idCard = event.detail || '';
-    let message = '';
-    if (idCard.length == 15) {
-      if (isValidityBrithBy15IdCard(idCard)) {
-        message = '';
-      } else {
-        message = '您输入的身份证有误';
-      }
-    } else if (idCard.length == 18) {
-      var a_idCard = idCard.split(''); // 得到身份证数组
-      if (
-        isValidityBrithBy18IdCard(idCard) &&
-        isTrueValidateCodeBy18IdCard(a_idCard)
-      ) {
-        //进行18位身份证的基本验证和第18位的验证
-        message = '';
-      } else {
-        message = '您输入的身份证有误';
-      }
-    } else {
-      if (idCard.length === 0) {
-        message = '输入的身份证号不能为空';
-      } else {
-        message = '您输入的身份证长度有误';
-      }
-    }
-    this.setData({
-      idCardMessage: message,
-      idCard: idCard,
-    });
+    const idCardMessage = validateIdCard(idCard);
+    this.setData({ idCardMessage, idCard });
   },
 
   // 出生日期
@@ -237,6 +216,7 @@ Page({
       bornDateTxt: `${date.getFullYear()}/${
         date.getMonth() + 1
       }/${date.getDate()}`,
+      bornDateMessage: '',
     });
   },
   bornDateCancel() {
@@ -305,6 +285,7 @@ Page({
       marryShow: false,
       marryStatus: event.detail.value.id,
       marryStatusTxt: event.detail.value.value,
+      marryStatusMessage: '',
     });
   },
   marryCancel() {
@@ -323,6 +304,7 @@ Page({
       useWayShow: false,
       useWay: event.detail.value.id,
       useWayTxt: event.detail.value.value,
+      useWayMessage: '',
     });
   },
   familySupportChange(event) {
@@ -370,11 +352,13 @@ Page({
         area,
         areaTxt,
         areaShow: false,
+        areaMessage: '',
       });
     } else if (this.data.areaShowType.startsWith('houseList-')) {
       const item = this.data.houseList[this.data.areaShowType.split('-')[1]];
       item.area = area;
       item.areaTxt = areaTxt;
+      item.areaMessage = '';
       this.setData({ areaShow: false, houseList: this.data.houseList });
     }
   },
@@ -389,15 +373,8 @@ Page({
   // 金额校验
   amountChange(event) {
     const amount = event.detail || '';
+    let message = validateAmount(amount);
     const type = event.target.dataset.amounttype;
-    let message = '';
-    if (+amount > 0) {
-      message = '';
-    } else if (amount === 0) {
-      message = '金额不能为0';
-    } else {
-      message = '您输入的金额有误';
-    }
     if (type.startsWith('houseList-')) {
       const item = this.data.houseList[type.split('-')[1]];
       item.totalAmount = amount;
@@ -424,10 +401,11 @@ Page({
           this.setData({ annualTurnoverMessage: message });
           break;
         case 'equipmentPrice':
-          this.setData({ equipmentPriceMessage: '' });
+          this.setData({ equipmentPriceMessage: message });
           break;
         case 'siteArea':
-          this.setData({ siteAreaMessage: message ? '场地面积必须大于0' : '' });
+          message = validateAmount(amount, '场地面积');
+          this.setData({ siteAreaMessage: message });
           break;
         case 'bankDebt':
           this.setData({ bankDebtMessage: message });
@@ -460,6 +438,7 @@ Page({
       businessScaleShow: false,
       businessScale: event.detail.value.id,
       businessScaleTxt: event.detail.value.value,
+      businessScaleMessage: '',
     });
   },
   // 占股百分比
@@ -468,7 +447,8 @@ Page({
   },
   monthlyRentChange(event) {
     const amount = event.detail || '';
-    this.setData({ monthlyRent: amount });
+    const monthlyRentMessage = validateNumber(amount, '金额');
+    this.setData({ monthlyRent: amount, monthlyRentMessage });
   },
   annualIncomeChange(event) {
     const amount = event.detail || '';
@@ -624,7 +604,6 @@ Page({
   },
   // 出生日期
   applyDateConfirm(event) {
-    console.log(event);
     const { detail } = event;
     const date = new Date(detail);
     this.setData({
@@ -633,6 +612,7 @@ Page({
       applyDateTxt: `${date.getFullYear()}/${
         date.getMonth() + 1
       }/${date.getDate()}`,
+      applyDateMessage: '',
     });
   },
   applyDateCancel() {
@@ -680,31 +660,239 @@ Page({
   },
   smsCodeChange(event) {
     const smsCode = event.detail || '';
-    let message = '';
-    if (smsCode) {
-      if (/^\d{6}$/.test(smsCode)) {
-        message = '';
-      } else {
-        message = '您输入的验证码格式有误';
-      }
-    } else {
-      message = '验证码不能为空';
-    }
-    this.setData({
-      smsCode,
-      smsCodeMessage: message,
-    });
+    const smsCodeMessage = validateSmsCode(smsCode);
+    this.setData({ smsCode, smsCodeMessage });
   },
 
   handleApply() {
     const wrongSelector = [];
-    const nameMessage = validateRealName(this.data.username);
+    let messageData = {};
+    // 姓名
+    const nameMessage = validateRealName(this.data.username, '姓名');
     if (nameMessage) {
-      wrongSelector.push('#username');
-      this.setData({ nameMessage });
+      wrongSelector.push('#userinfo');
+      messageData.nameMessage = nameMessage;
     }
+    // 手机号
+    const phoneMessage = validatePhone(this.data.phone);
+    if (phoneMessage) {
+      wrongSelector.push('#phone');
+      messageData.phoneMessage = phoneMessage;
+    }
+    // 身份证
+    const idCardMessage = validateIdCard(this.data.idCard);
+    if (idCardMessage) {
+      wrongSelector.push('#idcard');
+      messageData.idCardMessage = idCardMessage;
+    }
+    // 出生日期
+    if (!this.data.bornDateTxt) {
+      wrongSelector.push('#bornDate');
+      messageData.bornDateMessage = '出生日期不能为空';
+    }
+    // 家庭住址省市区
+    if (!this.data.areaTxt) {
+      wrongSelector.push('#areaList');
+      messageData.areaMessage = '省市区不能为空';
+    }
+    // 详细地址
+    if (!this.data.address.trim()) {
+      wrongSelector.push('#address');
+      messageData.addressMessage = '详细地址不能为空';
+    }
+    // 婚姻状况
+    if (!this.data.marryStatusTxt) {
+      wrongSelector.push('#marryStatus');
+      messageData.marryStatusMessage = '婚姻状况不能为空';
+    }
+    // 配偶姓名身份证
+    const marrynameMessage = validateRealName(this.data.marryname, '配偶姓名');
+    if (this.data.marryStatus === 0 && marrynameMessage) {
+      wrongSelector.push('#marryname');
+      messageData.marrynameMessage = marrynameMessage;
+    }
+    // 上传身份证
+    if (
+      this.data.idCardFront.length === 0 ||
+      this.data.idCardBack.length === 0
+    ) {
+      wrongSelector.push('#idcardCamera');
+    }
+    // 申请额度
+    const loanAmountMessage = validateAmount(this.data.loanAmount);
+    if (loanAmountMessage) {
+      wrongSelector.push('#loanAmount');
+      messageData.loanAmountMessage = loanAmountMessage;
+    }
+    // 借款用途
+    if (!this.data.useWayTxt) {
+      wrongSelector.push('#useWay');
+      messageData.useWayMessage = '借款用途不能为空';
+    }
+    // 公司全称
+    if (!this.data.companyName.trim()) {
+      wrongSelector.push('#companyName');
+      messageData.companyNameMessage = '公司全称不能为空';
+    }
+    // 公司法人
+    const companyMasterMessage = validateRealName(
+      this.data.companyMaster,
+      '公司法人',
+    );
+    if (companyMasterMessage) {
+      wrongSelector.push('#companyMaster');
+      messageData.companyMasterMessage = companyMasterMessage;
+    }
+    // 员工工资
+    const salaryMessage = validateAmount(this.data.salary);
+    if (salaryMessage) {
+      wrongSelector.push('#salary');
+      messageData.salaryMessage = salaryMessage;
+    }
+    // 员工流水
+    const flowingWaterMessage = validateAmount(this.data.flowingWater);
+    if (flowingWaterMessage) {
+      wrongSelector.push('#flowingWater');
+      messageData.flowingWaterMessage = flowingWaterMessage;
+    }
+    // 年营业额
+    const annualTurnoverMessage = validateAmount(this.data.annualTurnover);
+    if (annualTurnoverMessage) {
+      wrongSelector.push('#annualTurnover');
+      messageData.annualTurnoverMessage = annualTurnoverMessage;
+    }
+    // 设备价值
+    const equipmentPriceMessage = validateAmount(this.data.equipmentPrice);
+    if (equipmentPriceMessage) {
+      wrongSelector.push('#equipmentPrice');
+      messageData.equipmentPriceMessage = equipmentPriceMessage;
+    }
+    // 企业规模
+    if (!this.data.businessScaleTxt) {
+      wrongSelector.push('#businessScale');
+      messageData.businessScaleMessage = '企业规模不能为空';
+    }
+    // 场地面积
+    const siteAreaMessage = validateAmount(this.data.siteArea, '场地面积');
+    if (siteAreaMessage) {
+      wrongSelector.push('#siteArea');
+      messageData.siteAreaMessage = '场地面积必须大于0';
+    }
+    // 场地月缴租金
+    const monthlyRentMessage = validateNumber(this.data.monthlyRent, '金额');
+    if (monthlyRentMessage) {
+      wrongSelector.push('#monthlyRent');
+      messageData.monthlyRentMessage = monthlyRentMessage;
+    }
+    // 年收入金额
+    const annualIncomeMessage = validateAmount(this.data.annualIncome, '金额');
+    if (annualIncomeMessage) {
+      wrongSelector.push('#annualIncome');
+      messageData.annualIncomeMessage = annualIncomeMessage;
+    }
+    // 银行总贷款额度
+    const bankDebtMessage = validateAmount(this.data.bankDebt, '金额');
+    if (bankDebtMessage) {
+      wrongSelector.push('#bankDebt');
+      messageData.bankDebtMessage = bankDebtMessage;
+    }
+    // 信用卡总额度
+    const creditCardDebtMessage = validateAmount(
+      this.data.creditCardDebt,
+      '金额',
+    );
+    if (creditCardDebtMessage) {
+      wrongSelector.push('#creditCardDebt');
+      messageData.creditCardDebtMessage = creditCardDebtMessage;
+    }
+    // 房产判断
+    if (this.data.hasHouse) {
+      this.data.houseList.forEach((d, i) => {
+        let wrong = false;
+        // 家庭住址省市区
+        if (!d.areaTxt) {
+          wrong = true;
+          d.areaMessage = '省市区不能为空';
+        }
+        // 详细地址
+        if (!d.address.trim()) {
+          wrong = true;
+          d.addressMessage = '详细地址不能为空';
+        }
+        // 全款、按揭金额
+        const totalAmountMessage = validateAmount(d.totalAmount, '金额');
+        if (totalAmountMessage) {
+          wrong = true;
+          d.totalAmountMessage = totalAmountMessage;
+        }
+        if (wrong) wrongSelector.push(`#house-item-${i}`);
+        // 房产证上传
+        if (
+          d.hasCert &&
+          (d.certFront.length === 0 || d.certBack.length === 0)
+        ) {
+          wrongSelector.push(`#house-cert-${i}`);
+        }
+      });
+      messageData.houseList = this.data.houseList;
+    }
+    // 车产判断
+    if (this.data.hasCar) {
+      this.data.carList.forEach((d, i) => {
+        let wrong = false;
+        // 品牌型号
+        if (!d.carModel) {
+          wrong = true;
+          d.carModelMessage = '品牌型号不能为空';
+        }
+        // 全款、按揭金额
+        const totalAmountMessage = validateAmount(d.totalAmount, '金额');
+        if (totalAmountMessage) {
+          wrong = true;
+          d.totalAmountMessage = totalAmountMessage;
+        }
+        if (wrong) wrongSelector.push(`#car-item-${i}`);
+        // 行驶证上传
+        if (
+          d.hasCert &&
+          (d.certFront.length === 0 || d.certBack.length === 0)
+        ) {
+          wrongSelector.push(`#car-cert-${i}`);
+        }
+      });
+      messageData.carList = this.data.carList;
+    }
+    // 填表日期
+    if (!this.data.applyDateTxt) {
+      wrongSelector.push('#applyDate');
+      messageData.bornDateMessage = '填表日期不能为空';
+    }
+    // 填表日期
+    const smsCodeMessage = validateSmsCode(this.data.smsCode);
+    if (smsCodeMessage) {
+      wrongSelector.push('#smsCode');
+      messageData.smsCodeMessage = smsCodeMessage;
+    }
+
     if (wrongSelector.length) {
-      wx.pageScrollTo({ selector: wrongSelector[0] });
+      this.setData(messageData, () => {
+        // 定位完善输入
+        wx.pageScrollTo({ selector: wrongSelector[0] });
+        switch (true) {
+          case wrongSelector[0] === '#idcardCamera':
+            Toast('请上传身份证');
+            break;
+          case wrongSelector[0].startsWith('#house-cert-'):
+            Toast('请上传房产证');
+            break;
+          case wrongSelector[0].startsWith('#car-cert-'):
+            Toast('请上传行驶证');
+            break;
+
+          default:
+            break;
+        }
+      });
     }
   },
 

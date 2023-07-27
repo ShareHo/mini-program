@@ -59,16 +59,16 @@ export const dateFormatter = (type, value) => {
 };
 
 // 校验真实名字
-export const validateRealName = (name) => {
+export const validateRealName = (name, type = '姓名') => {
   let message = '';
   if (name) {
     if (/^[\u4e00-\u9fa5]{2,30}$/.test(name)) {
       message = '';
     } else {
-      message = '您输入的姓名有误';
+      message = `您输入的${type}有误`;
     }
   } else {
-    message = '输入的姓名不能为空';
+    message = `${type}不能为空`;
   }
   return message;
 };
@@ -83,7 +83,74 @@ export const validatePhone = (phone) => {
       message = '您输入的手机号码有误';
     }
   } else {
-    message = '输入的手机号不能为空';
+    message = '手机号不能为空';
+  }
+  return message;
+};
+
+// 校验身份证
+export const validateIdCard = (idCard) => {
+  let message = '';
+  if (idCard.length == 15) {
+    if (isValidityBrithBy15IdCard(idCard)) {
+      message = '';
+    } else {
+      message = '您输入的身份证有误';
+    }
+  } else if (idCard.length == 18) {
+    var a_idCard = idCard.split(''); // 得到身份证数组
+    if (
+      isValidityBrithBy18IdCard(idCard) &&
+      isTrueValidateCodeBy18IdCard(a_idCard)
+    ) {
+      //进行18位身份证的基本验证和第18位的验证
+      message = '';
+    } else {
+      message = '您输入的身份证有误';
+    }
+  } else {
+    if (idCard.length === 0) {
+      message = '身份证号不能为空';
+    } else {
+      message = '您输入的身份证长度有误';
+    }
+  }
+  return message;
+};
+
+export const validateAmount = (amount, type = '金额') => {
+  let message = '';
+  if (+amount > 0) {
+    message = '';
+  } else if (amount.trim() !== '' && +amount === 0) {
+    message = `${type}必须大于0`;
+  } else {
+    message = `您输入的${type}有误`;
+  }
+  return message;
+};
+
+export const validateNumber = (amount, type = '金额') => {
+  let message = '';
+  console.log(+amount);
+  if (+amount > 0 || amount === '0' || amount === 0) {
+    message = '';
+  } else {
+    message = `您输入的${type}有误`;
+  }
+  return message;
+};
+
+export const validateSmsCode = (smsCode) => {
+  let message = '';
+  if (smsCode) {
+    if (/^\d{6}$/.test(smsCode)) {
+      message = '';
+    } else {
+      message = '您输入的验证码格式有误';
+    }
+  } else {
+    message = '验证码不能为空';
   }
   return message;
 };

@@ -2,13 +2,12 @@
 <!-- 客户信息 -->
 <van-toast id="van-toast" />
 <view class="home-page">
-  <van-cell-group inset title="客户信息">
+  <van-cell-group id="userinfo" inset title="客户信息">
     <van-field
-      id="username"
       size="large"
       required
       clearable
-      model:value="{{ username }}"
+      value="{{ username }}"
       name="username"
       label="客户姓名"
       placeholder="(上传身份证可识别)"
@@ -21,7 +20,7 @@
       size="large"
       required
       clearable
-      model:value="{{ phone }}"
+      value="{{ phone }}"
       name="phone"
       type="number"
       label="手机号码"
@@ -30,34 +29,39 @@
       bind:change="phoneChange"
     />
     <van-field
+      id="idcard"
       size="large"
       required
       clearable
       name="idcard"
       type="idcard"
-      model:value="{{ idCard }}"
+      value="{{ idCard }}"
       label="身份证号"
       placeholder="(上传身份证可识别)"
       error-message="{{idCardMessage}}"
       bind:change="idCardChange"
     />
     <van-field
+      id="bornDate"
       readonly
       required
       size="large"
       label="出生日期"
-      is-link
+      right-icon="arrow"
+      clickable
       value="{{bornDateTxt}}"
       placeholder="(上传身份证可识别)"
       error-message="{{bornDateMessage}}"
       bind:tap="openBornPicker"
     />
     <van-field
+      id="areaList"
       readonly
       required
       size="large"
       label="现住家庭地址"
-      is-link
+      right-icon="arrow"
+      clickable
       value="{{areaTxt}}"
       placeholder="请选择省市区"
       error-message="{{areaMessage}}"
@@ -65,6 +69,7 @@
       bind:tap="openAreaPicker"
     />
     <van-field
+      id="address"
       required
       size="large"
       value="{{ address }}"
@@ -78,22 +83,25 @@
       autosize
     />
     <van-field
+      id="marryStatus"
       readonly
       required
       size="large"
       label="婚姻状况"
-      is-link
       value="{{marryStatusTxt}}"
       placeholder="请选择婚姻状况"
       error-message="{{marryStatusMessage}}"
       bind:tap="openMarryPicker"
+      right-icon="arrow"
+      clickable
     />
     <van-field
       wx:if="{{marryStatus===0}}"
+      id="marryname"
       size="large"
       required
       clearable
-      model:value="{{ marryname }}"
+      value="{{ marryname }}"
       name="marryname"
       label="配偶姓名"
       placeholder="请输入配偶姓名"
@@ -103,7 +111,8 @@
     />
   </van-cell-group>
   <!-- 身份证正反面 -->
-  <van-cell-group inset title="上传身份证" border="{{false}}"> </van-cell-group>
+  <van-cell-group id="idcardCamera" inset title="上传身份证" border="{{false}}">
+  </van-cell-group>
   <view class="idcard-upload-wrap">
     <van-uploader
       accept="image"
@@ -145,10 +154,11 @@
   <!-- 申请资料 -->
   <van-cell-group inset title="申请资料">
     <van-field
+      id="loanAmount"
       size="large"
       required
       clearable
-      model:value="{{ loanAmount }}"
+      value="{{ loanAmount }}"
       name="loanAmount"
       type="digit"
       label="申请额度"
@@ -159,11 +169,13 @@
       right-icon="after-sale"
     />
     <van-field
+      id="useWay"
       readonly
       required
       size="large"
       label="借款用途"
-      is-link
+      right-icon="arrow"
+      clickable
       value="{{useWayTxt}}"
       placeholder="请选择借款用途"
       error-message="{{useWayMessage}}"
@@ -181,18 +193,22 @@
       <view slot="title">
         <view class="van-cell-text">家人是否支持贷款</view>
       </view>
-      <van-switch
+      <van-radio-group
         slot="right-icon"
-        size="40rpx"
-        checked="{{ isFamilySupport }}"
+        value="{{ isFamilySupport }}"
+        direction="horizontal"
         bind:change="familySupportChange"
-      />
+      >
+        <van-radio name="{{true}}">是</van-radio>
+        <van-radio name="{{false}}">否</van-radio>
+      </van-radio-group>
     </van-cell>
     <van-field
+      id="companyName"
       size="large"
       required
       clearable
-      model:value="{{ companyName }}"
+      value="{{ companyName }}"
       name="companyName"
       data-nametype="companyName"
       label="公司全称"
@@ -201,10 +217,11 @@
       bind:change="textChange"
     />
     <van-field
+      id="companyMaster"
       size="large"
       required
       clearable
-      model:value="{{ companyMaster }}"
+      value="{{ companyMaster }}"
       name="companyMaster"
       data-nametype="companyMaster"
       label="公司法人"
@@ -237,10 +254,11 @@
       />
     </van-cell>
     <van-field
+      id="salary"
       size="large"
       required
       clearable
-      model:value="{{ salary }}"
+      value="{{ salary }}"
       name="salary"
       type="digit"
       label="员工工资"
@@ -251,10 +269,11 @@
       right-icon="after-sale"
     />
     <van-field
+      id="flowingWater"
       size="large"
       required
       clearable
-      model:value="{{ flowingWater }}"
+      value="{{ flowingWater }}"
       name="flowingWater"
       type="digit"
       label="月均流水"
@@ -265,10 +284,11 @@
       right-icon="after-sale"
     />
     <van-field
+      id="annualTurnover"
       size="large"
       required
       clearable
-      model:value="{{ annualTurnover }}"
+      value="{{ annualTurnover }}"
       name="annualTurnover"
       type="digit"
       label="年营业额"
@@ -279,18 +299,22 @@
       right-icon="after-sale"
     />
     <van-cell required size="large" title="订单是否充足">
-      <van-switch
+      <van-radio-group
         slot="right-icon"
-        size="40rpx"
-        checked="{{ isSufficient }}"
+        value="{{ isSufficient }}"
+        direction="horizontal"
         bind:change="sufficientChange"
-      />
+      >
+        <van-radio name="{{true}}">是</van-radio>
+        <van-radio name="{{false}}">否</van-radio>
+      </van-radio-group>
     </van-cell>
     <van-field
+      id="equipmentPrice"
       size="large"
       required
       clearable
-      model:value="{{ equipmentPrice }}"
+      value="{{ equipmentPrice }}"
       name="equipmentPrice"
       type="digit"
       label="设备价值"
@@ -301,19 +325,24 @@
       right-icon="after-sale"
     />
     <van-cell required size="large" title="设备是否在押">
-      <van-switch
+      <van-radio-group
         slot="right-icon"
-        size="40rpx"
-        checked="{{ isEquipmentDetain }}"
+        value="{{ isEquipmentDetain }}"
+        direction="horizontal"
         bind:change="equipmentDetainChange"
-      />
+      >
+        <van-radio name="{{true}}">是</van-radio>
+        <van-radio name="{{false}}">否</van-radio>
+      </van-radio-group>
     </van-cell>
     <van-field
+      id="businessScale"
       readonly
       required
       size="large"
       label="企业规模"
-      is-link
+      right-icon="arrow"
+      clickable
       value="{{businessScaleTxt}}"
       placeholder="请选择企业规模"
       error-message="{{businessScaleMessage}}"
@@ -335,10 +364,11 @@
       </view>
     </van-cell>
     <van-field
+      id="siteArea"
       size="large"
       required
       clearable
-      model:value="{{ siteArea }}"
+      value="{{ siteArea }}"
       name="siteArea"
       type="digit"
       label="场地面积"
@@ -350,10 +380,12 @@
       <text slot="right-icon">㎡</text>
     </van-field>
     <van-field
+      id="monthlyRent"
       size="large"
       required
       clearable
-      model:value="{{ monthlyRent }}"
+      value="{{ monthlyRent }}"
+      error-message="{{monthlyRentMessage}}"
       name="monthlyRent"
       type="digit"
       label="场地月缴租金"
@@ -362,10 +394,12 @@
       right-icon="after-sale"
     />
     <van-field
+      id="annualIncome"
       size="large"
       required
       clearable
-      model:value="{{ annualIncome }}"
+      value="{{ annualIncome }}"
+      error-message="{{annualIncomeMessage}}"
       name="annualIncome"
       type="digit"
       label="年收入金额"
@@ -374,26 +408,33 @@
       right-icon="after-sale"
     />
     <van-cell required size="large" title="是否有案件">
-      <van-switch
+      <van-radio-group
         slot="right-icon"
-        size="40rpx"
-        checked="{{ isInCase }}"
+        value="{{ isInCase }}"
+        direction="horizontal"
         bind:change="inCaseChange"
-      />
+      >
+        <van-radio name="{{true}}">是</van-radio>
+        <van-radio name="{{false}}">否</van-radio>
+      </van-radio-group>
     </van-cell>
     <van-cell required size="large" title="是否有高息私人贷">
-      <van-switch
+      <van-radio-group
         slot="right-icon"
-        size="40rpx"
-        checked="{{ isIndebt }}"
+        value="{{ isIndebt }}"
+        direction="horizontal"
         bind:change="indebtChange"
-      />
+      >
+        <van-radio name="{{true}}">是</van-radio>
+        <van-radio name="{{false}}">否</van-radio>
+      </van-radio-group>
     </van-cell>
     <van-field
+      id="bankDebt"
       size="large"
       required
       clearable
-      model:value="{{ bankDebt }}"
+      value="{{ bankDebt }}"
       name="bankDebt"
       type="digit"
       label="银行总贷款额度"
@@ -405,6 +446,7 @@
       title-width="7.2em"
     />
     <van-field
+      id="creditCardDebt"
       size="large"
       required
       clearable
@@ -421,12 +463,15 @@
   </van-cell-group>
   <van-cell-group inset title="名下房产">
     <van-cell required size="large" title="名下有无房产">
-      <van-switch
+      <van-radio-group
         slot="right-icon"
-        size="40rpx"
-        checked="{{ hasHouse }}"
+        value="{{ hasHouse }}"
+        direction="horizontal"
         bind:change="hasHouseChange"
-      />
+      >
+        <van-radio name="{{true}}">有</van-radio>
+        <van-radio name="{{false}}">无</van-radio>
+      </van-radio-group>
     </van-cell>
   </van-cell-group>
   <block wx:if="{{hasHouse}}">
@@ -439,7 +484,12 @@
         data-house-index="{{index}}"
         bindtap="deleteHouse"
       />
-      <van-cell-group class="house-title" inset title="{{'房产'+(index+1)}}">
+      <van-cell-group
+        id="{{'house-item-'+index}}"
+        class="house-title"
+        inset
+        title="{{'房产'+(index+1)}}"
+      >
         <van-cell required size="large" title="本地/异地房产">
           <van-radio-group
             slot="right-icon"
@@ -457,7 +507,8 @@
           required
           size="large"
           label="房屋地址"
-          is-link
+          right-icon="arrow"
+          clickable
           value="{{item.areaTxt}}"
           placeholder="请选择省市区"
           error-message="{{item.areaMessage}}"
@@ -490,14 +541,22 @@
           right-icon="after-sale"
           title-width="6.7em"
         />
-        <van-cell required size="large" title="有无房产证在手">
-          <van-switch
+        <van-cell
+          id="{{'house-cert-'+index}}"
+          required
+          size="large"
+          title="有无房产证在手"
+        >
+          <van-radio-group
             slot="right-icon"
-            size="40rpx"
-            checked="{{ item.hasCert }}"
+            value="{{ item.hasCert }}"
+            direction="horizontal"
             data-house-index="{{index}}"
             bind:change="hasCertChange"
-          />
+          >
+            <van-radio name="{{true}}">有</van-radio>
+            <van-radio name="{{false}}">无</van-radio>
+          </van-radio-group>
         </van-cell>
       </van-cell-group>
       <block wx:if="{{item.hasCert}}">
@@ -562,12 +621,15 @@
   </block>
   <van-cell-group inset title="名下车产">
     <van-cell required size="large" title="名下有无车产">
-      <van-switch
+      <van-radio-group
         slot="right-icon"
-        size="40rpx"
-        checked="{{ hasCar }}"
+        value="{{ hasCar }}"
+        direction="horizontal"
         bind:change="hasCarChange"
-      />
+      >
+        <van-radio name="{{true}}">有</van-radio>
+        <van-radio name="{{false}}">无</van-radio>
+      </van-radio-group>
     </van-cell>
   </van-cell-group>
   <block wx:if="{{hasCar}}">
@@ -580,7 +642,12 @@
         data-car-index="{{index}}"
         bindtap="deleteCar"
       />
-      <van-cell-group class="house-title" inset title="{{'车辆'+(index+1)}}">
+      <van-cell-group
+        id="{{'car-item-'+index}}"
+        class="house-title"
+        inset
+        title="{{'车辆'+(index+1)}}"
+      >
         <van-field
           size="large"
           required
@@ -617,14 +684,22 @@
           right-icon="after-sale"
           title-width="6.7em"
         />
-        <van-cell required size="large" title="有无行驶证在手">
-          <van-switch
+        <van-cell
+          id="{{'car-cert-'+index}}"
+          required
+          size="large"
+          title="有无行驶证在手"
+        >
+          <van-radio-group
             slot="right-icon"
-            size="40rpx"
-            checked="{{ item.hasCert }}"
+            value="{{ item.hasCert }}"
+            direction="horizontal"
             data-car-index="{{index}}"
             bind:change="hasCarCertChange"
-          />
+          >
+            <van-radio name="{{true}}">有</van-radio>
+            <van-radio name="{{false}}">无</van-radio>
+          </van-radio-group>
         </van-cell>
       </van-cell-group>
       <block wx:if="{{item.hasCert}}">
@@ -701,11 +776,13 @@
       autosize
     />
     <van-field
+      id="applyDate"
       readonly
       required
       size="large"
       label="填表日期"
-      is-link
+      right-icon="arrow"
+      clickable
       value="{{applyDateTxt}}"
       placeholder="请选择填表日期"
       error-message="{{applyDateMessage}}"
@@ -713,18 +790,18 @@
     />
   </van-cell-group>
 
-  <van-cell-group class="sms-wrap" inset>
+  <van-cell-group inset title=" ">
     <van-field
+      id="smsCode"
       size="large"
-      model:value="{{ smsCode }}"
+      value="{{ smsCode }}"
       required
-      center
       clearable
       label="短信验证码"
       placeholder="请输入短信验证码"
       border="{{ false }}"
       use-button-slot
-      error="{{smsCodeMessage}}"
+      error-message="{{smsCodeMessage}}"
       bind:change="smsCodeChange"
     >
       <button
