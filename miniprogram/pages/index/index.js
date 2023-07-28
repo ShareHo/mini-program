@@ -12,6 +12,8 @@ import {
 } from '../../utils/index';
 import Toast from '@vant/weapp/toast/toast';
 import { areaList } from '@vant/area-data';
+import { isTest } from '../../utils/env';
+
 const date = new Date();
 Page({
   /**
@@ -67,6 +69,7 @@ Page({
     // 表单校验文案
     nameMessage: '',
     phoneMessage: '',
+    idCardMessage: '',
     bornDateMessage: '',
     marryStatusMessage: '',
     marrynameMessage: '',
@@ -92,7 +95,6 @@ Page({
     username: '',
     phone: '',
     idCard: '',
-    idCardMessage: '',
     idCardFront: [],
     idCardBack: [],
     bornDate: new Date('2000/01/01').getTime(),
@@ -120,7 +122,7 @@ Page({
     monthlyRent: '',
     annualIncome: '',
     isInCase: false,
-    isIndebt: false,
+    isInDebt: false,
     bankDebt: '',
     creditCardDebt: '',
     hasHouse: true,
@@ -237,11 +239,15 @@ Page({
         duration: 0,
       });
       const fs = wx.getFileSystemManager();
-      const base64File = fs.readFileSync(event.detail.file.url, 'base64');
+      // const base64File = fs.readFileSync(event.detail.file.url, 'base64');
+      const arrayBufferFile = fs.readFileSync(event.detail.file.url);
       const { result } = await wx.cloud.callFunction({
         name: 'idcardOcr',
         data: {
-          ImageBase64: wx.cloud.CDN(base64File),
+          test: isTest,
+          ImageType: event.detail.file.url.split('.').pop(),
+          ImageBuffer: wx.cloud.CDN(arrayBufferFile),
+          // ImageBase64: wx.cloud.CDN(base64File),
           CardSide: 'FRONT',
         },
       });
@@ -458,7 +464,7 @@ Page({
     this.setData({ isInCase: event.detail });
   },
   indebtChange(event) {
-    this.setData({ isIndebt: event.detail });
+    this.setData({ isInDebt: event.detail });
   },
   hasHouseChange(event) {
     this.setData({ hasHouse: event.detail });
@@ -566,11 +572,15 @@ Page({
           duration: 0,
         });
         const fs = wx.getFileSystemManager();
-        const base64File = fs.readFileSync(event.detail.file.url, 'base64');
+        // const base64File = fs.readFileSync(event.detail.file.url, 'base64');
+        const arrayBufferFile = fs.readFileSync(event.detail.file.url);
         const { result } = await wx.cloud.callFunction({
           name: 'vehicleLicenseOcr',
           data: {
-            ImageBase64: wx.cloud.CDN(base64File),
+            test: isTest,
+            ImageType: event.detail.file.url.split('.').pop(),
+            ImageBuffer: wx.cloud.CDN(arrayBufferFile),
+            // ImageBase64: wx.cloud.CDN(base64File),
             CardSide: 'FRONT',
           },
         });
@@ -638,10 +648,14 @@ Page({
     });
     const { result: res } = await wx.cloud.callFunction({
       name: 'sendSms',
-      data: { phone: this.data.phone, test: true },
+      data: { phone: this.data.phone, test: isTest },
     });
     if (res.code === 0) {
       Toast.clear();
+      if (isTest) {
+        this.setData({ smsCode: res.data, smsCodeMessage: '' });
+        return;
+      }
       this.setData({ smsTips: this.data.smsCount + 's' });
       this.data.smsTimer = setInterval(() => {
         this.data.smsCount -= 1;
@@ -666,7 +680,7 @@ Page({
 
   handleApply() {
     const wrongSelector = [];
-    let messageData = {};
+    const messageData = {};
     // 姓名
     const nameMessage = validateRealName(this.data.username, '姓名');
     if (nameMessage) {
@@ -893,6 +907,70 @@ Page({
             break;
         }
       });
+    } else {
+      const params = {
+        username: this.data.username,
+        phone: this.data.phone,
+        idCard: this.data.idCard,
+        idCardFront: this.data.idCardFront,
+        idCardBack: this.data.idCardBack,
+        bornDate: this.data.bornDate,
+        marryStatus: this.data.marryStatus,
+        loanAmount: this.data.loanAmount,
+        useWay: this.data.useWay,
+        useWayMark: this.data.useWayMark,
+        isFamilySupport: this.data.isFamilySupport,
+        companyName: this.data.companyName,
+        companyMaster: this.data.companyMaster,
+        area: this.data.area,
+        address: this.data.address,
+        operYears: this.data.operYears,
+        companyMember: this.data.companyMember,
+        salary: this.data.salary,
+        flowingWater: this.data.flowingWater,
+        annualTurnover: this.data.annualTurnover,
+        isSufficient: this.data.isSufficient,
+        equipmentPrice: this.data.equipmentPrice,
+        isEquipmentDetain: this.data.isEquipmentDetain,
+        businessScale: this.data.businessScale,
+        sharePercent: this.data.sharePercent,
+        siteArea: this.data.siteArea,
+        monthlyRent: this.data.monthlyRent,
+        annualIncome: this.data.annualIncome,
+        isInCase: this.data.isInCase,
+        isInDebt: this.data.isInDebt,
+        bankDebt: this.data.bankDebt,
+        creditCardDebt: this.data.creditCardDebt,
+        hasHouse: this.data.hasHouse,
+        houseList: [],
+        hasCar: this.data.hasCar,
+        carList: [],
+        otherMark: this.data.otherMark,
+        reference: this.data.reference,
+        applyDate: this.data.applyDate,
+        smsCode: this.data.smsCode,
+      };
+      if (params.marryStatus === 0) params.marryname = this.data.marryname;
+      if (params.hasHouse)
+        params.houseList = this.data.houseList.map((d) => ({
+          isLocal: d.isLocal,
+          area: d.area,
+          address: d.address,
+          totalAmount: d.totalAmount,
+          hasCert: d.hasCert,
+          certFront: d.certFront,
+          certBack: d.certBack,
+        }));
+      if (params.hasCar)
+        params.carList = this.data.carList.map((d) => ({
+          carModel: d.carModel,
+          totalAmount: d.totalAmount,
+          hasCert: d.hasCert,
+          certFront: d.certFront,
+          certBack: d.certBack,
+        }));
+
+      console.log(params);
     }
   },
 

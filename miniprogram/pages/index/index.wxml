@@ -421,7 +421,7 @@
     <van-cell required size="large" title="是否有高息私人贷">
       <van-radio-group
         slot="right-icon"
-        value="{{ isIndebt }}"
+        value="{{ isInDebt }}"
         direction="horizontal"
         bind:change="indebtChange"
       >
@@ -883,7 +883,7 @@
       title="省市区"
       bind:cancel="areaCancel"
       bind:confirm="areaConfirm"
-      value="441900"
+      value="441933"
     />
   </van-popup>
   <!-- 企业规模 -->

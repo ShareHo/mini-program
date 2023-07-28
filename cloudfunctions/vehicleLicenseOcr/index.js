@@ -34,9 +34,33 @@ exports.main = async (event, context) => {
   // 通过client对象调用想要访问的接口（Action），需要传入请求对象（Params）以及响应回调函数
   // 即：client.Action(Params).then(res => console.log(res), err => console.error(err))
   try {
-    const res = await axios.get(event.ImageBase64);
+    if (event.test) throw new Error();
+    const bufferRes = await axios.get(event.ImageBuffer, {
+      responseType: 'arraybuffer',
+    });
+    try {
+      const openRes = await cloud.openapi.ocr.drivingLicense({
+        type: 'photo',
+        img: {
+          contentType: 'image/' + event.ImageType,
+          value: bufferRes.data,
+        },
+      });
+      console.log(openRes);
+      if (event.test && openRes.errCode === 0)
+        return { code: 0, data: { FrontInfo: { Model: openRes.model } } };
+    } catch (e) {
+      console.log(e);
+    }
+    // const res = await axios.get(event.ImageBase64);
+    let binary = '';
+    let bytes = new Uint8Array(bufferRes.data);
+    for (let len = bytes.byteLength, i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    // const res = await axios.get(event.ImageBase64);
     const params = {
-      ImageBase64: res.data,
+      ImageBase64: btoa(binary),
       CardSide: event.CardSide,
     };
     console.log(res);

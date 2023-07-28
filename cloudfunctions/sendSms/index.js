@@ -62,7 +62,7 @@ exports.main = async (event, context) => {
       } else {
         await userSmsCache.update({ data });
       }
-      return { code: 0, msg: '验证码发送成功' };
+      return { code: 0, data: code, msg: '验证码发送成功' };
     }
     const params = {
       SmsSdkAppId: process.env.SMS_SDKAPPID, //短信应用id

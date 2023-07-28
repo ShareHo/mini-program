@@ -34,15 +34,49 @@ exports.main = async (event, context) => {
   // 通过client对象调用想要访问的接口（Action），需要传入请求对象（Params）以及响应回调函数
   // 即：client.Action(Params).then(res => console.log(res), err => console.error(err))
   try {
-    if (event.test) return { code: 0, data: {} };
-    const res = await axios.get(event.ImageBase64);
+    if (event.test) throw new Error();
+    const bufferRes = await axios.get(event.ImageBuffer, {
+      responseType: 'arraybuffer',
+    });
+    try {
+      const openRes = await cloud.openapi.ocr.idcard({
+        type: 'photo',
+        img: {
+          contentType: 'image/' + event.ImageType,
+          value: bufferRes.data,
+        },
+      });
+      console.log(openRes);
+      if (openRes.errCode === 0)
+        return {
+          code: 0,
+          data: {
+            Name: openRes.name,
+            IdNum: openRes.id,
+            Birth: openRes.birth.replace(/-/g, '/'),
+            Sex: openRes.gender,
+            Nation: openRes.nationality,
+            Address: openRes.addr,
+          },
+        };
+    } catch (e) {
+      console.log(e);
+    }
+    // const res = await axios.get(event.ImageBase64);
+    let binary = '';
+    let bytes = new Uint8Array(bufferRes.data);
+    for (let len = bytes.byteLength, i = 0; i < len; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
     const params = {
-      ImageBase64: res.data,
+      ImageBase64: btoa(binary),
       CardSide: event.CardSide,
     };
     const data = await client.IDCardOCR(params);
+    console.log(data);
     return { code: 0, data };
   } catch (err) {
+    console.log(err);
     return { code: 2, msg: '请求错误' };
   }
 };
