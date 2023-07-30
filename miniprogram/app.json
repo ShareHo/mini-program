@@ -5,7 +5,6 @@
     "pages/profile/index",
     "pages/permission/index",
     "pages/search/index",
-    "pages/myapply/index",
     "pages/detail/index"
   ],
   "tabBar": {
