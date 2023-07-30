@@ -1,2 +1,2 @@
 // 是否测试使用
-export const isTest = fasle;
+export const isTest = false;
