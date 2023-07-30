@@ -1,0 +1,61 @@
+<van-toast id="van-toast" class="van-toast" />
+<view class="profile-settiing">
+  <button
+    class="avatar-wrapper"
+    open-type="chooseAvatar"
+    bind:chooseavatar="onChooseAvatar"
+  >
+    <image wx:if="{{avatarUrl}}" class="avatar" src="{{avatarUrl}}"></image>
+    <image
+      wx:else=""
+      class="avatar"
+      src="../../images/default-avatar.png"
+    ></image>
+  </button>
+  <form bindsubmit="handleSave">
+    <van-field
+      type="nickname"
+      name="nickname"
+      size="large"
+      clearable
+      model:value="{{ nickname }}"
+      label="昵称"
+      maxlength="{{30}}"
+      placeholder="请输入昵称"
+    />
+    <van-field
+      size="large"
+      clearable
+      value="{{ phone }}"
+      type="number"
+      label="手机号码"
+      placeholder="请输入手机号码"
+      error-message="{{phoneMessage}}"
+      bind:change="phoneChange"
+    />
+    <van-field
+      wx:if="{{ phone !== originPhone || !originPhone  }}"
+      size="large"
+      value="{{ smsCode }}"
+      clearable
+      center
+      label="短信验证码"
+      placeholder="请输入短信验证码"
+      use-button-slot
+      error-message="{{smsCodeMessage}}"
+      bind:change="smsCodeChange"
+    >
+      <button
+        class="btn-smsCode"
+        slot="button"
+        size="mini"
+        plain
+        type="primary"
+        bindtap="sendSmsCode"
+      >
+        {{smsTips}}
+      </button>
+    </van-field>
+    <button form-type="submit" type="primary" class="btn-save">保存</button>
+  </form>
+</view>

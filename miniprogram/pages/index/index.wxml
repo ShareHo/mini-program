@@ -1,7 +1,7 @@
 <!--pages/index/index.wxml-->
 <!-- 客户信息 -->
-<van-toast id="van-toast" />
-<view class="home-page">
+<van-toast id="van-toast" class="van-toast" />
+<view class="home-page" bindtap="checkUser">
   <van-cell-group id="userinfo" inset title="客户信息">
     <van-field
       size="large"
@@ -790,7 +790,11 @@
     />
   </van-cell-group>
 
-  <van-cell-group inset title=" ">
+  <van-cell-group
+    wx:if="{{phone !==originPhone || !originPhone}}"
+    inset
+    title=" "
+  >
     <van-field
       id="smsCode"
       size="large"

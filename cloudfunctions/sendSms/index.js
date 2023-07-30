@@ -50,6 +50,7 @@ exports.main = async (event, context) => {
         sms_code: code,
         timestamp: Date.now(),
         valid_time: 0,
+        is_used: false,
       };
       if (cache.data.length === 0) {
         await db.collection('sms-code').add({
@@ -78,6 +79,7 @@ exports.main = async (event, context) => {
         sms_code: code,
         timestamp: Date.now(),
         valid_time: 0,
+        is_used: false,
       };
       if (cache.data.length === 0) {
         await db.collection('sms-code').add({

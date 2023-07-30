@@ -1,0 +1,73 @@
+<!--pages/search/index.wxml-->
+<van-toast id="van-toast" class="van-toast" />
+<view class="search-page">
+  <van-cell-group inset title="筛选条件">
+    <van-field
+      size="large"
+      clearable
+      model:value="{{ username }}"
+      label="客户姓名"
+      placeholder="请输入客户姓名"
+    />
+    <van-field
+      size="large"
+      clearable
+      model:value="{{ phone }}"
+      label="客户手机号"
+      placeholder="请输入客户手机号"
+    />
+    <van-cell
+      size="large"
+      is-link
+      title="选择起始日期"
+      value="{{ dateTxt }}"
+      bind:click="openCalendar"
+      title-width="6.2em"
+    />
+  </van-cell-group>
+  <view class="btn-wrap">
+    <button
+      class="btn-reset"
+      type="primary"
+      plain
+      size="mini"
+      bindtap="onReset"
+    >
+      重置
+    </button>
+    <button class="btn-search" type="primary" size="mini" bindtap="onSearch">
+      查询
+    </button>
+  </view>
+  <van-empty
+    wx:if="{{searchList.length===0}}"
+    class="van-empty"
+    description="暂无数据"
+  />
+  <view wx:else class="search-list">
+    <van-cell-group inset title="客户列表"> </van-cell-group>
+    <van-cell-group
+      class="search-item"
+      wx:for="{{searchList}}"
+      inset
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="linkToDetail"
+    >
+      <van-cell is-link title="客户姓名" value="{{item.username}}" />
+      <van-cell title="手机号" value="{{item.phone}}" />
+      <van-cell title="申请额度" value="{{item.loanAmount+'元'}}" />
+    </van-cell-group>
+    <view wx:if="{{searchList.length>=total}}" class="all-loaded">到底了~</view>
+  </view>
+</view>
+<van-calendar
+  allow-same-day
+  min-date="{{minDate}}"
+  max-date="{{maxDate}}"
+  show="{{ calendarShow }}"
+  show-confirm="{{ false }}"
+  type="range"
+  bind:close="calendarClose"
+  bind:confirm="calendarConfirm"
+/>

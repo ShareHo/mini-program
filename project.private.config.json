@@ -9,6 +9,27 @@
           "name": "pages/index/index",
           "pathName": "pages/index/index",
           "query": ""
+        },
+        {
+          "name": "pages/mine/index",
+          "pathName": "pages/mine/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/search/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "",
+          "pathName": "pages/detail/index",
+          "query": "id=28de1d2c64c663af0029b402333e1b79",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

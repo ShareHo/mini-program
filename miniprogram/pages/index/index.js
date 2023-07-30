@@ -15,6 +15,7 @@ import { areaList } from '@vant/area-data';
 import { isTest } from '../../utils/env';
 
 const date = new Date();
+const app = getApp();
 Page({
   /**
    * 页面的初始数据
@@ -159,6 +160,7 @@ Page({
     reference: '',
     applyDate: date.getTime(),
     smsCode: '',
+    originPhone: '',
   },
 
   // 用户名校验
@@ -209,7 +211,7 @@ Page({
 
   // 出生日期
   bornDateConfirm(event) {
-    console.log(event);
+    // console.log(event);
     const { detail } = event;
     const date = new Date(detail);
     this.setData({
@@ -239,20 +241,20 @@ Page({
         duration: 0,
       });
       const fs = wx.getFileSystemManager();
-      // const base64File = fs.readFileSync(event.detail.file.url, 'base64');
-      const arrayBufferFile = fs.readFileSync(event.detail.file.url);
+      // const base64File = fs.readFileSync(event.detail.file.tempFilePath, 'base64');
+      const arrayBufferFile = fs.readFileSync(event.detail.file.tempFilePath);
       const { result } = await wx.cloud.callFunction({
         name: 'idcardOcr',
         data: {
           test: isTest,
-          ImageType: event.detail.file.url.split('.').pop(),
+          ImageType: event.detail.file.tempFilePath.split('.').pop(),
           ImageBuffer: wx.cloud.CDN(arrayBufferFile),
           // ImageBase64: wx.cloud.CDN(base64File),
           CardSide: 'FRONT',
         },
       });
       if (result.code === 0) {
-        console.log(result);
+        // console.log(result);
         this.setData({
           username: this.data.username || result.data.Name,
           idCard: this.data.idCard || result.data.IdNum,
@@ -572,13 +574,13 @@ Page({
           duration: 0,
         });
         const fs = wx.getFileSystemManager();
-        // const base64File = fs.readFileSync(event.detail.file.url, 'base64');
-        const arrayBufferFile = fs.readFileSync(event.detail.file.url);
+        // const base64File = fs.readFileSync(event.detail.file.tempFilePath, 'base64');
+        const arrayBufferFile = fs.readFileSync(event.detail.file.tempFilePath);
         const { result } = await wx.cloud.callFunction({
           name: 'vehicleLicenseOcr',
           data: {
             test: isTest,
-            ImageType: event.detail.file.url.split('.').pop(),
+            ImageType: event.detail.file.tempFilePath.split('.').pop(),
             ImageBuffer: wx.cloud.CDN(arrayBufferFile),
             // ImageBase64: wx.cloud.CDN(base64File),
             CardSide: 'FRONT',
@@ -635,41 +637,45 @@ Page({
     if (this.data.smsTimer) return;
     const phoneMessage = validatePhone(this.data.phone);
     if (phoneMessage) {
-      Toast('请检查手机号码是否正确');
+      Toast.fail('请检查手机号码是否正确');
       this.setData({ phoneMessage }, () => {
         wx.pageScrollTo({ selector: '#phone' });
       });
       return;
     }
-    Toast.loading({
-      message: '发送中...',
-      forbidClick: true,
-      duration: 0,
-    });
-    const { result: res } = await wx.cloud.callFunction({
-      name: 'sendSms',
-      data: { phone: this.data.phone, test: isTest },
-    });
-    if (res.code === 0) {
-      Toast.clear();
-      if (isTest) {
-        this.setData({ smsCode: res.data, smsCodeMessage: '' });
-        return;
-      }
-      this.setData({ smsTips: this.data.smsCount + 's' });
-      this.data.smsTimer = setInterval(() => {
-        this.data.smsCount -= 1;
-        if (this.data.smsCount <= 0) {
-          clearInterval(this.data.smsTimer);
-          this.data.smsTimer = null;
-          this.data.smsCount = 60;
-          this.setData({ smsTips: '发送' });
-        } else {
-          this.setData({ smsTips: this.data.smsCount + 's' });
+    try {
+      Toast.loading({
+        message: '发送中...',
+        forbidClick: true,
+        duration: 0,
+      });
+      const { result: res } = await wx.cloud.callFunction({
+        name: 'sendSms',
+        data: { phone: this.data.phone, test: isTest },
+      });
+      if (res.code === 0) {
+        Toast.clear();
+        if (isTest) {
+          this.setData({ smsCode: res.data, smsCodeMessage: '' });
+          return;
         }
-      }, 1000);
-    } else {
-      Toast(res.msg);
+        this.setData({ smsTips: this.data.smsCount + 's' });
+        this.data.smsTimer = setInterval(() => {
+          this.data.smsCount -= 1;
+          if (this.data.smsCount <= 0) {
+            clearInterval(this.data.smsTimer);
+            this.data.smsTimer = null;
+            this.data.smsCount = 60;
+            this.setData({ smsTips: '发送' });
+          } else {
+            this.setData({ smsTips: this.data.smsCount + 's' });
+          }
+        }, 1000);
+      } else {
+        Toast.fail(res.msg);
+      }
+    } catch (e) {
+      Toast.fail('请求错误，请稍后重试');
     }
   },
   smsCodeChange(event) {
@@ -678,7 +684,30 @@ Page({
     this.setData({ smsCode, smsCodeMessage });
   },
 
-  handleApply() {
+  async handleApply() {
+    // try {
+    //   Toast.loading({
+    //     message: '正在提交...',
+    //     forbidClick: false,
+    //     duration: 0,
+    //   });
+    //   const fs = wx.getFileSystemManager();
+    //   const { result: res } = await wx.cloud.callFunction({
+    //     name: 'apply',
+    //     data: {
+    //       idCardFront: wx.cloud.CDN(
+    //         fs.readFileSync(this.data.idCardBack[0].tempFilePath),
+    //       ),
+    //     },
+    //   });
+    //   if (res.code === 0) {
+    //     Toast.success('提交成功');
+    //   } else {
+    //     Toast.fail(res.msg);
+    //   }
+    // } catch (e) {
+    //   Toast.fail('请求错误，请稍后重试');
+    // }
     const wrongSelector = [];
     const messageData = {};
     // 姓名
@@ -882,10 +911,12 @@ Page({
       messageData.bornDateMessage = '填表日期不能为空';
     }
     // 填表日期
-    const smsCodeMessage = validateSmsCode(this.data.smsCode);
-    if (smsCodeMessage) {
-      wrongSelector.push('#smsCode');
-      messageData.smsCodeMessage = smsCodeMessage;
+    if (this.data.phone !== this.data.originPhone) {
+      const smsCodeMessage = validateSmsCode(this.data.smsCode);
+      if (smsCodeMessage) {
+        wrongSelector.push('#smsCode');
+        messageData.smsCodeMessage = smsCodeMessage;
+      }
     }
 
     if (wrongSelector.length) {
@@ -894,13 +925,13 @@ Page({
         wx.pageScrollTo({ selector: wrongSelector[0] });
         switch (true) {
           case wrongSelector[0] === '#idcardCamera':
-            Toast('请上传身份证');
+            Toast.fail('请上传身份证');
             break;
           case wrongSelector[0].startsWith('#house-cert-'):
-            Toast('请上传房产证');
+            Toast.fail('请上传房产证');
             break;
           case wrongSelector[0].startsWith('#car-cert-'):
-            Toast('请上传行驶证');
+            Toast.fail('请上传行驶证');
             break;
 
           default:
@@ -908,12 +939,17 @@ Page({
         }
       });
     } else {
+      const fs = wx.getFileSystemManager();
       const params = {
         username: this.data.username,
         phone: this.data.phone,
         idCard: this.data.idCard,
-        idCardFront: this.data.idCardFront,
-        idCardBack: this.data.idCardBack,
+        idCardFront: wx.cloud.CDN(
+          fs.readFileSync(this.data.idCardFront[0].tempFilePath),
+        ),
+        idCardBack: wx.cloud.CDN(
+          fs.readFileSync(this.data.idCardBack[0].tempFilePath),
+        ),
         bornDate: this.data.bornDate,
         marryStatus: this.data.marryStatus,
         loanAmount: this.data.loanAmount,
@@ -948,36 +984,232 @@ Page({
         otherMark: this.data.otherMark,
         reference: this.data.reference,
         applyDate: this.data.applyDate,
-        smsCode: this.data.smsCode,
+        // smsCode: this.data.smsCode,
       };
+      if (this.data.phone !== this.data.originPhone)
+        params.smsCode = this.data.smsCode;
       if (params.marryStatus === 0) params.marryname = this.data.marryname;
       if (params.hasHouse)
-        params.houseList = this.data.houseList.map((d) => ({
-          isLocal: d.isLocal,
-          area: d.area,
-          address: d.address,
-          totalAmount: d.totalAmount,
-          hasCert: d.hasCert,
-          certFront: d.certFront,
-          certBack: d.certBack,
-        }));
+        params.houseList = this.data.houseList.map((d) => {
+          const obj = {
+            isLocal: d.isLocal,
+            area: d.area,
+            address: d.address,
+            totalAmount: d.totalAmount,
+            hasCert: d.hasCert,
+          };
+          if (d.hasCert) {
+            obj.certFront = wx.cloud.CDN(
+              fs.readFileSync(d.certFront[0].tempFilePath),
+            );
+            obj.certBack = wx.cloud.CDN(
+              fs.readFileSync(d.certBack[0].tempFilePath),
+            );
+          }
+          return obj;
+        });
       if (params.hasCar)
-        params.carList = this.data.carList.map((d) => ({
-          carModel: d.carModel,
-          totalAmount: d.totalAmount,
-          hasCert: d.hasCert,
-          certFront: d.certFront,
-          certBack: d.certBack,
-        }));
+        params.carList = this.data.carList.map((d) => {
+          const obj = {
+            carModel: d.carModel,
+            totalAmount: d.totalAmount,
+            hasCert: d.hasCert,
+          };
+          if (d.hasCert) {
+            obj.certFront = wx.cloud.CDN(
+              fs.readFileSync(d.certFront[0].tempFilePath),
+            );
+            obj.certBack = wx.cloud.CDN(
+              fs.readFileSync(d.certBack[0].tempFilePath),
+            );
+          }
+          return obj;
+        });
+      try {
+        Toast.loading({
+          message: '正在提交...',
+          forbidClick: false,
+          duration: 0,
+        });
+        const { result: res } = await wx.cloud.callFunction({
+          name: 'apply',
+          data: params,
+          config: {
+            traceUser: true,
+          },
+        });
+        if (res.code === 0) {
+          Toast.success('提交成功');
+          app.globalData.userInfo.phone = params.phone;
+          if (!isTest) this.resetData(params.phone);
+        } else {
+          Toast.fail(res.msg);
+        }
+      } catch (e) {
+        // console.log(e);
+        Toast.fail('请求错误，请稍后重试');
+      }
+    }
+  },
 
-      console.log(params);
+  resetData(phone) {
+    // clearInterval(this.data.smsTimer);
+    this.setData({
+      bornDateTxt: '',
+      marryShow: false,
+      marryStatusTxt: '',
+      useWayTxt: '',
+      areaTxt: '',
+      businessScaleTxt: '',
+      applyDateTxt: `${date.getFullYear()}/${
+        date.getMonth() + 1
+      }/${date.getDate()}`,
+      nameMessage: '',
+      phoneMessage: '',
+      idCardMessage: '',
+      bornDateMessage: '',
+      marryStatusMessage: '',
+      marrynameMessage: '',
+      loanAmountMessage: '',
+      useWayMessage: '',
+      companyNameMessage: '',
+      companyMasterMessage: '',
+      areaMessage: '',
+      addressMessage: '',
+      salaryMessage: '',
+      flowingWaterMessage: '',
+      annualTurnoverMessage: '',
+      equipmentPriceMessage: '',
+      businessScaleMessage: '',
+      siteAreaMessage: '',
+      monthlyRentMessage: '',
+      annualIncomeMessage: '',
+      bankDebtMessage: '',
+      creditCardDebtMessage: '',
+      applyDateMessage: '',
+      smsCodeMessage: '',
+      // 表单数据
+      username: '',
+      phone,
+      idCard: '',
+      idCardFront: [],
+      idCardBack: [],
+      bornDate: new Date('2000/01/01').getTime(),
+      marryStatus: '',
+      marryname: '',
+      loanAmount: '',
+      useWay: '',
+      useWayMark: '',
+      isFamilySupport: true,
+      companyName: '',
+      companyMaster: '',
+      area: [],
+      address: '',
+      operYears: 0,
+      companyMember: 1,
+      salary: '',
+      flowingWater: '',
+      annualTurnover: '',
+      isSufficient: true,
+      equipmentPrice: '',
+      isEquipmentDetain: false,
+      businessScale: '',
+      sharePercent: 0,
+      siteArea: '',
+      monthlyRent: '',
+      annualIncome: '',
+      isInCase: false,
+      isInDebt: false,
+      bankDebt: '',
+      creditCardDebt: '',
+      hasHouse: true,
+      houseList: [
+        {
+          isLocal: true,
+          area: [],
+          areaTxt: '',
+          areaMessage: '',
+          address: '',
+          addressMessage: '',
+          totalAmount: '',
+          totalAmountMessage: '',
+          hasCert: true,
+          certFront: [],
+          certBack: [],
+        },
+      ],
+      hasCar: true,
+      carList: [
+        {
+          carModel: '',
+          carModelMessage: '',
+          // carMark: '',
+          // carMarkMessage: '',
+          totalAmount: '',
+          totalAmountMessage: '',
+          hasCert: true,
+          certFront: [],
+          certBack: [],
+        },
+      ],
+      otherMark: '',
+      reference: '',
+      applyDate: date.getTime(),
+      smsCode: '',
+      // smsTips: '发送',
+      // smsTimer: null,
+      // smsCount: 60,
+      originPhone: phone,
+    });
+  },
+  checkUser() {
+    if (app.globalData.loadingStatus === 2 && !app.globalData.userInfo.phone) {
+      wx.navigateTo({
+        url: '../profile/index',
+        events: {
+          setPhone: (data) => {
+            this.setData({
+              phone: data.phone,
+              phoneMessage: '',
+            });
+          },
+        },
+      });
     }
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {},
+  onLoad(options) {
+    if (app.globalData.loadingStatus === 0) {
+      app.globalData.loadingStatus = 1;
+      wx.cloud
+        .callFunction({
+          name: 'user',
+          data: { $url: 'getUser' },
+        })
+        .then(({ result: res }) => {
+          console.log(res);
+          if (res.code === 0) {
+            Object.assign(app.globalData.userInfo, res.data);
+            this.setData({ phone: res.data.phone, phoneMessage: '' });
+          }
+        })
+        .catch((err) => {
+          Toast.fail('用户信息获取失败');
+        })
+        .finally(() => {
+          app.globalData.loadingStatus = 2;
+        });
+    } else if (app.globalData.userInfo.phone) {
+      this.setData({
+        phone: app.globalData.userInfo.phone,
+        originPhone: app.globalData.userInfo.phone,
+        phoneMessage: '',
+      });
+    }
+  },
 
   /**
    * 生命周期函数--监听页面初次渲染完成
@@ -987,7 +1219,11 @@ Page({
   /**
    * 生命周期函数--监听页面显示
    */
-  onShow() {},
+  onShow() {
+    if (app.globalData.userInfo.phone !== this.data.originPhone) {
+      this.setData({ originPhone: app.globalData.userInfo.phone });
+    }
+  },
 
   /**
    * 生命周期函数--监听页面隐藏

@@ -14,6 +14,9 @@ App({
       });
     }
 
-    this.globalData = {};
-  }
+    this.globalData = {
+      userInfo: {},
+      loadingStatus: 0, // 0 未请求，1 请求中，2 已返回
+    };
+  },
 });

@@ -74,7 +74,7 @@ export const validateRealName = (name, type = '姓名') => {
 };
 
 // 校验手机号
-export const validatePhone = (phone) => {
+export const validatePhone = (phone, isRequired = true) => {
   let message = '';
   if (phone) {
     if (/^1[3-9]\d{9}$/.test(phone)) {
@@ -82,7 +82,7 @@ export const validatePhone = (phone) => {
     } else {
       message = '您输入的手机号码有误';
     }
-  } else {
+  } else if (isRequired) {
     message = '手机号不能为空';
   }
   return message;
@@ -153,4 +153,41 @@ export const validateSmsCode = (smsCode) => {
     message = '验证码不能为空';
   }
   return message;
+};
+
+/**
+ * @name formatTime 转换为时间格式方法自定义方式
+ * @param {number} value 时间戳
+ * @param {string} format 格式比如"yyyy-MM-dd hh:mm:ss"
+ * @returns {string}
+ */
+export const formatTime = (value = Date.now(), targetFormat = 'yyyy-MM-dd') => {
+  let time = new Date(parseInt(value));
+  let date = {
+    'Y+': time.getFullYear(),
+    'M+': time.getMonth() + 1,
+    'd+': time.getDate(),
+    'h+': time.getHours(),
+    'm+': time.getMinutes(),
+    's+': time.getSeconds(),
+    'q+': Math.floor((time.getMonth() + 3) / 3),
+    'S+': time.getMilliseconds(),
+  };
+  if (/(y+)/i.test(targetFormat)) {
+    targetFormat = targetFormat.replace(
+      RegExp.$1,
+      (time.getFullYear() + '').substr(4 - RegExp.$1.length),
+    );
+  }
+  for (let k in date) {
+    if (new RegExp('(' + k + ')').test(targetFormat)) {
+      targetFormat = targetFormat.replace(
+        RegExp.$1,
+        RegExp.$1.length == 1
+          ? date[k]
+          : ('00' + date[k]).substr(('' + date[k]).length),
+      );
+    }
+  }
+  return targetFormat;
 };

@@ -1,10 +1,15 @@
 {
   "pages": [
     "pages/index/index",
-    "pages/mine/index"
+    "pages/mine/index",
+    "pages/profile/index",
+    "pages/permission/index",
+    "pages/search/index",
+    "pages/myapply/index",
+    "pages/detail/index"
   ],
   "tabBar": {
-    "selectedColor": "#e7752a",
+    "selectedColor": "#d53b33",
     "list": [
       {
         "pagePath": "pages/index/index",
@@ -23,11 +28,14 @@
   "window": {
     "backgroundColor": "#F6F6F6",
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#e7752a",
+    "navigationBarBackgroundColor": "#d53b33",
     "navigationBarTitleText": "启赢信息咨询服务",
     "navigationBarTextStyle": "white"
   },
   "style": "v2",
   "sitemapLocation": "sitemap.json",
-  "lazyCodeLoading": "requiredComponents"
+  "lazyCodeLoading": "requiredComponents",
+  "usingComponents": {
+    "van-toast": "@vant/weapp/toast/index"
+  }
 }

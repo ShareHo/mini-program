@@ -1,2 +1,55 @@
 <!--pages/mine/index.wxml-->
-<text>pages/mine/index.wxml</text>
+<van-toast id="van-toast" class="van-toast" />
+<view class="mine-page">
+  <view class="mine-wrap">
+    <view class="avatar-url" bindtap="setProfile">
+      <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" />
+      <image wx:else class="avatar-img" src="../../images/default-avatar.png" />
+    </view>
+    <text wx:if="{{nickname}}" class="nick-name" bindtap="setProfile"
+      >{{nickname}}</text
+    >
+    <text wx:else class="nick-name" bindtap="setProfile">微信用户</text>
+  </view>
+  <van-cell-group class="mine-menu" inset>
+    <van-cell
+      size="large"
+      title="我的申请"
+      is-link
+      icon="todo-list-o"
+      bindtap="linkToMyApply"
+    />
+    <van-cell
+      wx:if="{{role===1||role===2}}"
+      size="large"
+      title="历史数据查询"
+      is-link
+      icon="balance-list-o"
+      bindtap="linkToSearch"
+    />
+    <van-cell
+      wx:if="{{role===1}}"
+      size="large"
+      title="业务授权"
+      is-link
+      icon="friends-o"
+      bindtap="linkToPermission"
+    />
+    <van-cell
+      size="large"
+      title="小程序码"
+      is-link
+      icon="qr"
+      bindtap="previewQrCode"
+    />
+  </van-cell-group>
+</view>
+<van-action-sheet
+  show="{{ permissionShow }}"
+  actions="{{ permissionActions }}"
+  description="分享给对方，打开即可完成授权"
+  bind:click-overlay="closePermission"
+  cancel-text="取消"
+  bind:select="selectPermWay"
+  bind:cancel="closePermission"
+/>

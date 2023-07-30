@@ -1,0 +1,5 @@
+<!--pages/permission/index.wxml-->
+<van-cell-group class="mine-menu" inset>
+  <van-cell size="large" title="授权为管理员" is-link icon="todo-list-o" />
+  <van-cell size="large" title="授权为业务员" is-link icon="balance-list-o" />
+</van-cell-group>
