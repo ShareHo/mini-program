@@ -79,8 +79,9 @@ exports.main = async (event, context) => {
     delete data.userInfo;
     try {
       if (
-        userInfoRes.data.length === 0 ||
-        event.avatarUrl !== userInfoRes.data[0].avatarUrl
+        (userInfoRes.data.length === 0 ||
+          event.avatarUrl !== userInfoRes.data[0].avatarUrl) &&
+        event.avatarUrl
       ) {
         const { fileID, statusCode } = await uploadFile(
           event.avatarUrl,

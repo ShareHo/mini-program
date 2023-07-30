@@ -117,7 +117,6 @@
     <van-uploader
       accept="image"
       sizeType="{{['compressed']}}"
-      capture="{{['camera']}}"
       max-count="1"
       deletable="{{ true }}"
       file-list="{{ idCardFront }}"
@@ -135,7 +134,6 @@
     <van-uploader
       accept="image"
       sizeType="{{['compressed']}}"
-      capture="{{['camera']}}"
       max-count="1"
       deletable="{{ true }}"
       file-list="{{ idCardBack }}"
@@ -567,7 +565,6 @@
           <van-uploader
             accept="image"
             sizeType="{{['compressed']}}"
-            capture="{{['camera']}}"
             max-count="1"
             deletable="{{ true }}"
             file-list="{{ item.certFront }}"
@@ -589,7 +586,6 @@
           <van-uploader
             accept="image"
             sizeType="{{['compressed']}}"
-            capture="{{['camera']}}"
             max-count="1"
             deletable="{{ true }}"
             file-list="{{ item.certBack }}"
@@ -710,7 +706,6 @@
           <van-uploader
             accept="image"
             sizeType="{{['compressed']}}"
-            capture="{{['camera']}}"
             max-count="1"
             deletable="{{ true }}"
             file-list="{{ item.certFront }}"
@@ -732,7 +727,6 @@
           <van-uploader
             accept="image"
             sizeType="{{['compressed']}}"
-            capture="{{['camera']}}"
             max-count="1"
             deletable="{{ true }}"
             file-list="{{ item.certBack }}"

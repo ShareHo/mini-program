@@ -143,7 +143,7 @@ Page({
           $url: 'setUser',
           ...params,
           avatarUrl:
-            avatarUrl !== app.globalData.userInfo.avatarUrl
+            avatarUrl !== app.globalData.userInfo.avatarUrl && avatarUrl
               ? wx.cloud.CDN(fs.readFileSync(avatarUrl))
               : avatarUrl,
         },
@@ -161,6 +161,7 @@ Page({
         Toast.fail(res.msg);
       }
     } catch (e) {
+      console.log(e);
       Toast.fail('保存失败');
     }
   },
