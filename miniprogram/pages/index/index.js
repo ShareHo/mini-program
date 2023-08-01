@@ -372,7 +372,10 @@ Page({
   },
   // 经营年限
   operYearsChange(event) {
-    this.setData({ operYears: event.detail || 0 });
+    console.log(event.detail);
+    // || !event.detail.endsWith('.')
+    if (typeof event.detail === 'number')
+      this.setData({ operYears: event.detail || 0 });
   },
   // 员工人数
   companyMemberChange(event) {
@@ -415,10 +418,15 @@ Page({
           message = validateAmount(amount, '场地面积');
           this.setData({ siteAreaMessage: message });
           break;
+        case 'annualIncome':
+          this.setData({ annualIncomeMessage: message });
+          break;
         case 'bankDebt':
+          message = validateNumber(amount);
           this.setData({ bankDebtMessage: message });
           break;
         case 'creditCardDebt':
+          message = validateNumber(amount);
           this.setData({ creditCardDebtMessage: message });
           break;
 
@@ -451,17 +459,20 @@ Page({
   },
   // 占股百分比
   sharePercentChange(event) {
-    this.setData({ sharePercent: event.detail || 0 });
+    console.log(event.detail);
+    // || !event.detail.endsWith('.')
+    if (typeof event.detail === 'number')
+      this.setData({ sharePercent: event.detail || 0 });
   },
   monthlyRentChange(event) {
     const amount = event.detail || '';
     const monthlyRentMessage = validateNumber(amount, '金额');
     this.setData({ monthlyRent: amount, monthlyRentMessage });
   },
-  annualIncomeChange(event) {
-    const amount = event.detail || '';
-    this.setData({ annualIncome: amount });
-  },
+  // annualIncomeChange(event) {
+  //   const amount = event.detail || '';
+  //   this.setData({ annualIncome: amount });
+  // },
   inCaseChange(event) {
     this.setData({ isInCase: event.detail });
   },
@@ -834,13 +845,13 @@ Page({
       messageData.annualIncomeMessage = annualIncomeMessage;
     }
     // 银行总贷款额度
-    const bankDebtMessage = validateAmount(this.data.bankDebt, '金额');
+    const bankDebtMessage = validateNumber(this.data.bankDebt, '金额');
     if (bankDebtMessage) {
       wrongSelector.push('#bankDebt');
       messageData.bankDebtMessage = bankDebtMessage;
     }
     // 信用卡总额度
-    const creditCardDebtMessage = validateAmount(
+    const creditCardDebtMessage = validateNumber(
       this.data.creditCardDebt,
       '金额',
     );

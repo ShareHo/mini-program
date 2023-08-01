@@ -13,7 +13,7 @@ Page({
     maxDate: new Date().getTime(),
     calendarShow: false,
     page: 1,
-    size: 4,
+    size: 10,
     total: 0,
     searchList: [],
     isMine: false,

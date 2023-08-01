@@ -164,8 +164,9 @@
       error-message="{{loanAmountMessage}}"
       data-amounttype="loanAmount"
       bind:change="amountChange"
-      right-icon="after-sale"
-    />
+    >
+      <text slot="right-icon">元</text>
+    </van-field>
     <van-field
       id="useWay"
       readonly
@@ -259,13 +260,15 @@
       value="{{ salary }}"
       name="salary"
       type="digit"
-      label="员工工资"
-      placeholder="请输入员工工资"
+      title-width="7.2em"
+      label="员工工资（均）"
+      placeholder="请输入员工工资（均）"
       error-message="{{salaryMessage}}"
       data-amounttype="salary"
       bind:change="amountChange"
-      right-icon="after-sale"
-    />
+    >
+      <text slot="right-icon">元</text>
+    </van-field>
     <van-field
       id="flowingWater"
       size="large"
@@ -279,8 +282,9 @@
       error-message="{{flowingWaterMessage}}"
       data-amounttype="flowingWater"
       bind:change="amountChange"
-      right-icon="after-sale"
-    />
+    >
+      <text slot="right-icon">元</text>
+    </van-field>
     <van-field
       id="annualTurnover"
       size="large"
@@ -294,8 +298,9 @@
       error-message="{{annualTurnoverMessage}}"
       data-amounttype="annualTurnover"
       bind:change="amountChange"
-      right-icon="after-sale"
-    />
+    >
+      <text slot="right-icon">元</text>
+    </van-field>
     <van-cell required size="large" title="订单是否充足">
       <van-radio-group
         slot="right-icon"
@@ -320,8 +325,9 @@
       error-message="{{equipmentPriceMessage}}"
       data-amounttype="equipmentPrice"
       bind:change="amountChange"
-      right-icon="after-sale"
-    />
+    >
+      <text slot="right-icon">元</text>
+    </van-field>
     <van-cell required size="large" title="设备是否在押">
       <van-radio-group
         slot="right-icon"
@@ -389,8 +395,9 @@
       label="场地月缴租金"
       placeholder="请输入场地月缴租金"
       bind:change="monthlyRentChange"
-      right-icon="after-sale"
-    />
+    >
+      <text slot="right-icon">元</text>
+    </van-field>
     <van-field
       id="annualIncome"
       size="large"
@@ -402,9 +409,12 @@
       type="digit"
       label="年收入金额"
       placeholder="请输入年收入金额"
-      bind:change="annualIncomeChange"
-      right-icon="after-sale"
-    />
+      data-amounttype="annualIncome"
+      bind:change="amountChange"
+    >
+      <!-- bind:change="annualIncomeChange" -->
+      <text slot="right-icon">元</text>
+    </van-field>
     <van-cell required size="large" title="是否有案件">
       <van-radio-group
         slot="right-icon"
@@ -440,9 +450,10 @@
       error-message="{{bankDebtMessage}}"
       data-amounttype="bankDebt"
       bind:change="amountChange"
-      right-icon="after-sale"
       title-width="7.2em"
-    />
+    >
+      <text slot="right-icon">元</text>
+    </van-field>
     <van-field
       id="creditCardDebt"
       size="large"
@@ -456,8 +467,9 @@
       error-message="{{creditCardDebtMessage}}"
       data-amounttype="creditCardDebt"
       bind:change="amountChange"
-      right-icon="after-sale"
-    />
+    >
+      <text slot="right-icon">元</text>
+    </van-field>
   </van-cell-group>
   <van-cell-group inset title="名下房产">
     <van-cell required size="large" title="名下有无房产">
@@ -536,9 +548,10 @@
           error-message="{{item.totalAmountMessage}}"
           data-amounttype="{{'houseList-'+index}}"
           bind:change="amountChange"
-          right-icon="after-sale"
-          title-width="6.7em"
-        />
+          title-width="7.2em"
+        >
+          <text slot="right-icon">元</text>
+        </van-field>
         <van-cell
           id="{{'house-cert-'+index}}"
           required
@@ -677,9 +690,10 @@
           error-message="{{item.totalAmountMessage}}"
           data-amounttype="{{'carList-'+index}}"
           bind:change="amountChange"
-          right-icon="after-sale"
           title-width="6.7em"
-        />
+        >
+          <text slot="right-icon">元</text>
+        </van-field>
         <van-cell
           id="{{'car-cert-'+index}}"
           required
