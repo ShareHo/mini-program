@@ -7,8 +7,8 @@ const db = cloud.database();
 const cmd = db.command;
 // 验证码
 const reviewCollection = db.collection('review');
-// const axios = require('axios/dist/node/axios.cjs');
-const axios = require('axios');
+const axios = require('axios/dist/node/axios.cjs');
+// const axios = require('axios');
 
 async function uploadFile(cdnBuffer, openid) {
   const { data: buffer } = await axios.get(cdnBuffer, {

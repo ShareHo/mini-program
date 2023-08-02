@@ -1205,15 +1205,16 @@ Page({
       const accountInfo = wx.getAccountInfoSync();
       console.log(accountInfo);
       try {
-        const { result: res } = await wx.cloud.callFunction({
-          name: 'settings',
-          data: { $url: 'getSettings' },
-        });
-        app.globalData.isReview =
-          isOnline &&
-          res.data[reviewCode] &&
-          accountInfo.miniProgram.envVersion !== 'release';
-        console.log(res);
+        if (accountInfo.miniProgram.envVersion === 'release') {
+          const { result: res } = await wx.cloud.callFunction({
+            name: 'settings',
+            data: { $url: 'getSettings' },
+          });
+          console.log(res);
+          app.globalData.isReview = res.data[reviewCode];
+        } else {
+          app.globalData.isReview = isOnline;
+        }
       } catch (e) {
         console.log(e);
       }
