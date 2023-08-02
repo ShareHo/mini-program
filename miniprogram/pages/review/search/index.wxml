@@ -1,0 +1,24 @@
+<!--pages/search/index.wxml-->
+<van-toast id="van-toast" class="van-toast" />
+<view class="search-page">
+  <van-empty
+    wx:if="{{searchList.length===0}}"
+    class="van-empty"
+    description="暂无数据"
+  />
+  <view wx:else class="search-list">
+    <van-cell-group inset title="申请列表"> </van-cell-group>
+    <van-cell-group
+      class="search-item"
+      wx:for="{{searchList}}"
+      inset
+      wx:key="_id"
+      data-id="{{item._id}}"
+      bindtap="linkToDetail"
+    >
+      <van-cell is-link title="档案号" value="{{item.username}}" />
+      <van-cell title="咨询方面" value="{{item.useWay}}" />
+    </van-cell-group>
+    <view wx:if="{{searchList.length>=total}}" class="all-loaded">到底了~</view>
+  </view>
+</view>

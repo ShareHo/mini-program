@@ -1,0 +1,185 @@
+<!--components/review/review-index/index.wxml-->
+<van-toast id="van-toast" class="van-toast" />
+<view class="review-index">
+  <van-cell-group inset title="客户信息">
+    <van-field
+      size="large"
+      clearable
+      model:value="{{ username }}"
+      label="档案号"
+      placeholder="请输入档案号"
+    />
+    <view class="tips"
+      >填写您在我司留存信息的档案号，在发起申请后我们会联系您</view
+    >
+  </van-cell-group>
+  <van-cell-group inset title="申请资料">
+    <van-field
+      readonly
+      size="large"
+      label="咨询方面"
+      is-link
+      value="{{useWay}}"
+      placeholder="请选择咨询方面"
+      bind:tap="openUseWayPicker"
+    />
+  </van-cell-group>
+  <van-cell-group inset title="相关产品信息"></van-cell-group>
+  <view class="house-item" wx:for="{{productList}}" wx:key="index">
+    <van-icon
+      wx:if="{{index!==0}}"
+      class="icon-delete"
+      name="clear"
+      size="40rpx"
+      data-index="{{index}}"
+      bindtap="deleteProduct"
+    />
+    <van-cell-group inset class="house-title" title="{{'产品'+(index+1)}}">
+      <van-field
+        size="large"
+        clearable
+        value="{{ item.name }}"
+        label="产品名称"
+        placeholder="请输入产品名称"
+        data-field="{{'name-'+index}}"
+        bind:change="productChange"
+      />
+      <van-field
+        size="large"
+        clearable
+        autosize
+        type="textarea"
+        value="{{ item.desc }}"
+        label="产品介绍"
+        placeholder="请输入产品介绍"
+        data-field="{{'desc-'+index}}"
+        bind:change="productChange"
+      />
+      <van-field
+        size="large"
+        clearable
+        autosize
+        value="{{ item.model }}"
+        label="竞争对手品牌"
+        placeholder="请输入竞争对手品牌"
+        data-field="{{'model-'+index}}"
+        bind:change="productChange"
+      />
+      <van-field
+        size="large"
+        clearable
+        autosize
+        type="textarea"
+        value="{{ item.peitao }}"
+        label="配套意向"
+        placeholder="请输入配套意向"
+        data-field="{{'peitao-'+index}}"
+        bind:change="productChange"
+      />
+      <van-field
+        size="large"
+        clearable
+        autosize
+        type="textarea"
+        value="{{ item.caizhi }}"
+        label="材质功能简述"
+        placeholder="请输入材质功能简述"
+        data-field="{{'caizhi-'+index}}"
+        bind:change="productChange"
+      />
+      <van-field
+        size="large"
+        clearable
+        autosize
+        value="{{ item.time }}"
+        label="开发周期"
+        placeholder="请输入开发周期"
+        data-field="{{'time-'+index}}"
+        bind:change="productChange"
+      />
+      <van-field
+        size="large"
+        clearable
+        autosize
+        type="digit"
+        value="{{ item.price }}"
+        label="供货价(含税)"
+        placeholder="请输入供货价(含税)"
+        data-field="{{'price-'+index}}"
+        bind:change="productChange"
+      >
+        <text slot="right-icon">元</text>
+      </van-field>
+      <van-field
+        size="large"
+        clearable
+        autosize
+        type="digit"
+        value="{{ item.sell }}"
+        label="销售价(含税)"
+        placeholder="请输入销售价(含税)"
+        data-field="{{'sell-'+index}}"
+        bind:change="productChange"
+      >
+        <text slot="right-icon">元</text>
+      </van-field>
+    </van-cell-group>
+  </view>
+  <view
+    wx:if="{{productList.length<5}}"
+    bindtap="addProduct"
+    class="btn-add-house"
+  >
+    + <text class="small-size">添加产品</text>
+  </view>
+  <van-cell-group inset title="客户需求">
+    <van-field
+      clearable
+      size="large"
+      model:value="{{ message }}"
+      label="客户需求"
+      type="textarea"
+      placeholder="请输入客户需求"
+      autosize="{{autosize}}"
+      border="{{ false }}"
+    />
+    <van-field
+      clearable
+      size="large"
+      model:value="{{ rate }}"
+      label="项目进展"
+      type="textarea"
+      placeholder="请输入项目进展"
+      autosize="{{autosize}}"
+      border="{{ false }}"
+    />
+    <van-field
+      clearable
+      size="large"
+      model:value="{{ remark }}"
+      label="备注"
+      type="textarea"
+      placeholder="请输入备注"
+      autosize
+      border="{{ false }}"
+    />
+  </van-cell-group>
+  <button type="primary" class="btn-apply" bindtap="handleApply">
+    提交申请
+  </button>
+</view>
+<!-- 咨询方面 -->
+<van-popup
+  position="bottom"
+  show="{{ useWayShow }}"
+  bind:click-overlay="useWayCancel"
+>
+  <van-picker
+    show-toolbar="{{true}}"
+    columns="{{ useWayColumns }}"
+    value-key="value"
+    title="咨询方面"
+    bind:cancel="useWayCancel"
+    bind:confirm="useWayConfirm"
+  />
+</van-popup>

@@ -5,7 +5,10 @@
     "pages/profile/index",
     "pages/permission/index",
     "pages/search/index",
-    "pages/detail/index"
+    "pages/detail/index",
+    "pages/review/profile/index",
+    "pages/review/search/index",
+    "pages/review/detail/index"
   ],
   "tabBar": {
     "selectedColor": "#d53b33",

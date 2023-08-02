@@ -9,7 +9,7 @@ App({
         //   env 参数决定接下来小程序发起的云开发调用（wx.cloud.xxx）会默认请求到哪个云环境的资源
         //   此处请填入环境 ID, 环境 ID 可打开云控制台查看
         //   如不填则使用默认环境（第一个创建的环境）
-        env: 'qiying-master-7g7agdnsb8ba2677',
+        env: 'qiying-master-0gosoksr4fb5c562',
         traceUser: true,
       });
     }
@@ -17,6 +17,9 @@ App({
     this.globalData = {
       userInfo: {},
       loadingStatus: 0, // 0 未请求，1 请求中，2 已返回
+      // reviewCode
+      reviewApiLoaded: false,
+      isReview: true,
     };
   },
 });

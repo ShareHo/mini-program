@@ -1,0 +1,10 @@
+.detail-page {
+  padding-bottom: 160rpx;
+}
+.detail-page .van-cell__title {
+  flex: none;
+  width: 6.2em;
+}
+.detail-page .house-title .van-cell-group__title {
+  color: red;
+}

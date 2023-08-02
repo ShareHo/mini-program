@@ -1,0 +1,28 @@
+<van-toast id="van-toast" class="van-toast" />
+<view class="profile-settiing">
+  <button
+    class="avatar-wrapper"
+    open-type="chooseAvatar"
+    bind:chooseavatar="onChooseAvatar"
+  >
+    <image wx:if="{{avatarUrl}}" class="avatar" src="{{avatarUrl}}"></image>
+    <image
+      wx:else=""
+      class="avatar"
+      src="../../../images/default-avatar.png"
+    ></image>
+  </button>
+  <form bindsubmit="handleSave">
+    <van-field
+      type="nickname"
+      name="nickname"
+      size="large"
+      clearable
+      model:value="{{ nickname }}"
+      label="昵称"
+      maxlength="{{30}}"
+      placeholder="请输入昵称"
+    />
+    <button form-type="submit" type="primary" class="btn-save">保存</button>
+  </form>
+</view>

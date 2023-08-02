@@ -1,11 +1,13 @@
-<!--pages/mine/index.wxml-->
-<van-toast id="van-toast" class="van-toast" />
-<review-mine wx:if="{{reviewApiLoaded && isReview}}"></review-mine>
-<view wx:if="{{reviewApiLoaded && !isReview}}" class="mine-page">
+<!--components/review/review-mine/index.wxml-->
+<view class="mine-page">
   <view class="mine-wrap">
     <view class="avatar-url" bindtap="setProfile">
       <image wx:if="{{avatarUrl}}" class="avatar-img" src="{{avatarUrl}}" />
-      <image wx:else class="avatar-img" src="../../images/default-avatar.png" />
+      <image
+        wx:else
+        class="avatar-img"
+        src="../../../images/default-avatar.png"
+      />
     </view>
     <text wx:if="{{nickname}}" class="nick-name" bindtap="setProfile"
       >{{nickname}}</text
@@ -20,22 +22,28 @@
       icon="todo-list-o"
       bindtap="linkToMyApply"
     />
-    <van-cell
+    <!-- <van-cell
       wx:if="{{role===1||role===2}}"
       size="large"
       title="历史数据查询"
       is-link
       icon="balance-list-o"
       bindtap="linkToSearch"
-    />
+    /> -->
     <van-cell
-      wx:if="{{role===1}}"
       size="large"
-      title="业务授权"
+      title="公司电话"
       is-link
-      icon="friends-o"
-      bindtap="linkToPermission"
+      icon="phone-o"
+      bindtap="makePhoneCall"
     />
+    <!-- <van-cell
+      size="large"
+      title="公司地址"
+      is-link
+      icon="map-marked"
+      bindtap="linkToPermission"
+    /> -->
     <van-cell
       size="large"
       title="小程序码"
@@ -45,12 +53,3 @@
     />
   </van-cell-group>
 </view>
-<van-action-sheet
-  show="{{ permissionShow }}"
-  actions="{{ permissionActions }}"
-  description="分享给对方，打开即可完成授权"
-  bind:click-overlay="closePermission"
-  cancel-text="取消"
-  bind:select="selectPermWay"
-  bind:cancel="closePermission"
-/>

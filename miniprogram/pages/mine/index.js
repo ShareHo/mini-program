@@ -1,11 +1,14 @@
 // pages/mine/index.js
 const app = getApp();
 import Toast from '@vant/weapp/toast/toast';
+import { isOnline, reviewCode } from '../../utils/env';
 Page({
   /**
    * 页面的初始数据
    */
   data: {
+    reviewApiLoaded: false,
+    isReview: true,
     avatarUrl: '',
     nickname: '',
     phone: '',
@@ -59,7 +62,7 @@ Page({
   previewQrCode() {
     wx.previewImage({
       urls: [
-        'cloud://qiying-master-7g7agdnsb8ba2677.7169-qiying-master-7g7agdnsb8ba2677-1304543217/qrcode/gh_a9ea83aa8a7d_1280.jpg',
+        'cloud://qiying-master-0gosoksr4fb5c562.7169-qiying-master-0gosoksr4fb5c562-1319845952/qrcode/gh_a9ea83aa8a7d_1280.jpg',
       ],
       showmenu: true,
     });
@@ -83,7 +86,38 @@ Page({
    * 生命周期函数--监听页面加载
    */
   async onLoad(options) {
-    console.log(options);
+    // console.log(options);
+    if (!app.globalData.reviewApiLoaded) {
+      Toast.loading({
+        message: '正在加载...',
+        forbidClick: true,
+        duration: 0,
+      });
+      const accountInfo = wx.getAccountInfoSync();
+      console.log(accountInfo);
+      try {
+        const { result: res } = await wx.cloud.callFunction({
+          name: 'settings',
+          data: { $url: 'getSettings' },
+        });
+        app.globalData.isReview =
+          isOnline &&
+          res.data[reviewCode] &&
+          accountInfo.miniProgram.envVersion !== 'release';
+        console.log(res);
+      } catch (e) {
+        console.log(e);
+      }
+      app.globalData.reviewApiLoaded = true;
+    }
+    this.setData({
+      isReview: app.globalData.isReview,
+      reviewApiLoaded: app.globalData.reviewApiLoaded,
+    });
+    Toast.clear();
+    if (app.globalData.isReview) return;
+
+    // 审核后
     if (options.role && options.pcode) {
       wx.cloud
         .callFunction({
@@ -149,6 +183,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    if (!app.globalData.reviewApiLoaded) return;
+    if (app.globalData.isReview) return;
     if (app.globalData.loadingStatus === 2 && app.globalData.userInfo.phone) {
       if (app.globalData.userInfo.phone !== this.data.phone)
         this.setData({ phone: app.globalData.userInfo.phone });
@@ -206,7 +242,7 @@ Page({
             return {
               title: '业务授权邀请',
               imageUrl:
-                'https://7169-qiying-master-7g7agdnsb8ba2677-1304543217.tcb.qcloud.la/qrcode/gh_a9ea83aa8a7d_1280.jpg?sign=d7e147d24c6132de6e74ed6a1a3808b6&t=1690707025',
+                'https://7169-qiying-master-0gosoksr4fb5c562-1319845952.tcb.qcloud.la/qrcode/gh_a9ea83aa8a7d_1280.jpg?sign=801c17a9f8b155763dd3817afb7e385a&t=1690894201',
               path: `/pages/mine/index?role=${this.data.selectPermWay}&pcode=${res.data}`,
             };
           } else {
@@ -219,7 +255,7 @@ Page({
       return {
         title: '启赢信息咨询服务',
         imageUrl:
-          'https://7169-qiying-master-7g7agdnsb8ba2677-1304543217.tcb.qcloud.la/qrcode/gh_a9ea83aa8a7d_1280.jpg?sign=d7e147d24c6132de6e74ed6a1a3808b6&t=1690707025',
+          'https://7169-qiying-master-0gosoksr4fb5c562-1319845952.tcb.qcloud.la/qrcode/gh_a9ea83aa8a7d_1280.jpg?sign=801c17a9f8b155763dd3817afb7e385a&t=1690894201',
         path: '/pages/mine/index',
         promise,
       };

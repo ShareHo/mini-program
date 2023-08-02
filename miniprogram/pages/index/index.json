@@ -1,5 +1,6 @@
 {
   "usingComponents": {
+    "review-index": "../../components/review/review-index/index",
     "van-cell": "@vant/weapp/cell/index",
     "van-cell-group": "@vant/weapp/cell-group/index",
     "van-field": "@vant/weapp/field/index",

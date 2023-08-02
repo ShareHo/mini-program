@@ -12,6 +12,8 @@ const userCollection = db.collection('user');
 // 配置
 const settingsCollection = db.collection('settings');
 
+const SETTING_RECORD_ID = '14a8deea64c8fb6e01034df305046afc';
+
 // 云函数入口函数
 exports.main = async (event, context) => {
   const { OPENID, UNIONID } = cloud.getWXContext();
@@ -28,9 +30,7 @@ exports.main = async (event, context) => {
         ctx.body = { code: 2, msg: '非管理员不可授权' };
         return;
       }
-      const settings = await settingsCollection
-        .doc('92f96e5e64c5ffbf0026a41e4b265b8a')
-        .get();
+      const settings = await settingsCollection.doc(SETTING_RECORD_ID).get();
       const data = {};
       const code = `${OPENID}@${Date.now()}${Math.random()
         .toString()
@@ -46,9 +46,7 @@ exports.main = async (event, context) => {
         default:
           break;
       }
-      await settingsCollection
-        .doc('92f96e5e64c5ffbf0026a41e4b265b8a')
-        .update({ data });
+      await settingsCollection.doc(SETTING_RECORD_ID).update({ data });
       ctx.body = {
         code: 0,
         data: code,
@@ -60,9 +58,7 @@ exports.main = async (event, context) => {
   });
 
   app.router('acceptPerm', async (ctx, next) => {
-    const settings = await settingsCollection
-      .doc('92f96e5e64c5ffbf0026a41e4b265b8a')
-      .get();
+    const settings = await settingsCollection.doc(SETTING_RECORD_ID).get();
     let arrCodes = [];
     const settingsAfterUse = {};
     switch (event.role) {
@@ -113,7 +109,7 @@ exports.main = async (event, context) => {
           },
         });
         await settingsCollection
-          .doc('92f96e5e64c5ffbf0026a41e4b265b8a')
+          .doc(SETTING_RECORD_ID)
           .update({ data: settingsAfterUse });
         ctx.body = {
           code: 0,
@@ -133,7 +129,7 @@ exports.main = async (event, context) => {
           data: { role: event.role, permBy: event.pcode.split('@')[0] },
         });
         await settingsCollection
-          .doc('92f96e5e64c5ffbf0026a41e4b265b8a')
+          .doc(SETTING_RECORD_ID)
           .update({ data: settingsAfterUse });
         ctx.body = {
           code: 0,
@@ -147,6 +143,17 @@ exports.main = async (event, context) => {
       }
 
       return;
+    }
+  });
+  app.router('getSettings', async (ctx, next) => {
+    try {
+      const settings = await settingsCollection
+        .doc(SETTING_RECORD_ID)
+        .field({ reviewCode1: true, reviewCode2: true })
+        .get();
+      ctx.body = { code: 0, data: settings.data };
+    } catch (e) {
+      ctx.body = { code: 2, msg: '获取失败' };
     }
   });
   return app.serve();

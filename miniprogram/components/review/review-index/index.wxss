@@ -1,0 +1,6 @@
+.tips {
+  margin-top: 14rpx;
+  color: #d53b33;
+  text-align: right;
+  font-size: 24rpx;
+}

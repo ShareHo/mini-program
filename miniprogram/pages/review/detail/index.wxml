@@ -1,0 +1,32 @@
+<!--pages/review/detail/index.wxml-->
+<van-toast id="van-toast" class="van-toast" />
+<view wx:if="{{detail}}" class="detail-page">
+  <van-cell-group inset title="客户信息">
+    <van-cell size="large" title="档案号" value="{{detail.username}}" />
+  </van-cell-group>
+  <van-cell-group inset title="申请资料">
+    <van-cell size="large" title="咨询方面" value="{{detail.useWay}}" />
+  </van-cell-group>
+  <van-cell-group inset title="相关产品信息"> </van-cell-group>
+  <van-cell-group
+    inset
+    class="house-title"
+    title="{{'产品'+(index+1)}}"
+    wx:for="{{detail.productList}}"
+    wx:key="index"
+  >
+    <van-cell size="large" title="产品名称" value="{{item.name}}" />
+    <van-cell size="large" title="产品介绍" value="{{item.desc}}" />
+    <van-cell size="large" title="竞争对手品牌" value="{{item.model}}" />
+    <van-cell size="large" title="配套意向" value="{{item.peitao}}" />
+    <van-cell size="large" title="材质功能简述" value="{{item.caizhi}}" />
+    <van-cell size="large" title="开发周期" value="{{item.time}}" />
+    <van-cell size="large" title="供货价(含税)" value="{{item.price}}" />
+    <van-cell size="large" title="销售价(含税)" value="{{item.sell}}" />
+  </van-cell-group>
+  <van-cell-group inset title="客户需求">
+    <van-cell size="large" title="客户需求" value="{{detail.message}}" />
+    <van-cell size="large" title="项目进展" value="{{detail.rate}}" />
+    <van-cell size="large" title="备注" value="{{detail.remark}}" />
+  </van-cell-group>
+</view>

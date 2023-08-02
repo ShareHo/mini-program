@@ -12,15 +12,18 @@ import {
 } from '../../utils/index';
 import Toast from '@vant/weapp/toast/toast';
 import { areaList } from '@vant/area-data';
-import { isTest } from '../../utils/env';
+import { isTest, isOnline, reviewCode } from '../../utils/env';
 
 const date = new Date();
 const app = getApp();
+// const db = wx.cloud.database();
 Page({
   /**
    * 页面的初始数据
    */
   data: {
+    reviewApiLoaded: false,
+    isReview: true,
     dateFormatter,
     // 日期选择器
     bornPickerShow: false,
@@ -1192,7 +1195,38 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {
+  async onLoad(options) {
+    if (!app.globalData.reviewApiLoaded) {
+      Toast.loading({
+        message: '正在加载...',
+        forbidClick: true,
+        duration: 0,
+      });
+      const accountInfo = wx.getAccountInfoSync();
+      console.log(accountInfo);
+      try {
+        const { result: res } = await wx.cloud.callFunction({
+          name: 'settings',
+          data: { $url: 'getSettings' },
+        });
+        app.globalData.isReview =
+          isOnline &&
+          res.data[reviewCode] &&
+          accountInfo.miniProgram.envVersion !== 'release';
+        console.log(res);
+      } catch (e) {
+        console.log(e);
+      }
+      app.globalData.reviewApiLoaded = true;
+    }
+    this.setData({
+      isReview: app.globalData.isReview,
+      reviewApiLoaded: app.globalData.reviewApiLoaded,
+    });
+    Toast.clear();
+    if (app.globalData.isReview) return;
+
+    // 审核后
     if (app.globalData.loadingStatus === 0) {
       app.globalData.loadingStatus = 1;
       wx.cloud
@@ -1231,6 +1265,8 @@ Page({
    * 生命周期函数--监听页面显示
    */
   onShow() {
+    if (!app.globalData.reviewApiLoaded) return;
+    if (app.globalData.isReview) return;
     if (app.globalData.userInfo.phone !== this.data.originPhone) {
       this.setData({ originPhone: app.globalData.userInfo.phone });
     }
