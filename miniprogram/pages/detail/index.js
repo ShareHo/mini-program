@@ -40,6 +40,13 @@ Page({
     });
   },
 
+  bizLicensePreview(e) {
+    wx.previewImage({
+      urls: [this.data.detail.bizLicense],
+      showmenu: true,
+    });
+  },
+
   houseCertPreview(e) {
     const index = e.currentTarget.dataset.index.split('-');
 

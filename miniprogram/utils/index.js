@@ -133,7 +133,7 @@ export const validateAmount = (amount, type = '金额') => {
 export const validateNumber = (amount, type = '金额') => {
   let message = '';
   console.log(+amount);
-  if (+amount > 0 || amount === '0' || amount === 0) {
+  if (+amount >= 0) {
     message = '';
   } else {
     message = `您输入的${type}有误`;

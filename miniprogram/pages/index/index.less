@@ -16,6 +16,9 @@ page {
     text-align: right;
   }
 }
+.van-field__error-message {
+  text-align: right !important;
+}
 .idcard-upload-wrap {
   width: 100%;
   text-align: center;
@@ -49,6 +52,24 @@ page {
       bottom: 20rpx;
       white-space: nowrap;
       color: gray;
+    }
+  }
+}
+#bizLicense {
+  .idcard-upload-wrap {
+    padding-bottom: 40rpx;
+    .van-uploader__preview-image {
+      width: 500rpx !important;
+    }
+    .idcard-upload {
+      width: 500rpx;
+      height: 300rpx;
+      .idcard-upload-img {
+        top: 80rpx;
+      }
+      .idcard-desc {
+        bottom: 60rpx;
+      }
     }
   }
 }

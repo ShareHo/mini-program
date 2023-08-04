@@ -81,6 +81,7 @@ Page({
     useWayMessage: '',
     companyNameMessage: '',
     companyMasterMessage: '',
+    companyRecCodeMessage: '',
     areaMessage: '',
     addressMessage: '',
     salaryMessage: '',
@@ -110,6 +111,8 @@ Page({
     isFamilySupport: true,
     companyName: '',
     companyMaster: '',
+    companyRecCode: '',
+    bizLicense: [],
     area: [],
     address: '',
     operYears: 0,
@@ -247,8 +250,9 @@ Page({
       // const base64File = fs.readFileSync(event.detail.file.tempFilePath, 'base64');
       const arrayBufferFile = fs.readFileSync(event.detail.file.tempFilePath);
       const { result } = await wx.cloud.callFunction({
-        name: 'idcardOcr',
+        name: 'ocrApi',
         data: {
+          $url: 'idCard',
           test: isTest,
           ImageType: event.detail.file.tempFilePath.split('.').pop(),
           ImageBuffer: wx.cloud.CDN(arrayBufferFile),
@@ -259,12 +263,13 @@ Page({
       if (result.code === 0) {
         // console.log(result);
         this.setData({
-          username: this.data.username || result.data.Name,
-          idCard: this.data.idCard || result.data.IdNum,
-          bornDateTxt: this.data.bornDateTxt || result.data.Birth,
-          bornDate: this.data.bornDateTxt
-            ? this.data.bornDate
-            : new Date(result.data.Birth).getTime(),
+          username: result.data.Name,
+          idCard: result.data.IdNum,
+          bornDateTxt: result.data.Birth,
+          bornDate: new Date(result.data.Birth).getTime(),
+          nameMessage: '',
+          idCardMessage: '',
+          bornDateMessage: '',
         });
       }
     } catch (e) {
@@ -285,6 +290,49 @@ Page({
   },
   deleteIdCardFront() {
     this.setData({ idCardFront: [] });
+  },
+
+  // 营业执照拉取
+  async afterBizLicenseRead(event) {
+    this.setData({ bizLicense: [{ ...event.detail.file, isImage: true }] });
+    // 同步接口
+    try {
+      Toast.loading({
+        message: '识别中...',
+        forbidClick: false,
+        duration: 0,
+      });
+      const fs = wx.getFileSystemManager();
+      const arrayBufferFile = fs.readFileSync(event.detail.file.tempFilePath);
+      const { result } = await wx.cloud.callFunction({
+        name: 'ocrApi',
+        data: {
+          $url: 'bizLicense',
+          test: isTest,
+          ImageType: event.detail.file.tempFilePath.split('.').pop(),
+          ImageBuffer: wx.cloud.CDN(arrayBufferFile),
+        },
+      });
+      if (result.code === 0) {
+        console.log(result);
+        this.setData({
+          companyRecCode: result.data.RegNum,
+          companyMaster: result.data.Person,
+          companyName: result.data.Name,
+          companyNameMessage: '',
+          companyMasterMessage: '',
+          companyRecCodeMessage: '',
+        });
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      Toast.clear();
+    }
+  },
+  // 删除营业执照
+  deleteBizLicense() {
+    this.setData({ bizLicense: [] });
   },
 
   // 婚姻状况选择
@@ -387,15 +435,17 @@ Page({
   // 金额校验
   amountChange(event) {
     const amount = event.detail || '';
-    let message = validateAmount(amount);
+    let message = '';
     const type = event.target.dataset.amounttype;
     if (type.startsWith('houseList-')) {
       const item = this.data.houseList[type.split('-')[1]];
+      message = validateAmount(amount);
       item.totalAmount = amount;
       item.totalAmountMessage = message;
       this.setData({ houseList: this.data.houseList });
     } else if (type.startsWith('carList-')) {
       const item = this.data.carList[type.split('-')[1]];
+      message = validateAmount(amount);
       item.totalAmount = amount;
       item.totalAmountMessage = message;
       this.setData({ carList: this.data.carList });
@@ -403,25 +453,31 @@ Page({
       this.setData({ [type]: amount });
       switch (type) {
         case 'loanAmount':
+          message = validateAmount(amount);
           this.setData({ loanAmountMessage: message });
           break;
         case 'salary':
+          message = validateNumber(amount);
           this.setData({ salaryMessage: message });
           break;
         case 'flowingWater':
+          message = validateNumber(amount);
           this.setData({ flowingWaterMessage: message });
           break;
         case 'annualTurnover':
+          message = validateNumber(amount);
           this.setData({ annualTurnoverMessage: message });
           break;
         case 'equipmentPrice':
+          message = validateNumber(amount);
           this.setData({ equipmentPriceMessage: message });
           break;
         case 'siteArea':
-          message = validateAmount(amount, '场地面积');
+          message = validateNumber(amount, '场地面积');
           this.setData({ siteAreaMessage: message });
           break;
         case 'annualIncome':
+          message = validateNumber(amount);
           this.setData({ annualIncomeMessage: message });
           break;
         case 'bankDebt':
@@ -591,8 +647,9 @@ Page({
         // const base64File = fs.readFileSync(event.detail.file.tempFilePath, 'base64');
         const arrayBufferFile = fs.readFileSync(event.detail.file.tempFilePath);
         const { result } = await wx.cloud.callFunction({
-          name: 'vehicleLicenseOcr',
+          name: 'ocrApi',
           data: {
+            $url: 'vehicleLicense',
             test: isTest,
             ImageType: event.detail.file.tempFilePath.split('.').pop(),
             ImageBuffer: wx.cloud.CDN(arrayBufferFile),
@@ -601,7 +658,8 @@ Page({
           },
         });
         if (result.code === 0) {
-          item.carModel = item.carModel || result.data.FrontInfo.Model;
+          item.carModel = result.data.FrontInfo.Model;
+          item.carModelMessage = '';
           this.setData({ carList: this.data.carList });
         }
       } catch (e) {
@@ -800,26 +858,30 @@ Page({
       wrongSelector.push('#companyMaster');
       messageData.companyMasterMessage = companyMasterMessage;
     }
+    // 上传营业执照
+    if (this.data.bizLicense.length === 0) {
+      wrongSelector.push('#bizLicense');
+    }
     // 员工工资
-    const salaryMessage = validateAmount(this.data.salary);
+    const salaryMessage = validateNumber(this.data.salary);
     if (salaryMessage) {
       wrongSelector.push('#salary');
       messageData.salaryMessage = salaryMessage;
     }
     // 员工流水
-    const flowingWaterMessage = validateAmount(this.data.flowingWater);
+    const flowingWaterMessage = validateNumber(this.data.flowingWater);
     if (flowingWaterMessage) {
       wrongSelector.push('#flowingWater');
       messageData.flowingWaterMessage = flowingWaterMessage;
     }
     // 年营业额
-    const annualTurnoverMessage = validateAmount(this.data.annualTurnover);
+    const annualTurnoverMessage = validateNumber(this.data.annualTurnover);
     if (annualTurnoverMessage) {
       wrongSelector.push('#annualTurnover');
       messageData.annualTurnoverMessage = annualTurnoverMessage;
     }
     // 设备价值
-    const equipmentPriceMessage = validateAmount(this.data.equipmentPrice);
+    const equipmentPriceMessage = validateNumber(this.data.equipmentPrice);
     if (equipmentPriceMessage) {
       wrongSelector.push('#equipmentPrice');
       messageData.equipmentPriceMessage = equipmentPriceMessage;
@@ -830,7 +892,7 @@ Page({
       messageData.businessScaleMessage = '企业规模不能为空';
     }
     // 场地面积
-    const siteAreaMessage = validateAmount(this.data.siteArea, '场地面积');
+    const siteAreaMessage = validateNumber(this.data.siteArea, '场地面积');
     if (siteAreaMessage) {
       wrongSelector.push('#siteArea');
       messageData.siteAreaMessage = '场地面积必须大于0';
@@ -842,7 +904,7 @@ Page({
       messageData.monthlyRentMessage = monthlyRentMessage;
     }
     // 年收入金额
-    const annualIncomeMessage = validateAmount(this.data.annualIncome, '金额');
+    const annualIncomeMessage = validateNumber(this.data.annualIncome, '金额');
     if (annualIncomeMessage) {
       wrongSelector.push('#annualIncome');
       messageData.annualIncomeMessage = annualIncomeMessage;
@@ -941,6 +1003,9 @@ Page({
           case wrongSelector[0] === '#idcardCamera':
             Toast.fail('请上传身份证');
             break;
+          case wrongSelector[0] === '#bizLicense':
+            Toast.fail('请上传营业执照');
+            break;
           case wrongSelector[0].startsWith('#house-cert-'):
             Toast.fail('请上传房产证');
             break;
@@ -972,6 +1037,10 @@ Page({
         isFamilySupport: this.data.isFamilySupport,
         companyName: this.data.companyName,
         companyMaster: this.data.companyMaster,
+        companyRecCode: this.data.companyRecCode,
+        bizLicense: wx.cloud.CDN(
+          fs.readFileSync(this.data.bizLicense[0].tempFilePath),
+        ),
         area: this.data.area,
         address: this.data.address,
         operYears: this.data.operYears,
@@ -1048,9 +1117,9 @@ Page({
         const { result: res } = await wx.cloud.callFunction({
           name: 'apply',
           data: params,
-          config: {
-            traceUser: true,
-          },
+          // config: {
+          //   traceUser: true,
+          // },
         });
         if (res.code === 0) {
           Toast.success('提交成功');
@@ -1088,6 +1157,7 @@ Page({
       useWayMessage: '',
       companyNameMessage: '',
       companyMasterMessage: '',
+      companyRecCodeMessage: '',
       areaMessage: '',
       addressMessage: '',
       salaryMessage: '',
@@ -1117,6 +1187,8 @@ Page({
       isFamilySupport: true,
       companyName: '',
       companyMaster: '',
+      companyRecCode: '',
+      bizLicense: [],
       area: [],
       address: '',
       operYears: 0,
@@ -1237,6 +1309,7 @@ Page({
         })
         .then(({ result: res }) => {
           console.log(res);
+          Toast.clear();
           if (res.code === 0) {
             Object.assign(app.globalData.userInfo, res.data);
             this.setData({ phone: res.data.phone, phoneMessage: '' });

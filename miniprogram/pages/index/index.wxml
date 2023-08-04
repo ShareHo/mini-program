@@ -233,6 +233,30 @@
       error-message="{{companyMasterMessage}}"
       bind:change="nameChange"
     />
+  </van-cell-group>
+  <!-- 营业执照 -->
+  <van-cell-group id="bizLicense" inset title="上传营业执照" border="{{false}}">
+    <view class="idcard-upload-wrap">
+      <van-uploader
+        accept="image"
+        sizeType="{{['compressed']}}"
+        max-count="1"
+        deletable="{{ true }}"
+        file-list="{{ bizLicense }}"
+        bind:after-read="afterBizLicenseRead"
+        show-upload="{{false}}"
+        preview-size="300rpx"
+        image-fit="aspectFit"
+        bind:delete="deleteBizLicense"
+      >
+        <view class="idcard-upload">
+          <image class="idcard-upload-img" src="../../images/idcard_add.png" />
+          <view class="idcard-desc">营业执照</view>
+        </view>
+      </van-uploader>
+    </view>
+  </van-cell-group>
+  <van-cell-group inset border="{{false}}">
     <van-cell required size="large" title="经营年限">
       <van-stepper
         name="operYears"
@@ -260,7 +284,6 @@
     <van-field
       id="salary"
       size="large"
-      required
       clearable
       value="{{ salary }}"
       name="salary"
@@ -277,7 +300,6 @@
     <van-field
       id="flowingWater"
       size="large"
-      required
       clearable
       value="{{ flowingWater }}"
       name="flowingWater"
@@ -293,7 +315,6 @@
     <van-field
       id="annualTurnover"
       size="large"
-      required
       clearable
       value="{{ annualTurnover }}"
       name="annualTurnover"
@@ -320,7 +341,6 @@
     <van-field
       id="equipmentPrice"
       size="large"
-      required
       clearable
       value="{{ equipmentPrice }}"
       name="equipmentPrice"
@@ -333,7 +353,7 @@
     >
       <text slot="right-icon">元</text>
     </van-field>
-    <van-cell required size="large" title="设备是否在押">
+    <van-cell size="large" title="设备是否在押">
       <van-radio-group
         slot="right-icon"
         value="{{ isEquipmentDetain }}"
@@ -375,7 +395,6 @@
     <van-field
       id="siteArea"
       size="large"
-      required
       clearable
       value="{{ siteArea }}"
       name="siteArea"
@@ -391,7 +410,6 @@
     <van-field
       id="monthlyRent"
       size="large"
-      required
       clearable
       value="{{ monthlyRent }}"
       error-message="{{monthlyRentMessage}}"
@@ -406,7 +424,6 @@
     <van-field
       id="annualIncome"
       size="large"
-      required
       clearable
       value="{{ annualIncome }}"
       error-message="{{annualIncomeMessage}}"
@@ -445,7 +462,6 @@
     <van-field
       id="bankDebt"
       size="large"
-      required
       clearable
       value="{{ bankDebt }}"
       name="bankDebt"
@@ -462,7 +478,6 @@
     <van-field
       id="creditCardDebt"
       size="large"
-      required
       clearable
       model:value="{{ creditCardDebt }}"
       name="creditCardDebt"

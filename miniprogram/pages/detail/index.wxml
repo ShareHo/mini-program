@@ -50,13 +50,29 @@
     />
     <van-cell size="large" title="公司全称" value="{{detail.companyName}}" />
     <van-cell size="large" title="公司法人" value="{{detail.companyMaster}}" />
+    <van-cell-group inset title="营业执照" border="{{false}}">
+      <view class="image-thumb-wrap">
+        <image
+          class="image-thumb"
+          src="{{detail.bizLicense}}"
+          mode="aspectFit"
+          data-index="{{0}}"
+          bindtap="bizLicensePreview"
+        />
+      </view>
+    </van-cell-group>
     <van-cell size="large" title="经营年限" value="{{detail.operYears+'年'}}" />
     <van-cell
       size="large"
       title="员工人数"
       value="{{detail.companyMember+'人'}}"
     />
-    <van-cell size="large" title="员工工资" value="{{detail.salary+'元'}}" />
+    <van-cell
+      size="large"
+      title="员工工资（均）"
+      title-width="7.2em"
+      value="{{detail.salary+'元'}}"
+    />
     <van-cell
       size="large"
       title="月均流水"

@@ -12,6 +12,9 @@ page {
 .van-field__body .van-field__control {
   text-align: right;
 }
+.van-field__error-message {
+  text-align: right !important;
+}
 .idcard-upload-wrap {
   width: 100%;
   text-align: center;
@@ -47,6 +50,22 @@ page {
   bottom: 20rpx;
   white-space: nowrap;
   color: gray;
+}
+#bizLicense .idcard-upload-wrap {
+  padding-bottom: 40rpx;
+}
+#bizLicense .idcard-upload-wrap .van-uploader__preview-image {
+  width: 500rpx !important;
+}
+#bizLicense .idcard-upload-wrap .idcard-upload {
+  width: 500rpx;
+  height: 300rpx;
+}
+#bizLicense .idcard-upload-wrap .idcard-upload .idcard-upload-img {
+  top: 80rpx;
+}
+#bizLicense .idcard-upload-wrap .idcard-upload .idcard-desc {
+  bottom: 60rpx;
 }
 .house-item {
   position: relative;

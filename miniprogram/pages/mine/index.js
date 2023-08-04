@@ -131,6 +131,7 @@ Page({
         })
         .then(({ result: res }) => {
           console.log(res);
+          Toast.clear();
           if (res.code === 0) {
             Object.assign(app.globalData.userInfo, res.data);
             this.setData({
@@ -156,6 +157,7 @@ Page({
         })
         .then(({ result: res }) => {
           console.log(res);
+          Toast.clear();
           if (res.code === 0) {
             Object.assign(app.globalData.userInfo, res.data);
             this.setData({

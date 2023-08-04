@@ -97,6 +97,13 @@ exports.main = async (event, context) => {
     } catch (e) {
       event.idCardBack = '';
     }
+    // 营业执照
+    try {
+      const { fileID, statusCode } = await uploadFile(event.bizLicense, OPENID);
+      if (fileID && statusCode === -1) event.bizLicense = fileID;
+    } catch (e) {
+      event.bizLicense = '';
+    }
     // 车产房产证
     for (const item of [...event.houseList, ...event.carList]) {
       if (item.hasCert) {
