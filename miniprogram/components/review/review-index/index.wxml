@@ -92,8 +92,8 @@
         clearable
         autosize
         value="{{ item.time }}"
-        label="开发周期"
-        placeholder="请输入开发周期"
+        label="生产周期"
+        placeholder="请输入生产周期"
         data-field="{{'time-'+index}}"
         bind:change="productChange"
       />

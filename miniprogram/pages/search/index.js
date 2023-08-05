@@ -1,5 +1,6 @@
 // pages/search/index.js
 import Toast from '@vant/weapp/toast/toast';
+import { formatTime } from '../../utils/index';
 Page({
   /**
    * 页面的初始数据
@@ -77,7 +78,10 @@ Page({
           total: res.total,
           searchList:
             this.data.page === 1
-              ? res.data
+              ? res.data.map((d) => ({
+                  ...d,
+                  applyDateTxt: formatTime(d.applyDate, 'yyyy/MM/dd'),
+                }))
               : this.data.searchList.concat(res.data),
         });
       } else {

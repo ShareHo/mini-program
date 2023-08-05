@@ -47,6 +47,20 @@ exports.main = async (event, context) => {
   } catch (e) {
     console.log(e);
   }
+  let referenceOpenid = '';
+  try {
+    const referenceData = await userCollection
+      .where({ referenceCode: cmd.eq(+event.reference) })
+      .limit(1)
+      .get();
+    if (referenceData.data.length === 0) {
+      return { code: 2, msg: '推荐人代码有误' };
+    } else {
+      referenceOpenid = referenceData.data[0]._openid;
+    }
+  } catch (e) {
+    return { code: 2, msg: '推荐人代码有误' };
+  }
   try {
     const userCache = userCollection
       .where({ _openid: cmd.eq(OPENID) })
@@ -98,43 +112,49 @@ exports.main = async (event, context) => {
       event.idCardBack = '';
     }
     // 营业执照
-    try {
-      const { fileID, statusCode } = await uploadFile(event.bizLicense, OPENID);
-      if (fileID && statusCode === -1) event.bizLicense = fileID;
-    } catch (e) {
-      event.bizLicense = '';
-    }
-    // 车产房产证
-    for (const item of [...event.houseList, ...event.carList]) {
-      if (item.hasCert) {
-        // 正
-        try {
-          const { fileID, statusCode } = await uploadFile(
-            item.certFront,
-            OPENID,
-          );
-          if (fileID && statusCode === -1) item.certFront = fileID;
-        } catch (e) {
-          item.certFront = '';
-        }
-        // 反
-        try {
-          const { fileID, statusCode } = await uploadFile(
-            item.certBack,
-            OPENID,
-          );
-          if (fileID && statusCode === -1) item.certBack = fileID;
-        } catch (e) {
-          item.certBack = '';
-        }
+    if (event.bizLicense) {
+      try {
+        const { fileID, statusCode } = await uploadFile(
+          event.bizLicense,
+          OPENID,
+        );
+        if (fileID && statusCode === -1) event.bizLicense = fileID;
+      } catch (e) {
+        event.bizLicense = '';
       }
     }
+    // 车产房产证
+    // for (const item of [...event.houseList, ...event.carList]) {
+    //   if (item.hasCert) {
+    //     // 正
+    //     try {
+    //       const { fileID, statusCode } = await uploadFile(
+    //         item.certFront,
+    //         OPENID,
+    //       );
+    //       if (fileID && statusCode === -1) item.certFront = fileID;
+    //     } catch (e) {
+    //       item.certFront = '';
+    //     }
+    //     // 反
+    //     try {
+    //       const { fileID, statusCode } = await uploadFile(
+    //         item.certBack,
+    //         OPENID,
+    //       );
+    //       if (fileID && statusCode === -1) item.certBack = fileID;
+    //     } catch (e) {
+    //       item.certBack = '';
+    //     }
+    //   }
+    // }
     delete event.smsCode;
-    delete event.userInfo;
+    // delete event.userInfo;
     await applyCollection.add({
       data: {
         ...event,
         applyStatus: 0,
+        referenceOpenid,
         createTime: Date.now(),
         updateTime: Date.now(),
         _openid: OPENID,
@@ -148,7 +168,7 @@ exports.main = async (event, context) => {
       idCard: event.idCard,
       idCardFront: event.idCardFront,
       idCardBack: event.idCardBack,
-      bornDate: event.bornDate,
+      // bornDate: event.bornDate,
       area: event.area,
       address: event.address,
       marryStatus: event.marryStatus,

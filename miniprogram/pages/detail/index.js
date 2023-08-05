@@ -19,6 +19,11 @@ const businessScaleMap = {
   2: '中型企业',
   3: '大型企业',
 };
+const applyStatusMap = {
+  0: '审核中',
+  1: '审批通过',
+  2: '审批拒绝',
+};
 Page({
   /**
    * 页面的初始数据
@@ -47,34 +52,33 @@ Page({
     });
   },
 
-  houseCertPreview(e) {
-    const index = e.currentTarget.dataset.index.split('-');
+  // houseCertPreview(e) {
+  //   const index = e.currentTarget.dataset.index.split('-');
 
-    const { certFront, certBack } = this.data.detail.houseList[index[0]];
-    const urls = [certFront, certBack];
-    wx.previewImage({
-      urls,
-      current: urls[index[1]],
-      showmenu: true,
-    });
-  },
+  //   const { certFront, certBack } = this.data.detail.houseList[index[0]];
+  //   const urls = [certFront, certBack];
+  //   wx.previewImage({
+  //     urls,
+  //     current: urls[index[1]],
+  //     showmenu: true,
+  //   });
+  // },
 
-  carCertPreview(e) {
-    const index = e.currentTarget.dataset.index.split('-');
+  // carCertPreview(e) {
+  //   const index = e.currentTarget.dataset.index.split('-');
 
-    const { certFront, certBack } = this.data.detail.carList[index[0]];
-    const urls = [certFront, certBack];
-    wx.previewImage({
-      urls,
-      current: urls[index[1]],
-      showmenu: true,
-    });
-  },
+  //   const { certFront, certBack } = this.data.detail.carList[index[0]];
+  //   const urls = [certFront, certBack];
+  //   wx.previewImage({
+  //     urls,
+  //     current: urls[index[1]],
+  //     showmenu: true,
+  //   });
+  // },
 
   deleteDetail() {
     wx.showModal({
-      title: '确定删除？',
-      content: '删除后不可恢复',
+      title: '确定审批拒绝？',
       confirmColor: '#FF0000',
       complete: (res) => {
         if (res.cancel) {
@@ -82,7 +86,7 @@ Page({
 
         if (res.confirm) {
           Toast.loading({
-            message: '正在删除...',
+            message: '保存中...',
             forbidClick: true,
             duration: 0,
           });
@@ -98,9 +102,11 @@ Page({
               console.log(res);
               if (res.code === 0) {
                 Toast.success({
-                  message: '删除成功',
-                  onClose() {
-                    wx.navigateBack();
+                  message: '审核成功',
+                  onClose: () => {
+                    setTimeout(() => {
+                      this.getDetail(this.data.detail._id);
+                    }, 1000);
                   },
                 });
               } else {
@@ -108,7 +114,7 @@ Page({
               }
             })
             .catch((e) => {
-              Toast.fail('删除失败');
+              Toast.fail('审核失败');
             });
         }
       },
@@ -116,14 +122,14 @@ Page({
   },
   judgeDetail() {
     wx.showModal({
-      title: '确定审核通过？',
+      title: '确定审批通过？',
       complete: (res) => {
         if (res.cancel) {
         }
 
         if (res.confirm) {
           Toast.loading({
-            message: '审核中...',
+            message: '保存中...',
             forbidClick: true,
             duration: 0,
           });
@@ -185,7 +191,7 @@ Page({
         console.log(res);
         if (res.code === 0) {
           Toast.clear();
-          res.data.bornDateTxt = formatTime(res.data.bornDate, 'yyyy/MM/dd');
+          // res.data.bornDateTxt = formatTime(res.data.bornDate, 'yyyy/MM/dd');
           let areaTxt = '';
           if (
             ['北京市', '天津市', '上海市', '重庆市'].includes(
@@ -200,18 +206,24 @@ Page({
           res.data.marryStatusTxt = marryStatusMap[res.data.marryStatus];
           res.data.useWayTxt = useWayMap[res.data.useWay];
           res.data.businessScaleTxt = businessScaleMap[res.data.businessScale];
-          res.data.houseList.forEach((d) => {
-            let areaTxt = '';
-            if (
-              ['北京市', '天津市', '上海市', '重庆市'].includes(d.area[0].name)
-            ) {
-              areaTxt = d.area[0].name + '/' + d.area[2].name;
-            } else {
-              areaTxt = d.area.map((d) => d.name).join('/');
-            }
-            d.areaTxt = areaTxt;
-          });
+          res.data.applyStatusTxt = applyStatusMap[res.data.applyStatus];
+          // res.data.houseList.forEach((d) => {
+          //   let areaTxt = '';
+          //   if (
+          //     ['北京市', '天津市', '上海市', '重庆市'].includes(d.area[0].name)
+          //   ) {
+          //     areaTxt = d.area[0].name + '/' + d.area[2].name;
+          //   } else {
+          //     areaTxt = d.area.map((d) => d.name).join('/');
+          //   }
+          //   d.areaTxt = areaTxt;
+          // });
           res.data.applyDateTxt = formatTime(res.data.applyDate, 'yyyy/MM/dd');
+          if (res.data.judgeTime)
+            res.data.judgeTimeTxt = formatTime(
+              res.data.judgeTime,
+              'yyyy/MM/dd hh:mm:ss',
+            );
           this.setData({ detail: res.data });
         } else {
           Toast.fail(res.msg);

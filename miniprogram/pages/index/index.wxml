@@ -46,7 +46,7 @@
       error-message="{{idCardMessage}}"
       bind:change="idCardChange"
     />
-    <van-field
+    <!-- <van-field
       id="bornDate"
       readonly
       required
@@ -58,7 +58,7 @@
       placeholder="(上传身份证可识别)"
       error-message="{{bornDateMessage}}"
       bind:tap="openBornPicker"
-    />
+    /> -->
     <van-field
       id="areaList"
       readonly
@@ -159,7 +159,6 @@
     <van-field
       id="loanAmount"
       size="large"
-      required
       clearable
       value="{{ loanAmount }}"
       name="loanAmount"
@@ -170,7 +169,7 @@
       data-amounttype="loanAmount"
       bind:change="amountChange"
     >
-      <text slot="right-icon">元</text>
+      <text slot="right-icon">万元</text>
     </van-field>
     <van-field
       id="useWay"
@@ -269,11 +268,11 @@
         bind:change="operYearsChange"
       />
     </van-cell>
-    <van-cell required size="large" title="员工人数">
+    <van-cell size="large" title="员工人数">
       <van-stepper
         name="companyMember"
         slot="right-icon"
-        min="{{1}}"
+        min="{{0}}"
         step="{{10}}"
         integer
         input-width="150rpx"
@@ -281,7 +280,7 @@
         bind:change="companyMemberChange"
       />
     </van-cell>
-    <van-field
+    <!-- <van-field
       id="salary"
       size="large"
       clearable
@@ -295,8 +294,8 @@
       data-amounttype="salary"
       bind:change="amountChange"
     >
-      <text slot="right-icon">元</text>
-    </van-field>
+      <text slot="right-icon">万元</text>
+    </van-field> -->
     <van-field
       id="flowingWater"
       size="large"
@@ -304,13 +303,13 @@
       value="{{ flowingWater }}"
       name="flowingWater"
       type="digit"
-      label="月均流水"
-      placeholder="请输入月均流水"
+      label="月收入"
+      placeholder="请输入月收入"
       error-message="{{flowingWaterMessage}}"
       data-amounttype="flowingWater"
       bind:change="amountChange"
     >
-      <text slot="right-icon">元</text>
+      <text slot="right-icon">万元</text>
     </van-field>
     <van-field
       id="annualTurnover"
@@ -325,7 +324,7 @@
       data-amounttype="annualTurnover"
       bind:change="amountChange"
     >
-      <text slot="right-icon">元</text>
+      <text slot="right-icon">万元</text>
     </van-field>
     <van-cell required size="large" title="订单是否充足">
       <van-radio-group
@@ -351,7 +350,7 @@
       data-amounttype="equipmentPrice"
       bind:change="amountChange"
     >
-      <text slot="right-icon">元</text>
+      <text slot="right-icon">万元</text>
     </van-field>
     <van-cell size="large" title="设备是否在押">
       <van-radio-group
@@ -377,7 +376,7 @@
       error-message="{{businessScaleMessage}}"
       bind:tap="openbusinessScalePicker"
     />
-    <van-cell required size="large" title="占股百分比">
+    <van-cell size="large" title="占股百分比">
       <view class="flex" slot="right-icon">
         <van-stepper
           name="sharePercent"
@@ -419,9 +418,9 @@
       placeholder="请输入场地月缴租金"
       bind:change="monthlyRentChange"
     >
-      <text slot="right-icon">元</text>
+      <text slot="right-icon">万元</text>
     </van-field>
-    <van-field
+    <!-- <van-field
       id="annualIncome"
       size="large"
       clearable
@@ -434,10 +433,9 @@
       data-amounttype="annualIncome"
       bind:change="amountChange"
     >
-      <!-- bind:change="annualIncomeChange" -->
-      <text slot="right-icon">元</text>
-    </van-field>
-    <van-cell required size="large" title="是否有案件">
+      <text slot="right-icon">万元</text>
+    </van-field> -->
+    <!-- <van-cell required size="large" title="是否有案件">
       <van-radio-group
         slot="right-icon"
         value="{{ isInCase }}"
@@ -447,7 +445,7 @@
         <van-radio name="{{true}}">是</van-radio>
         <van-radio name="{{false}}">否</van-radio>
       </van-radio-group>
-    </van-cell>
+    </van-cell> -->
     <van-cell required size="large" title="是否有高息私人贷">
       <van-radio-group
         slot="right-icon"
@@ -473,7 +471,7 @@
       bind:change="amountChange"
       title-width="7.2em"
     >
-      <text slot="right-icon">元</text>
+      <text slot="right-icon">万元</text>
     </van-field>
     <van-field
       id="creditCardDebt"
@@ -488,10 +486,57 @@
       data-amounttype="creditCardDebt"
       bind:change="amountChange"
     >
-      <text slot="right-icon">元</text>
+      <text slot="right-icon">万元</text>
     </van-field>
+    <van-cell size="large" title="名下有无房产">
+      <van-radio-group
+        slot="right-icon"
+        value="{{ hasHouse }}"
+        direction="horizontal"
+        bind:change="hasHouseChange"
+      >
+        <van-radio name="{{true}}">有</van-radio>
+        <van-radio name="{{false}}">无</van-radio>
+      </van-radio-group>
+    </van-cell>
+    <van-cell size="large" title="名下有无车产">
+      <van-radio-group
+        slot="right-icon"
+        value="{{ hasCar }}"
+        direction="horizontal"
+        bind:change="hasCarChange"
+      >
+        <van-radio name="{{true}}">有</van-radio>
+        <van-radio name="{{false}}">无</van-radio>
+      </van-radio-group>
+    </van-cell>
+    <van-field
+      id="reference"
+      size="large"
+      required
+      clearable
+      label="推荐人代码"
+      placeholder="请输入推荐人代码"
+      value="{{ reference }}"
+      type="number"
+      error-message="{{referenceMessage}}"
+      bind:change="referenceChange"
+    />
+    <van-field
+      id="applyDate"
+      readonly
+      required
+      size="large"
+      label="填表日期"
+      right-icon="arrow"
+      clickable
+      value="{{applyDateTxt}}"
+      placeholder="请选择填表日期"
+      error-message="{{applyDateMessage}}"
+      bind:tap="openApplyPicker"
+    />
   </van-cell-group>
-  <van-cell-group inset title="名下房产">
+  <!-- <van-cell-group inset title="名下房产">
     <van-cell required size="large" title="名下有无房产">
       <van-radio-group
         slot="right-icon"
@@ -570,7 +615,7 @@
           bind:change="amountChange"
           title-width="7.2em"
         >
-          <text slot="right-icon">元</text>
+          <text slot="right-icon">万元</text>
         </van-field>
         <van-cell
           id="{{'house-cert-'+index}}"
@@ -591,7 +636,6 @@
         </van-cell>
       </van-cell-group>
       <block wx:if="{{item.hasCert}}">
-        <!-- 房产证正反面 -->
         <van-cell-group inset title="上传房产证" border="{{false}}">
         </van-cell-group>
         <view class="idcard-upload-wrap">
@@ -647,8 +691,8 @@
     >
       + <text class="small-size">添加房产</text>
     </view>
-  </block>
-  <van-cell-group inset title="名下车产">
+  </block> -->
+  <!-- <van-cell-group inset title="名下车产">
     <van-cell required size="large" title="名下有无车产">
       <van-radio-group
         slot="right-icon"
@@ -660,8 +704,8 @@
         <van-radio name="{{false}}">无</van-radio>
       </van-radio-group>
     </van-cell>
-  </van-cell-group>
-  <block wx:if="{{hasCar}}">
+  </van-cell-group> -->
+  <!-- <block wx:if="{{hasCar}}">
     <view class="house-item" wx:for="{{carList}}" wx:key="index">
       <van-icon
         wx:if="{{index!==0}}"
@@ -688,17 +732,6 @@
           error-message="{{item.carModelMessage}}"
           bind:change="carChange"
         />
-        <!-- <van-field
-        size="large"
-        required
-        clearable
-        value="{{ item.carMark }}"
-        data-car-index="{{'carMark-'+index}}"
-        label="车辆型号"
-        placeholder="请输入车辆型号"
-        error-message="{{item.carMarkMessage}}"
-        bind:change="carChange"
-      /> -->
         <van-field
           size="large"
           required
@@ -712,7 +745,7 @@
           bind:change="amountChange"
           title-width="6.7em"
         >
-          <text slot="right-icon">元</text>
+          <text slot="right-icon">万元</text>
         </van-field>
         <van-cell
           id="{{'car-cert-'+index}}"
@@ -733,7 +766,6 @@
         </van-cell>
       </van-cell-group>
       <block wx:if="{{item.hasCert}}">
-        <!-- 行驶证正反面 -->
         <van-cell-group inset title="上传行驶证" border="{{false}}">
         </van-cell-group>
         <view class="idcard-upload-wrap">
@@ -785,17 +817,17 @@
     <view wx:if="{{carList.length<5}}" bindtap="addCar" class="btn-add-house">
       + <text class="small-size">添加车辆</text>
     </view>
-  </block>
-  <van-cell-group inset>
-    <van-field
+  </block> -->
+  <!-- <van-cell-group inset> -->
+  <!-- <van-field
       size="large"
       model:value="{{ otherMark }}"
       label="其他优势"
       type="textarea"
       placeholder="请输入其他优势"
       autosize
-    />
-    <van-field
+    /> -->
+  <!-- <van-field
       size="large"
       clearable
       model:value="{{ reference }}"
@@ -815,13 +847,13 @@
       placeholder="请选择填表日期"
       error-message="{{applyDateMessage}}"
       bind:tap="openApplyPicker"
-    />
-  </van-cell-group>
+    /> -->
+  <!-- </van-cell-group> -->
 
   <van-cell-group
     wx:if="{{phone !==originPhone || !originPhone}}"
     inset
-    title=" "
+    title="短信验证码"
   >
     <van-field
       id="smsCode"
@@ -857,7 +889,7 @@
 <!-- 滑动选项 -->
 <block>
   <!-- 出生日期 -->
-  <van-popup
+  <!-- <van-popup
     position="bottom"
     show="{{ bornPickerShow }}"
     bind:click-overlay="bornDateCancel"
@@ -873,7 +905,7 @@
       bind:confirm="bornDateConfirm"
       bind:cancel="bornDateCancel"
     />
-  </van-popup>
+  </van-popup> -->
   <!-- 婚姻状况 -->
   <van-popup
     position="bottom"

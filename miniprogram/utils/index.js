@@ -74,16 +74,16 @@ export const validateRealName = (name, type = '姓名') => {
 };
 
 // 校验手机号
-export const validatePhone = (phone, isRequired = true) => {
+export const validatePhone = (phone, type = '手机号') => {
   let message = '';
   if (phone) {
     if (/^1[3-9]\d{9}$/.test(phone)) {
       message = '';
     } else {
-      message = '您输入的手机号码有误';
+      message = `您输入的${type}有误`;
     }
-  } else if (isRequired) {
-    message = '手机号不能为空';
+  } else {
+    message = `${type}不能为空`;
   }
   return message;
 };
@@ -151,6 +151,20 @@ export const validateSmsCode = (smsCode) => {
     }
   } else {
     message = '验证码不能为空';
+  }
+  return message;
+};
+
+export const validateReference = (reference) => {
+  let message = '';
+  if (reference) {
+    if (/^\d{4}$/.test(reference)) {
+      message = '';
+    } else {
+      message = '您输入的推荐人代码有误';
+    }
+  } else {
+    message = '推荐人代码不能为空';
   }
   return message;
 };

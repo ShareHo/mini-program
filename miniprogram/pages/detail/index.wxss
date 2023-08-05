@@ -21,6 +21,10 @@
   margin: 0 20rpx;
   background-color: #fff;
 }
+.detail-page .image-thumb-wrap .image-thumb.biz {
+  width: 500rpx;
+  height: 350rpx;
+}
 .detail-page .btn-wrap {
   display: flex;
   justify-content: center;

@@ -6,9 +6,10 @@ import {
   validateRealName,
   validatePhone,
   validateIdCard,
-  validateAmount,
+  // validateAmount,
   validateNumber,
   validateSmsCode,
+  validateReference,
 } from '../../utils/index';
 import Toast from '@vant/weapp/toast/toast';
 import { areaList } from '@vant/area-data';
@@ -26,10 +27,10 @@ Page({
     isReview: true,
     dateFormatter,
     // 日期选择器
-    bornPickerShow: false,
-    bornDateTxt: '',
-    bornMaxDate: date.getTime(),
-    bornMinDate: new Date('1900/01/01').getTime(),
+    // bornPickerShow: false,
+    // bornDateTxt: '',
+    // bornMaxDate: date.getTime(),
+    // bornMinDate: new Date('1900/01/01').getTime(),
     // 婚姻状况选择器
     marryShow: false,
     marryColumns: [
@@ -74,7 +75,7 @@ Page({
     nameMessage: '',
     phoneMessage: '',
     idCardMessage: '',
-    bornDateMessage: '',
+    // bornDateMessage: '',
     marryStatusMessage: '',
     marrynameMessage: '',
     loanAmountMessage: '',
@@ -84,17 +85,18 @@ Page({
     companyRecCodeMessage: '',
     areaMessage: '',
     addressMessage: '',
-    salaryMessage: '',
+    // salaryMessage: '',
     flowingWaterMessage: '',
     annualTurnoverMessage: '',
     equipmentPriceMessage: '',
     businessScaleMessage: '',
     siteAreaMessage: '',
     monthlyRentMessage: '',
-    annualIncomeMessage: '',
+    // annualIncomeMessage: '',
     bankDebtMessage: '',
     creditCardDebtMessage: '',
     applyDateMessage: '',
+    referenceMessage: '',
     smsCodeMessage: '',
     // 表单数据
     username: '',
@@ -102,7 +104,7 @@ Page({
     idCard: '',
     idCardFront: [],
     idCardBack: [],
-    bornDate: new Date('2000/01/01').getTime(),
+    // bornDate: new Date('2000/01/01').getTime(),
     marryStatus: '',
     marryname: '',
     loanAmount: '',
@@ -116,8 +118,8 @@ Page({
     area: [],
     address: '',
     operYears: 0,
-    companyMember: 1,
-    salary: '',
+    companyMember: 0,
+    // salary: '',
     flowingWater: '',
     annualTurnover: '',
     isSufficient: true,
@@ -127,42 +129,42 @@ Page({
     sharePercent: 0,
     siteArea: '',
     monthlyRent: '',
-    annualIncome: '',
-    isInCase: false,
+    // annualIncome: '',
+    // isInCase: false,
     isInDebt: false,
     bankDebt: '',
     creditCardDebt: '',
     hasHouse: true,
-    houseList: [
-      {
-        isLocal: true,
-        area: [],
-        areaTxt: '',
-        areaMessage: '',
-        address: '',
-        addressMessage: '',
-        totalAmount: '',
-        totalAmountMessage: '',
-        hasCert: true,
-        certFront: [],
-        certBack: [],
-      },
-    ],
+    // houseList: [
+    //   {
+    //     isLocal: true,
+    //     area: [],
+    //     areaTxt: '',
+    //     areaMessage: '',
+    //     address: '',
+    //     addressMessage: '',
+    //     totalAmount: '',
+    //     totalAmountMessage: '',
+    //     hasCert: true,
+    //     certFront: [],
+    //     certBack: [],
+    //   },
+    // ],
     hasCar: true,
-    carList: [
-      {
-        carModel: '',
-        carModelMessage: '',
-        // carMark: '',
-        // carMarkMessage: '',
-        totalAmount: '',
-        totalAmountMessage: '',
-        hasCert: true,
-        certFront: [],
-        certBack: [],
-      },
-    ],
-    otherMark: '',
+    // carList: [
+    //   {
+    //     carModel: '',
+    //     carModelMessage: '',
+    //     // carMark: '',
+    //     // carMarkMessage: '',
+    //     totalAmount: '',
+    //     totalAmountMessage: '',
+    //     hasCert: true,
+    //     certFront: [],
+    //     certBack: [],
+    //   },
+    // ],
+    // otherMark: '',
     reference: '',
     applyDate: date.getTime(),
     smsCode: '',
@@ -208,6 +210,13 @@ Page({
     this.setData({ phone, phoneMessage });
   },
 
+  // 推荐人代码校验
+  referenceChange(event) {
+    const reference = event.detail || '';
+    const referenceMessage = validateReference(reference);
+    this.setData({ reference, referenceMessage });
+  },
+
   // 身份证校验
   idCardChange: function (event) {
     const idCard = event.detail || '';
@@ -215,26 +224,26 @@ Page({
     this.setData({ idCardMessage, idCard });
   },
 
-  // 出生日期
-  bornDateConfirm(event) {
-    // console.log(event);
-    const { detail } = event;
-    const date = new Date(detail);
-    this.setData({
-      bornDate: event.detail,
-      bornPickerShow: false,
-      bornDateTxt: `${date.getFullYear()}/${
-        date.getMonth() + 1
-      }/${date.getDate()}`,
-      bornDateMessage: '',
-    });
-  },
-  bornDateCancel() {
-    this.setData({ bornPickerShow: false });
-  },
-  openBornPicker() {
-    this.setData({ bornPickerShow: true });
-  },
+  // // 出生日期
+  // bornDateConfirm(event) {
+  //   // console.log(event);
+  //   const { detail } = event;
+  //   const date = new Date(detail);
+  //   this.setData({
+  //     bornDate: event.detail,
+  //     bornPickerShow: false,
+  //     bornDateTxt: `${date.getFullYear()}/${
+  //       date.getMonth() + 1
+  //     }/${date.getDate()}`,
+  //     bornDateMessage: '',
+  //   });
+  // },
+  // bornDateCancel() {
+  //   this.setData({ bornPickerShow: false });
+  // },
+  // openBornPicker() {
+  //   this.setData({ bornPickerShow: true });
+  // },
 
   // 身份证正面拉取
   async afterIdCardFrontRead(event) {
@@ -265,11 +274,11 @@ Page({
         this.setData({
           username: result.data.Name,
           idCard: result.data.IdNum,
-          bornDateTxt: result.data.Birth,
-          bornDate: new Date(result.data.Birth).getTime(),
+          // bornDateTxt: result.data.Birth,
+          // bornDate: new Date(result.data.Birth).getTime(),
           nameMessage: '',
           idCardMessage: '',
-          bornDateMessage: '',
+          // bornDateMessage: '',
         });
       }
     } catch (e) {
@@ -382,12 +391,13 @@ Page({
         address: name,
         addressMessage: name.trim() ? '' : '详细地址不能为空',
       });
-    } else if (type.startsWith('houseList-')) {
-      const item = this.data.houseList[type.split('-')[1]];
-      item.address = name;
-      item.addressMessage = name.trim() ? '' : '详细地址不能为空';
-      this.setData({ houseList: this.data.houseList });
     }
+    // else if (type.startsWith('houseList-')) {
+    //   const item = this.data.houseList[type.split('-')[1]];
+    //   item.address = name;
+    //   item.addressMessage = name.trim() ? '' : '详细地址不能为空';
+    //   this.setData({ houseList: this.data.houseList });
+    // }
   },
 
   // 省市区
@@ -413,13 +423,14 @@ Page({
         areaShow: false,
         areaMessage: '',
       });
-    } else if (this.data.areaShowType.startsWith('houseList-')) {
-      const item = this.data.houseList[this.data.areaShowType.split('-')[1]];
-      item.area = area;
-      item.areaTxt = areaTxt;
-      item.areaMessage = '';
-      this.setData({ areaShow: false, houseList: this.data.houseList });
     }
+    // else if (this.data.areaShowType.startsWith('houseList-')) {
+    //   const item = this.data.houseList[this.data.areaShowType.split('-')[1]];
+    //   item.area = area;
+    //   item.areaTxt = areaTxt;
+    //   item.areaMessage = '';
+    //   this.setData({ areaShow: false, houseList: this.data.houseList });
+    // }
   },
   // 经营年限
   operYearsChange(event) {
@@ -430,69 +441,70 @@ Page({
   },
   // 员工人数
   companyMemberChange(event) {
-    this.setData({ companyMember: event.detail || 1 });
+    this.setData({ companyMember: event.detail || 0 });
   },
   // 金额校验
   amountChange(event) {
     const amount = event.detail || '';
     let message = '';
     const type = event.target.dataset.amounttype;
-    if (type.startsWith('houseList-')) {
-      const item = this.data.houseList[type.split('-')[1]];
-      message = validateAmount(amount);
-      item.totalAmount = amount;
-      item.totalAmountMessage = message;
-      this.setData({ houseList: this.data.houseList });
-    } else if (type.startsWith('carList-')) {
-      const item = this.data.carList[type.split('-')[1]];
-      message = validateAmount(amount);
-      item.totalAmount = amount;
-      item.totalAmountMessage = message;
-      this.setData({ carList: this.data.carList });
-    } else {
-      this.setData({ [type]: amount });
-      switch (type) {
-        case 'loanAmount':
-          message = validateAmount(amount);
-          this.setData({ loanAmountMessage: message });
-          break;
-        case 'salary':
-          message = validateNumber(amount);
-          this.setData({ salaryMessage: message });
-          break;
-        case 'flowingWater':
-          message = validateNumber(amount);
-          this.setData({ flowingWaterMessage: message });
-          break;
-        case 'annualTurnover':
-          message = validateNumber(amount);
-          this.setData({ annualTurnoverMessage: message });
-          break;
-        case 'equipmentPrice':
-          message = validateNumber(amount);
-          this.setData({ equipmentPriceMessage: message });
-          break;
-        case 'siteArea':
-          message = validateNumber(amount, '场地面积');
-          this.setData({ siteAreaMessage: message });
-          break;
-        case 'annualIncome':
-          message = validateNumber(amount);
-          this.setData({ annualIncomeMessage: message });
-          break;
-        case 'bankDebt':
-          message = validateNumber(amount);
-          this.setData({ bankDebtMessage: message });
-          break;
-        case 'creditCardDebt':
-          message = validateNumber(amount);
-          this.setData({ creditCardDebtMessage: message });
-          break;
+    // if (type.startsWith('houseList-')) {
+    //   const item = this.data.houseList[type.split('-')[1]];
+    //   message = validateAmount(amount);
+    //   item.totalAmount = amount;
+    //   item.totalAmountMessage = message;
+    //   this.setData({ houseList: this.data.houseList });
+    // } else
+    // if (type.startsWith('carList-')) {
+    //   const item = this.data.carList[type.split('-')[1]];
+    //   message = validateAmount(amount);
+    //   item.totalAmount = amount;
+    //   item.totalAmountMessage = message;
+    //   this.setData({ carList: this.data.carList });
+    // } else {
+    this.setData({ [type]: amount });
+    switch (type) {
+      case 'loanAmount':
+        message = validateNumber(amount);
+        this.setData({ loanAmountMessage: message });
+        break;
+      // case 'salary':
+      //   message = validateNumber(amount);
+      //   this.setData({ salaryMessage: message });
+      //   break;
+      case 'flowingWater':
+        message = validateNumber(amount);
+        this.setData({ flowingWaterMessage: message });
+        break;
+      case 'annualTurnover':
+        message = validateNumber(amount);
+        this.setData({ annualTurnoverMessage: message });
+        break;
+      case 'equipmentPrice':
+        message = validateNumber(amount);
+        this.setData({ equipmentPriceMessage: message });
+        break;
+      case 'siteArea':
+        message = validateNumber(amount, '场地面积');
+        this.setData({ siteAreaMessage: message });
+        break;
+      // case 'annualIncome':
+      //   message = validateNumber(amount);
+      //   this.setData({ annualIncomeMessage: message });
+      //   break;
+      case 'bankDebt':
+        message = validateNumber(amount);
+        this.setData({ bankDebtMessage: message });
+        break;
+      case 'creditCardDebt':
+        message = validateNumber(amount);
+        this.setData({ creditCardDebtMessage: message });
+        break;
 
-        default:
-          break;
-      }
+      default:
+        break;
     }
+    // }
   },
   sufficientChange(event) {
     this.setData({ isSufficient: event.detail });
@@ -532,9 +544,9 @@ Page({
   //   const amount = event.detail || '';
   //   this.setData({ annualIncome: amount });
   // },
-  inCaseChange(event) {
-    this.setData({ isInCase: event.detail });
-  },
+  // inCaseChange(event) {
+  //   this.setData({ isInCase: event.detail });
+  // },
   indebtChange(event) {
     this.setData({ isInDebt: event.detail });
   },
@@ -542,150 +554,150 @@ Page({
     this.setData({ hasHouse: event.detail });
   },
   // 添加房产
-  addHouse() {
-    const house = {
-      isLocal: true,
-      area: [],
-      areaTxt: '',
-      areaMessage: '',
-      address: '',
-      addressMessage: '',
-      totalAmount: '',
-      totalAmountMessage: '',
-      hasCert: true,
-      certFront: [],
-      certBack: [],
-    };
-    this.setData({ houseList: [...this.data.houseList, house] });
-  },
-  localChange(event) {
-    const item = this.data.houseList[event.target.dataset.houseIndex];
-    item.isLocal = event.detail;
-  },
-  hasCertChange(event) {
-    const index = event.target.dataset.houseIndex;
-    const item = this.data.houseList[index];
-    item.hasCert = event.detail;
-    this.setData({ houseList: this.data.houseList });
-  },
-  afterCertRead(event) {
-    const index = event.target.dataset.houseIndex;
-    const item = this.data.houseList[index.split('-')[1]];
-    item[index.split('-')[0]] = [{ ...event.detail.file, isImage: true }];
-    this.setData({ houseList: this.data.houseList });
-  },
-  deleteCert(event) {
-    const index = event.target.dataset.houseIndex;
-    const item = this.data.houseList[index.split('-')[1]];
-    item[index.split('-')[0]] = [];
-    this.setData({ houseList: this.data.houseList });
-  },
-  deleteHouse(event) {
-    const index = event.target.dataset.houseIndex;
-    wx.showModal({
-      title: `确定删除房产${index + 1}？`,
-    }).then((res) => {
-      if (res.confirm) {
-        this.data.houseList.splice(index, 1);
-        this.setData({ houseList: this.data.houseList });
-      }
-    });
-  },
+  // addHouse() {
+  //   const house = {
+  //     isLocal: true,
+  //     area: [],
+  //     areaTxt: '',
+  //     areaMessage: '',
+  //     address: '',
+  //     addressMessage: '',
+  //     totalAmount: '',
+  //     totalAmountMessage: '',
+  //     hasCert: true,
+  //     certFront: [],
+  //     certBack: [],
+  //   };
+  //   this.setData({ houseList: [...this.data.houseList, house] });
+  // },
+  // localChange(event) {
+  //   const item = this.data.houseList[event.target.dataset.houseIndex];
+  //   item.isLocal = event.detail;
+  // },
+  // hasCertChange(event) {
+  //   const index = event.target.dataset.houseIndex;
+  //   const item = this.data.houseList[index];
+  //   item.hasCert = event.detail;
+  //   this.setData({ houseList: this.data.houseList });
+  // },
+  // afterCertRead(event) {
+  //   const index = event.target.dataset.houseIndex;
+  //   const item = this.data.houseList[index.split('-')[1]];
+  //   item[index.split('-')[0]] = [{ ...event.detail.file, isImage: true }];
+  //   this.setData({ houseList: this.data.houseList });
+  // },
+  // deleteCert(event) {
+  //   const index = event.target.dataset.houseIndex;
+  //   const item = this.data.houseList[index.split('-')[1]];
+  //   item[index.split('-')[0]] = [];
+  //   this.setData({ houseList: this.data.houseList });
+  // },
+  // deleteHouse(event) {
+  //   const index = event.target.dataset.houseIndex;
+  //   wx.showModal({
+  //     title: `确定删除房产${index + 1}？`,
+  //   }).then((res) => {
+  //     if (res.confirm) {
+  //       this.data.houseList.splice(index, 1);
+  //       this.setData({ houseList: this.data.houseList });
+  //     }
+  //   });
+  // },
 
   hasCarChange(event) {
     this.setData({ hasCar: event.detail });
   },
-  addCar() {
-    const car = {
-      carModel: '',
-      carModelMessage: '',
-      // carMark: '',
-      // carMarkMessage: '',
-      totalAmount: '',
-      totalAmountMessage: '',
-      hasCert: true,
-      certFront: [],
-      certBack: [],
-    };
-    this.setData({ carList: [...this.data.carList, car] });
-  },
-  carChange(event) {
-    const name = event.detail || '';
-    const carIndex = event.target.dataset.carIndex.split('-');
-    const item = this.data.carList[carIndex[1]];
-    // if (carIndex[0] === 'carBrand') {
-    item.carModel = name;
-    item.carModelMessage = name.trim() ? '' : '品牌型号不能为空';
-    // }
-    // else if (carIndex[0] === 'carMark') {
-    //   item.carMark = name;
-    //   item.carMarkMessage = name.trim() ? '' : '车辆型号不能为空';
-    // }
-    this.setData({ carList: this.data.carList });
-  },
-  hasCarCertChange(event) {
-    const index = event.target.dataset.carIndex;
-    const item = this.data.carList[index];
-    item.hasCert = event.detail;
-    this.setData({ carList: this.data.carList });
-  },
-  async afterCarCertRead(event) {
-    // vehicleLicenseOcr
-    const index = event.target.dataset.carIndex.split('-');
-    const item = this.data.carList[index[1]];
-    item[index[0]] = [{ ...event.detail.file, isImage: true }];
-    this.setData({ carList: this.data.carList });
-    if (index[0] === 'certFront') {
-      // 同步接口
-      try {
-        Toast.loading({
-          message: '识别中...',
-          forbidClick: false,
-          duration: 0,
-        });
-        const fs = wx.getFileSystemManager();
-        // const base64File = fs.readFileSync(event.detail.file.tempFilePath, 'base64');
-        const arrayBufferFile = fs.readFileSync(event.detail.file.tempFilePath);
-        const { result } = await wx.cloud.callFunction({
-          name: 'ocrApi',
-          data: {
-            $url: 'vehicleLicense',
-            test: isTest,
-            ImageType: event.detail.file.tempFilePath.split('.').pop(),
-            ImageBuffer: wx.cloud.CDN(arrayBufferFile),
-            // ImageBase64: wx.cloud.CDN(base64File),
-            CardSide: 'FRONT',
-          },
-        });
-        if (result.code === 0) {
-          item.carModel = result.data.FrontInfo.Model;
-          item.carModelMessage = '';
-          this.setData({ carList: this.data.carList });
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        Toast.clear();
-      }
-    }
-  },
-  deleteCarCert(event) {
-    const index = event.target.dataset.carIndex;
-    const item = this.data.carList[index.split('-')[1]];
-    item[index.split('-')[0]] = [];
-    this.setData({ carList: this.data.carList });
-  },
-  deleteCar(event) {
-    const index = event.target.dataset.carIndex;
-    wx.showModal({
-      title: `确定删除车辆${index + 1}？`,
-    }).then((res) => {
-      if (res.confirm) {
-        this.data.carList.splice(index, 1);
-        this.setData({ carList: this.data.carList });
-      }
-    });
-  },
+  // addCar() {
+  //   const car = {
+  //     carModel: '',
+  //     carModelMessage: '',
+  //     // carMark: '',
+  //     // carMarkMessage: '',
+  //     totalAmount: '',
+  //     totalAmountMessage: '',
+  //     hasCert: true,
+  //     certFront: [],
+  //     certBack: [],
+  //   };
+  //   this.setData({ carList: [...this.data.carList, car] });
+  // },
+  // carChange(event) {
+  //   const name = event.detail || '';
+  //   const carIndex = event.target.dataset.carIndex.split('-');
+  //   const item = this.data.carList[carIndex[1]];
+  //   // if (carIndex[0] === 'carBrand') {
+  //   item.carModel = name;
+  //   item.carModelMessage = name.trim() ? '' : '品牌型号不能为空';
+  //   // }
+  //   // else if (carIndex[0] === 'carMark') {
+  //   //   item.carMark = name;
+  //   //   item.carMarkMessage = name.trim() ? '' : '车辆型号不能为空';
+  //   // }
+  //   this.setData({ carList: this.data.carList });
+  // },
+  // hasCarCertChange(event) {
+  //   const index = event.target.dataset.carIndex;
+  //   const item = this.data.carList[index];
+  //   item.hasCert = event.detail;
+  //   this.setData({ carList: this.data.carList });
+  // },
+  // async afterCarCertRead(event) {
+  //   // vehicleLicenseOcr
+  //   const index = event.target.dataset.carIndex.split('-');
+  //   const item = this.data.carList[index[1]];
+  //   item[index[0]] = [{ ...event.detail.file, isImage: true }];
+  //   this.setData({ carList: this.data.carList });
+  //   if (index[0] === 'certFront') {
+  //     // 同步接口
+  //     try {
+  //       Toast.loading({
+  //         message: '识别中...',
+  //         forbidClick: false,
+  //         duration: 0,
+  //       });
+  //       const fs = wx.getFileSystemManager();
+  //       // const base64File = fs.readFileSync(event.detail.file.tempFilePath, 'base64');
+  //       const arrayBufferFile = fs.readFileSync(event.detail.file.tempFilePath);
+  //       const { result } = await wx.cloud.callFunction({
+  //         name: 'ocrApi',
+  //         data: {
+  //           $url: 'vehicleLicense',
+  //           test: isTest,
+  //           ImageType: event.detail.file.tempFilePath.split('.').pop(),
+  //           ImageBuffer: wx.cloud.CDN(arrayBufferFile),
+  //           // ImageBase64: wx.cloud.CDN(base64File),
+  //           CardSide: 'FRONT',
+  //         },
+  //       });
+  //       if (result.code === 0) {
+  //         item.carModel = result.data.FrontInfo.Model;
+  //         item.carModelMessage = '';
+  //         this.setData({ carList: this.data.carList });
+  //       }
+  //     } catch (e) {
+  //       console.error(e);
+  //     } finally {
+  //       Toast.clear();
+  //     }
+  //   }
+  // },
+  // deleteCarCert(event) {
+  //   const index = event.target.dataset.carIndex;
+  //   const item = this.data.carList[index.split('-')[1]];
+  //   item[index.split('-')[0]] = [];
+  //   this.setData({ carList: this.data.carList });
+  // },
+  // deleteCar(event) {
+  //   const index = event.target.dataset.carIndex;
+  //   wx.showModal({
+  //     title: `确定删除车辆${index + 1}？`,
+  //   }).then((res) => {
+  //     if (res.confirm) {
+  //       this.data.carList.splice(index, 1);
+  //       this.setData({ carList: this.data.carList });
+  //     }
+  //   });
+  // },
   // 出生日期
   applyDateConfirm(event) {
     const { detail } = event;
@@ -758,11 +770,11 @@ Page({
 
   async handleApply() {
     // try {
-    //   Toast.loading({
-    //     message: '正在提交...',
-    //     forbidClick: false,
-    //     duration: 0,
-    //   });
+    // Toast.loading({
+    //   message: '正在提交...',
+    //   forbidClick: false,
+    //   duration: 0,
+    // });
     //   const fs = wx.getFileSystemManager();
     //   const { result: res } = await wx.cloud.callFunction({
     //     name: 'apply',
@@ -800,11 +812,11 @@ Page({
       wrongSelector.push('#idcard');
       messageData.idCardMessage = idCardMessage;
     }
-    // 出生日期
-    if (!this.data.bornDateTxt) {
-      wrongSelector.push('#bornDate');
-      messageData.bornDateMessage = '出生日期不能为空';
-    }
+    // // 出生日期
+    // if (!this.data.bornDateTxt) {
+    //   wrongSelector.push('#bornDate');
+    //   messageData.bornDateMessage = '出生日期不能为空';
+    // }
     // 家庭住址省市区
     if (!this.data.areaTxt) {
       wrongSelector.push('#areaList');
@@ -834,7 +846,7 @@ Page({
       wrongSelector.push('#idcardCamera');
     }
     // 申请额度
-    const loanAmountMessage = validateAmount(this.data.loanAmount);
+    const loanAmountMessage = validateNumber(this.data.loanAmount);
     if (loanAmountMessage) {
       wrongSelector.push('#loanAmount');
       messageData.loanAmountMessage = loanAmountMessage;
@@ -858,17 +870,17 @@ Page({
       wrongSelector.push('#companyMaster');
       messageData.companyMasterMessage = companyMasterMessage;
     }
-    // 上传营业执照
-    if (this.data.bizLicense.length === 0) {
-      wrongSelector.push('#bizLicense');
-    }
-    // 员工工资
-    const salaryMessage = validateNumber(this.data.salary);
-    if (salaryMessage) {
-      wrongSelector.push('#salary');
-      messageData.salaryMessage = salaryMessage;
-    }
-    // 员工流水
+    // // 上传营业执照
+    // if (this.data.bizLicense.length === 0) {
+    //   wrongSelector.push('#bizLicense');
+    // }
+    // // 员工工资
+    // const salaryMessage = validateNumber(this.data.salary);
+    // if (salaryMessage) {
+    //   wrongSelector.push('#salary');
+    //   messageData.salaryMessage = salaryMessage;
+    // }
+    // 月收入
     const flowingWaterMessage = validateNumber(this.data.flowingWater);
     if (flowingWaterMessage) {
       wrongSelector.push('#flowingWater');
@@ -903,12 +915,12 @@ Page({
       wrongSelector.push('#monthlyRent');
       messageData.monthlyRentMessage = monthlyRentMessage;
     }
-    // 年收入金额
-    const annualIncomeMessage = validateNumber(this.data.annualIncome, '金额');
-    if (annualIncomeMessage) {
-      wrongSelector.push('#annualIncome');
-      messageData.annualIncomeMessage = annualIncomeMessage;
-    }
+    // // 年收入金额
+    // const annualIncomeMessage = validateNumber(this.data.annualIncome, '金额');
+    // if (annualIncomeMessage) {
+    //   wrongSelector.push('#annualIncome');
+    //   messageData.annualIncomeMessage = annualIncomeMessage;
+    // }
     // 银行总贷款额度
     const bankDebtMessage = validateNumber(this.data.bankDebt, '金额');
     if (bankDebtMessage) {
@@ -924,69 +936,75 @@ Page({
       wrongSelector.push('#creditCardDebt');
       messageData.creditCardDebtMessage = creditCardDebtMessage;
     }
-    // 房产判断
-    if (this.data.hasHouse) {
-      this.data.houseList.forEach((d, i) => {
-        let wrong = false;
-        // 家庭住址省市区
-        if (!d.areaTxt) {
-          wrong = true;
-          d.areaMessage = '省市区不能为空';
-        }
-        // 详细地址
-        if (!d.address.trim()) {
-          wrong = true;
-          d.addressMessage = '详细地址不能为空';
-        }
-        // 全款、按揭金额
-        const totalAmountMessage = validateAmount(d.totalAmount, '金额');
-        if (totalAmountMessage) {
-          wrong = true;
-          d.totalAmountMessage = totalAmountMessage;
-        }
-        if (wrong) wrongSelector.push(`#house-item-${i}`);
-        // 房产证上传
-        if (
-          d.hasCert &&
-          (d.certFront.length === 0 || d.certBack.length === 0)
-        ) {
-          wrongSelector.push(`#house-cert-${i}`);
-        }
-      });
-      messageData.houseList = this.data.houseList;
-    }
+    // // 房产判断
+    // if (this.data.hasHouse) {
+    //   this.data.houseList.forEach((d, i) => {
+    //     let wrong = false;
+    //     // 家庭住址省市区
+    //     if (!d.areaTxt) {
+    //       wrong = true;
+    //       d.areaMessage = '省市区不能为空';
+    //     }
+    //     // 详细地址
+    //     if (!d.address.trim()) {
+    //       wrong = true;
+    //       d.addressMessage = '详细地址不能为空';
+    //     }
+    //     // 全款、按揭金额
+    //     const totalAmountMessage = validateAmount(d.totalAmount, '金额');
+    //     if (totalAmountMessage) {
+    //       wrong = true;
+    //       d.totalAmountMessage = totalAmountMessage;
+    //     }
+    //     if (wrong) wrongSelector.push(`#house-item-${i}`);
+    //     // 房产证上传
+    //     if (
+    //       d.hasCert &&
+    //       (d.certFront.length === 0 || d.certBack.length === 0)
+    //     ) {
+    //       wrongSelector.push(`#house-cert-${i}`);
+    //     }
+    //   });
+    //   messageData.houseList = this.data.houseList;
+    // }
     // 车产判断
-    if (this.data.hasCar) {
-      this.data.carList.forEach((d, i) => {
-        let wrong = false;
-        // 品牌型号
-        if (!d.carModel) {
-          wrong = true;
-          d.carModelMessage = '品牌型号不能为空';
-        }
-        // 全款、按揭金额
-        const totalAmountMessage = validateAmount(d.totalAmount, '金额');
-        if (totalAmountMessage) {
-          wrong = true;
-          d.totalAmountMessage = totalAmountMessage;
-        }
-        if (wrong) wrongSelector.push(`#car-item-${i}`);
-        // 行驶证上传
-        if (
-          d.hasCert &&
-          (d.certFront.length === 0 || d.certBack.length === 0)
-        ) {
-          wrongSelector.push(`#car-cert-${i}`);
-        }
-      });
-      messageData.carList = this.data.carList;
-    }
+    // if (this.data.hasCar) {
+    //   this.data.carList.forEach((d, i) => {
+    //     let wrong = false;
+    //     // 品牌型号
+    //     if (!d.carModel) {
+    //       wrong = true;
+    //       d.carModelMessage = '品牌型号不能为空';
+    //     }
+    //     // 全款、按揭金额
+    //     const totalAmountMessage = validateAmount(d.totalAmount, '金额');
+    //     if (totalAmountMessage) {
+    //       wrong = true;
+    //       d.totalAmountMessage = totalAmountMessage;
+    //     }
+    //     if (wrong) wrongSelector.push(`#car-item-${i}`);
+    //     // 行驶证上传
+    //     if (
+    //       d.hasCert &&
+    //       (d.certFront.length === 0 || d.certBack.length === 0)
+    //     ) {
+    //       wrongSelector.push(`#car-cert-${i}`);
+    //     }
+    //   });
+    //   messageData.carList = this.data.carList;
+    // }
     // 填表日期
-    if (!this.data.applyDateTxt) {
-      wrongSelector.push('#applyDate');
-      messageData.bornDateMessage = '填表日期不能为空';
+    // if (!this.data.applyDateTxt) {
+    //   wrongSelector.push('#applyDate');
+    //   messageData.bornDateMessage = '填表日期不能为空';
+    // }
+    // 推荐人代码
+    const referenceMessage = validateReference(this.data.reference);
+    if (referenceMessage) {
+      wrongSelector.push('#reference');
+      messageData.referenceMessage = referenceMessage;
     }
-    // 填表日期
+    // 验证码
     if (this.data.phone !== this.data.originPhone) {
       const smsCodeMessage = validateSmsCode(this.data.smsCode);
       if (smsCodeMessage) {
@@ -1003,9 +1021,9 @@ Page({
           case wrongSelector[0] === '#idcardCamera':
             Toast.fail('请上传身份证');
             break;
-          case wrongSelector[0] === '#bizLicense':
-            Toast.fail('请上传营业执照');
-            break;
+          // case wrongSelector[0] === '#bizLicense':
+          //   Toast.fail('请上传营业执照');
+          //   break;
           case wrongSelector[0].startsWith('#house-cert-'):
             Toast.fail('请上传房产证');
             break;
@@ -1029,7 +1047,7 @@ Page({
         idCardBack: wx.cloud.CDN(
           fs.readFileSync(this.data.idCardBack[0].tempFilePath),
         ),
-        bornDate: this.data.bornDate,
+        // bornDate: this.data.bornDate,
         marryStatus: this.data.marryStatus,
         loanAmount: this.data.loanAmount,
         useWay: this.data.useWay,
@@ -1038,14 +1056,11 @@ Page({
         companyName: this.data.companyName,
         companyMaster: this.data.companyMaster,
         companyRecCode: this.data.companyRecCode,
-        bizLicense: wx.cloud.CDN(
-          fs.readFileSync(this.data.bizLicense[0].tempFilePath),
-        ),
         area: this.data.area,
         address: this.data.address,
         operYears: this.data.operYears,
         companyMember: this.data.companyMember,
-        salary: this.data.salary,
+        // salary: this.data.salary,
         flowingWater: this.data.flowingWater,
         annualTurnover: this.data.annualTurnover,
         isSufficient: this.data.isSufficient,
@@ -1055,16 +1070,16 @@ Page({
         sharePercent: this.data.sharePercent,
         siteArea: this.data.siteArea,
         monthlyRent: this.data.monthlyRent,
-        annualIncome: this.data.annualIncome,
-        isInCase: this.data.isInCase,
+        // annualIncome: this.data.annualIncome,
+        // isInCase: this.data.isInCase,
         isInDebt: this.data.isInDebt,
         bankDebt: this.data.bankDebt,
         creditCardDebt: this.data.creditCardDebt,
         hasHouse: this.data.hasHouse,
-        houseList: [],
+        // houseList: [],
         hasCar: this.data.hasCar,
-        carList: [],
-        otherMark: this.data.otherMark,
+        // carList: [],
+        // otherMark: this.data.otherMark,
         reference: this.data.reference,
         applyDate: this.data.applyDate,
         // smsCode: this.data.smsCode,
@@ -1072,73 +1087,82 @@ Page({
       if (this.data.phone !== this.data.originPhone)
         params.smsCode = this.data.smsCode;
       if (params.marryStatus === 0) params.marryname = this.data.marryname;
-      if (params.hasHouse)
-        params.houseList = this.data.houseList.map((d) => {
-          const obj = {
-            isLocal: d.isLocal,
-            area: d.area,
-            address: d.address,
-            totalAmount: d.totalAmount,
-            hasCert: d.hasCert,
-          };
-          if (d.hasCert) {
-            obj.certFront = wx.cloud.CDN(
-              fs.readFileSync(d.certFront[0].tempFilePath),
-            );
-            obj.certBack = wx.cloud.CDN(
-              fs.readFileSync(d.certBack[0].tempFilePath),
-            );
+      if (this.data.bizLicense.length > 0)
+        params.bizLicense = wx.cloud.CDN(
+          fs.readFileSync(this.data.bizLicense[0].tempFilePath),
+        );
+      // if (params.hasHouse)
+      //   params.houseList = this.data.houseList.map((d) => {
+      //     const obj = {
+      //       isLocal: d.isLocal,
+      //       area: d.area,
+      //       address: d.address,
+      //       totalAmount: d.totalAmount,
+      //       hasCert: d.hasCert,
+      //     };
+      //     if (d.hasCert) {
+      //       obj.certFront = wx.cloud.CDN(
+      //         fs.readFileSync(d.certFront[0].tempFilePath),
+      //       );
+      //       obj.certBack = wx.cloud.CDN(
+      //         fs.readFileSync(d.certBack[0].tempFilePath),
+      //       );
+      //     }
+      //     return obj;
+      //   });
+      // if (params.hasCar)
+      //   params.carList = this.data.carList.map((d) => {
+      //     const obj = {
+      //       carModel: d.carModel,
+      //       totalAmount: d.totalAmount,
+      //       hasCert: d.hasCert,
+      //     };
+      //     if (d.hasCert) {
+      //       obj.certFront = wx.cloud.CDN(
+      //         fs.readFileSync(d.certFront[0].tempFilePath),
+      //       );
+      //       obj.certBack = wx.cloud.CDN(
+      //         fs.readFileSync(d.certBack[0].tempFilePath),
+      //       );
+      //     }
+      //     return obj;
+      //   });
+      wx.requestSubscribeMessage({
+        tmplIds: ['clyY5RJiJwLy7BUrAd1w2ylGwPqkF-rfJzoVvVHvZ-c'],
+        complete: async (res) => {
+          try {
+            Toast.loading({
+              message: '正在提交...',
+              forbidClick: false,
+              duration: 0,
+            });
+            const { result: res } = await wx.cloud.callFunction({
+              name: 'apply',
+              data: params,
+              // config: {
+              //   traceUser: true,
+              // },
+            });
+            if (res.code === 0) {
+              Toast.success('提交成功');
+              app.globalData.userInfo.phone = params.phone;
+              if (!isTest) this.resetData(params.phone);
+            } else {
+              Toast.fail(res.msg);
+            }
+          } catch (e) {
+            // console.log(e);
+            Toast.fail('请求错误，请稍后重试');
           }
-          return obj;
-        });
-      if (params.hasCar)
-        params.carList = this.data.carList.map((d) => {
-          const obj = {
-            carModel: d.carModel,
-            totalAmount: d.totalAmount,
-            hasCert: d.hasCert,
-          };
-          if (d.hasCert) {
-            obj.certFront = wx.cloud.CDN(
-              fs.readFileSync(d.certFront[0].tempFilePath),
-            );
-            obj.certBack = wx.cloud.CDN(
-              fs.readFileSync(d.certBack[0].tempFilePath),
-            );
-          }
-          return obj;
-        });
-      try {
-        Toast.loading({
-          message: '正在提交...',
-          forbidClick: false,
-          duration: 0,
-        });
-        const { result: res } = await wx.cloud.callFunction({
-          name: 'apply',
-          data: params,
-          // config: {
-          //   traceUser: true,
-          // },
-        });
-        if (res.code === 0) {
-          Toast.success('提交成功');
-          app.globalData.userInfo.phone = params.phone;
-          if (!isTest) this.resetData(params.phone);
-        } else {
-          Toast.fail(res.msg);
-        }
-      } catch (e) {
-        // console.log(e);
-        Toast.fail('请求错误，请稍后重试');
-      }
+        },
+      });
     }
   },
 
   resetData(phone) {
     // clearInterval(this.data.smsTimer);
     this.setData({
-      bornDateTxt: '',
+      // bornDateTxt: '',
       marryShow: false,
       marryStatusTxt: '',
       useWayTxt: '',
@@ -1150,7 +1174,7 @@ Page({
       nameMessage: '',
       phoneMessage: '',
       idCardMessage: '',
-      bornDateMessage: '',
+      // bornDateMessage: '',
       marryStatusMessage: '',
       marrynameMessage: '',
       loanAmountMessage: '',
@@ -1160,14 +1184,14 @@ Page({
       companyRecCodeMessage: '',
       areaMessage: '',
       addressMessage: '',
-      salaryMessage: '',
+      // salaryMessage: '',
       flowingWaterMessage: '',
       annualTurnoverMessage: '',
       equipmentPriceMessage: '',
       businessScaleMessage: '',
       siteAreaMessage: '',
       monthlyRentMessage: '',
-      annualIncomeMessage: '',
+      // annualIncomeMessage: '',
       bankDebtMessage: '',
       creditCardDebtMessage: '',
       applyDateMessage: '',
@@ -1178,7 +1202,7 @@ Page({
       idCard: '',
       idCardFront: [],
       idCardBack: [],
-      bornDate: new Date('2000/01/01').getTime(),
+      // bornDate: new Date('2000/01/01').getTime(),
       marryStatus: '',
       marryname: '',
       loanAmount: '',
@@ -1192,8 +1216,8 @@ Page({
       area: [],
       address: '',
       operYears: 0,
-      companyMember: 1,
-      salary: '',
+      companyMember: 0,
+      // salary: '',
       flowingWater: '',
       annualTurnover: '',
       isSufficient: true,
@@ -1203,44 +1227,45 @@ Page({
       sharePercent: 0,
       siteArea: '',
       monthlyRent: '',
-      annualIncome: '',
-      isInCase: false,
+      // annualIncome: '',
+      // isInCase: false,
       isInDebt: false,
       bankDebt: '',
       creditCardDebt: '',
       hasHouse: true,
-      houseList: [
-        {
-          isLocal: true,
-          area: [],
-          areaTxt: '',
-          areaMessage: '',
-          address: '',
-          addressMessage: '',
-          totalAmount: '',
-          totalAmountMessage: '',
-          hasCert: true,
-          certFront: [],
-          certBack: [],
-        },
-      ],
+      // houseList: [
+      //   {
+      //     isLocal: true,
+      //     area: [],
+      //     areaTxt: '',
+      //     areaMessage: '',
+      //     address: '',
+      //     addressMessage: '',
+      //     totalAmount: '',
+      //     totalAmountMessage: '',
+      //     hasCert: true,
+      //     certFront: [],
+      //     certBack: [],
+      //   },
+      // ],
       hasCar: true,
-      carList: [
-        {
-          carModel: '',
-          carModelMessage: '',
-          // carMark: '',
-          // carMarkMessage: '',
-          totalAmount: '',
-          totalAmountMessage: '',
-          hasCert: true,
-          certFront: [],
-          certBack: [],
-        },
-      ],
-      otherMark: '',
-      reference: '',
+      // carList: [
+      //   {
+      //     carModel: '',
+      //     carModelMessage: '',
+      //     // carMark: '',
+      //     // carMarkMessage: '',
+      //     totalAmount: '',
+      //     totalAmountMessage: '',
+      //     hasCert: true,
+      //     certFront: [],
+      //     certBack: [],
+      //   },
+      // ],
+      // otherMark: '',
+      // reference: '',
       applyDate: date.getTime(),
+      // referenceMessage: '',
       smsCode: '',
       // smsTips: '发送',
       // smsTimer: null,
@@ -1249,7 +1274,7 @@ Page({
     });
   },
   checkUser() {
-    if (app.globalData.loadingStatus === 2 && !app.globalData.userInfo.phone) {
+    if (!app.globalData.userInfo.phone) {
       wx.navigateTo({
         url: '../profile/index',
         events: {
@@ -1296,9 +1321,12 @@ Page({
       isReview: app.globalData.isReview,
       reviewApiLoaded: app.globalData.reviewApiLoaded,
     });
-    Toast.clear();
+    setTimeout(() => {
+      Toast.clear();
+    }, 1000);
     if (app.globalData.isReview) return;
-
+    console.log(options);
+    this.setData({ reference: options.scene, referenceMessage: '' });
     // 审核后
     if (app.globalData.loadingStatus === 0) {
       app.globalData.loadingStatus = 1;
@@ -1309,10 +1337,13 @@ Page({
         })
         .then(({ result: res }) => {
           console.log(res);
-          Toast.clear();
           if (res.code === 0) {
             Object.assign(app.globalData.userInfo, res.data);
-            this.setData({ phone: res.data.phone, phoneMessage: '' });
+            this.setData({
+              phone: res.data.phone,
+              originPhone: res.data.phone,
+              phoneMessage: '',
+            });
           }
         })
         .catch((err) => {

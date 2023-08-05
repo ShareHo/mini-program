@@ -13,7 +13,7 @@
         {
           "name": "pages/mine/index",
           "pathName": "pages/mine/index",
-          "query": "",
+          "query": "role=2&pcode=oDD2C6yJHBquE6L2Qnj_0hN4r_aM@1691250784914142398964",
           "launchMode": "default",
           "scene": null
         },

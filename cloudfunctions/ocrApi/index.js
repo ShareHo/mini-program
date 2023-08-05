@@ -3,8 +3,8 @@ const cloud = require('wx-server-sdk');
 cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV }); // 使用当前云环境
 // Tcb-Router
 const TcbRouter = require('tcb-router');
-// const axios = require('axios/dist/node/axios.cjs');
-const axios = require('axios');
+const axios = require('axios/dist/node/axios.cjs');
+// const axios = require('axios');
 
 const tencentcloud = require('tencentcloud-sdk-nodejs');
 // 导入对应产品模块的client models。

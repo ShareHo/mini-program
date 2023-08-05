@@ -7,6 +7,7 @@ const fs = wx.getFileSystemManager();
 Page({
   data: {
     avatarUrl: '',
+    referenceCode: '',
     nickname: '',
     phone: '',
     phoneMessage: '',
@@ -26,18 +27,13 @@ Page({
     //   this.setData({ ...data, originPhone: data.phone });
     // });
     if (app.globalData.loadingStatus === 2 && app.globalData.userInfo.phone) {
-      if (app.globalData.userInfo.phone !== this.data.phone) {
-        this.setData({
-          phone: app.globalData.userInfo.phone,
-          originPhone: app.globalData.userInfo.phone,
-        });
-      }
-      if (app.globalData.userInfo.nickname !== this.data.nickname) {
-        this.setData({ nickname: app.globalData.userInfo.nickname });
-      }
-      if (app.globalData.userInfo.avatarUrl !== this.data.avatarUrl) {
-        this.setData({ avatarUrl: app.globalData.userInfo.avatarUrl });
-      }
+      this.setData({
+        phone: app.globalData.userInfo.phone,
+        originPhone: app.globalData.userInfo.phone,
+        nickname: app.globalData.userInfo.nickname,
+        avatarUrl: app.globalData.userInfo.avatarUrl,
+        referenceCode: app.globalData.userInfo.referenceCode,
+      });
     }
   },
   onChooseAvatar(e) {

@@ -5,7 +5,7 @@
     <van-cell size="large" title="客户姓名" value="{{detail.username}}" />
     <van-cell size="large" title="手机号" value="{{detail.phone}}" />
     <van-cell size="large" title="身份证号" value="{{detail.idCard}}" />
-    <van-cell size="large" title="出生日期" value="{{detail.bornDateTxt}}" />
+    <!-- <van-cell size="large" title="出生日期" value="{{detail.bornDateTxt}}" /> -->
     <van-cell size="large" title="省市区" value="{{detail.areaTxt}}" />
     <van-cell size="large" title="详细地址" value="{{detail.address}}" />
     <van-cell size="large" title="婚姻状况" value="{{detail.marryStatusTxt}}" />
@@ -36,9 +36,10 @@
   </van-cell-group>
   <van-cell-group inset title="申请资料">
     <van-cell
+      wx:if="{{detail.loanAmount}}"
       size="large"
       title="申请额度"
-      value="{{detail.loanAmount+'元'}}"
+      value="{{detail.loanAmount+'万元'}}"
     />
     <van-cell size="large" title="借款用途" value="{{detail.useWayTxt}}" />
     <van-cell size="large" title="备注" value="{{detail.useWayMark||'无'}}" />
@@ -50,38 +51,47 @@
     />
     <van-cell size="large" title="公司全称" value="{{detail.companyName}}" />
     <van-cell size="large" title="公司法人" value="{{detail.companyMaster}}" />
-    <van-cell-group inset title="营业执照" border="{{false}}">
-      <view class="image-thumb-wrap">
-        <image
-          class="image-thumb"
-          src="{{detail.bizLicense}}"
-          mode="aspectFit"
-          data-index="{{0}}"
-          bindtap="bizLicensePreview"
-        />
-      </view>
-    </van-cell-group>
+  </van-cell-group>
+  <van-cell-group
+    wx:if="{{detail.bizLicense}}"
+    inset
+    title="营业执照"
+    border="{{false}}"
+  >
+    <view class="image-thumb-wrap">
+      <image
+        class="image-thumb biz"
+        src="{{detail.bizLicense}}"
+        mode="aspectFit"
+        data-index="{{0}}"
+        bindtap="bizLicensePreview"
+      />
+    </view>
+  </van-cell-group>
+  <van-cell-group inset title=" " border="{{false}}">
     <van-cell size="large" title="经营年限" value="{{detail.operYears+'年'}}" />
     <van-cell
       size="large"
       title="员工人数"
       value="{{detail.companyMember+'人'}}"
     />
-    <van-cell
+    <!-- <van-cell
       size="large"
       title="员工工资（均）"
       title-width="7.2em"
-      value="{{detail.salary+'元'}}"
-    />
+      value="{{detail.salary+'万元'}}"
+    /> -->
     <van-cell
+      wx:if="{{detail.flowingWater}}"
       size="large"
-      title="月均流水"
-      value="{{detail.flowingWater+'元'}}"
+      title="月收入"
+      value="{{detail.flowingWater+'万元'}}"
     />
     <van-cell
+      wx:if="{{detail.annualTurnover}}"
       size="large"
       title="年营业额"
-      value="{{detail.annualTurnover+'元'}}"
+      value="{{detail.annualTurnover+'万元'}}"
     />
     <van-cell
       size="large"
@@ -89,11 +99,13 @@
       value="{{detail.isSufficient?'是':'否'}}"
     />
     <van-cell
+      wx:if="{{detail.equipmentPrice}}"
       size="large"
       title="设备价值"
-      value="{{detail.equipmentPrice+'元'}}"
+      value="{{detail.equipmentPrice+'万元'}}"
     />
     <van-cell
+      wx:if="{{detail.equipmentPrice}}"
       size="large"
       title="设备是否在押"
       value="{{detail.isEquipmentDetain?'是':'否'}}"
@@ -108,17 +120,23 @@
       title="占股百分比"
       value="{{detail.sharePercent+'%'}}"
     />
-    <van-cell size="large" title="场地面积" value="{{detail.siteArea+'㎡'}}" />
     <van-cell
+      wx:if="{{detail.siteArea}}"
+      size="large"
+      title="场地面积"
+      value="{{detail.siteArea+'㎡'}}"
+    />
+    <van-cell
+      wx:if="{{detail.monthlyRent}}"
       size="large"
       title="场地月缴租金"
-      value="{{detail.monthlyRent+'元'}}"
+      value="{{detail.monthlyRent+'万元'}}"
     />
-    <van-cell
+    <!-- <van-cell
       size="large"
       title="年收入金额"
-      value="{{detail.annualIncome+'元'}}"
-    />
+      value="{{detail.annualIncome+'万元'}}"
+    /> -->
     <van-cell
       size="large"
       title="是否有案件"
@@ -131,25 +149,37 @@
       value="{{detail.isInDebt?'是':'否'}}"
     />
     <van-cell
+      wx:if="{{detail.bankDebt}}"
       size="large"
       title="银行总贷款额度"
       title-width="7.2em"
-      value="{{detail.bankDebt+'元'}}"
+      value="{{detail.bankDebt+'万元'}}"
     />
     <van-cell
+      wx:if="{{detail.creditCardDebt}}"
       size="large"
       title="信用卡总额度"
-      value="{{detail.creditCardDebt+'元'}}"
+      value="{{detail.creditCardDebt+'万元'}}"
     />
-  </van-cell-group>
-  <van-cell-group inset title="名下房产">
     <van-cell
       size="large"
       title="名下有无房产"
       value="{{detail.hasHouse?'有':'无'}}"
     />
+    <van-cell
+      size="large"
+      title="名下有无车产"
+      value="{{detail.hasCar?'有':'无'}}"
+    />
   </van-cell-group>
-  <block wx:for="{{detail.houseList}}" wx:key="index">
+  <!-- <van-cell-group inset title="名下房产">
+    <van-cell
+      size="large"
+      title="名下有无房产"
+      value="{{detail.hasHouse?'有':'无'}}"
+    />
+  </van-cell-group> -->
+  <!-- <block wx:for="{{detail.houseList}}" wx:key="index">
     <van-cell-group class="house-title" inset title="{{'房产'+(index+1)}}">
       <van-cell
         size="large"
@@ -163,7 +193,7 @@
         size="large"
         title="全款/按揭金额"
         title-width="7.2em"
-        value="{{item.totalAmount+'元'}}"
+        value="{{item.totalAmount+'万元'}}"
       />
       <van-cell
         size="large"
@@ -195,22 +225,22 @@
         />
       </view>
     </van-cell-group>
-  </block>
-  <van-cell-group inset title="名下车产">
+  </block> -->
+  <!-- <van-cell-group inset title="名下车产">
     <van-cell
       size="large"
       title="名下有无车产"
       value="{{detail.hasCar?'有':'无'}}"
     />
-  </van-cell-group>
-  <block wx:for="{{detail.carList}}" wx:key="index">
+  </van-cell-group> -->
+  <!-- <block wx:for="{{detail.carList}}" wx:key="index">
     <van-cell-group class="house-title" inset title="{{'车辆'+(index+1)}}">
       <van-cell size="large" title="品牌型号" value="{{item.carModel}}" />
       <van-cell
         size="large"
         title="全款/按揭金额"
         title-width="7.2em"
-        value="{{item.totalAmount+'元'}}"
+        value="{{item.totalAmount+'万元'}}"
       />
       <van-cell
         size="large"
@@ -242,26 +272,41 @@
         />
       </view>
     </van-cell-group>
-  </block>
+  </block> -->
   <van-cell-group inset title=" ">
-    <van-cell
+    <!-- <van-cell
       size="large"
       title="其他优势"
       value="{{detail.otherMark||'无'}}"
+    /> -->
+    <van-cell size="large" title="审核状态" value="{{detail.applyStatusTxt}}" />
+    <van-cell
+      wx:if="{{detail.judgeTimeTxt}}"
+      size="large"
+      title="审核时间"
+      value="{{detail.judgeTimeTxt}}"
     />
-    <van-cell size="large" title="推荐人" value="{{detail.reference||'无'}}" />
+    <van-cell
+      wx:if="{{detail.judgeByCode}}"
+      size="large"
+      title="审核人代码"
+      value="{{detail.judgeByCode}}"
+    />
+    <van-cell
+      wx:if="{{detail.judgeByName}}"
+      size="large"
+      title="审核人"
+      value="{{detail.judgeByName}}"
+    />
+    <van-cell size="large" title="推荐人代码" value="{{detail.reference}}" />
+    <van-cell size="large" title="推荐人" value="{{detail.referenceName}}" />
     <van-cell size="large" title="填表日期" value="{{detail.applyDateTxt}}" />
   </van-cell-group>
-  <view wx:if="{{role!==0}}" class="btn-wrap">
-    <button wx:if="{{role===1}}" type="warn" bindtap="deleteDetail">
-      删除
-    </button>
-    <button
-      wx:if="{{(role===2||role===1)&&detail.applyStatus === 0}}"
-      type="primary"
-      bindtap="judgeDetail"
-    >
-      审核通过
-    </button>
+  <view
+    wx:if="{{(role===3||role===1)&&detail.applyStatus === 0}}"
+    class="btn-wrap"
+  >
+    <button type="warn" bindtap="deleteDetail">审批拒绝</button>
+    <button type="primary" bindtap="judgeDetail">审批通过</button>
   </view>
 </view>

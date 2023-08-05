@@ -42,6 +42,9 @@ exports.main = async (event, context) => {
         case 2:
           data.businessCodes = [...settings.data.businessCodes, code];
           break;
+        case 3:
+          data.riskCodes = [...settings.data.riskCodes, code];
+          break;
 
         default:
           break;
@@ -74,6 +77,12 @@ exports.main = async (event, context) => {
           (d) => d !== event.pcode,
         );
         break;
+      case 3:
+        arrCodes = settings.data.riskCodes;
+        settingsAfterUse.riskCodes = settings.data.riskCodes.filter(
+          (d) => d !== event.pcode,
+        );
+        break;
 
       default:
         break;
@@ -82,7 +91,7 @@ exports.main = async (event, context) => {
       .where({ _openid: cmd.eq(OPENID) })
       .limit(1);
     const user = await userCache.get();
-    console.log(arrCodes, event);
+    console.log(settings.data.businessCodes, arrCodes, event);
     if (!arrCodes.includes(event.pcode)) {
       if (user.data.length === 0) {
         ctx.body = {
@@ -102,18 +111,26 @@ exports.main = async (event, context) => {
       if (user.data.length === 0) {
         await userCollection.add({
           data: {
-            role: event.role, // 0用户、1管理员、2业务员
+            role: event.role, // 0用户、1管理员、2业务员、3风控
             permBy: event.pcode.split('@')[0],
+            referenceCode: settings.data.referenceCode,
             _openid: OPENID,
             _unionid: UNIONID,
           },
         });
-        await settingsCollection
-          .doc(SETTING_RECORD_ID)
-          .update({ data: settingsAfterUse });
+        await settingsCollection.doc(SETTING_RECORD_ID).update({
+          data: {
+            ...settingsAfterUse,
+            referenceCode: settings.data.referenceCode + 1,
+          },
+        });
         ctx.body = {
           code: 0,
-          data: { role: event.role, permBy: event.pcode.split('@')[0] },
+          data: {
+            role: event.role,
+            permBy: event.pcode.split('@')[0],
+            referenceCode: settings.data.referenceCode,
+          },
           msg: '授权成功',
         };
       } else {
@@ -125,8 +142,17 @@ exports.main = async (event, context) => {
           };
           return;
         }
+        let userPa = {
+          role: event.role,
+          permBy: event.pcode.split('@')[0],
+        };
+        if (!user.data[0].referenceCode) {
+          userPa.referenceCode = settings.data.referenceCode;
+          user.data[0].referenceCode = settings.data.referenceCode;
+          settingsAfterUse.referenceCode = settings.data.referenceCode + 1;
+        }
         await userCache.update({
-          data: { role: event.role, permBy: event.pcode.split('@')[0] },
+          data: userPa,
         });
         await settingsCollection
           .doc(SETTING_RECORD_ID)

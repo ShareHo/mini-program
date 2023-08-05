@@ -21,7 +21,7 @@
       bindtap="linkToMyApply"
     />
     <van-cell
-      wx:if="{{role===1||role===2}}"
+      wx:if="{{role!==0}}"
       size="large"
       title="历史数据查询"
       is-link
@@ -37,8 +37,9 @@
       bindtap="linkToPermission"
     />
     <van-cell
+      wx:if="{{role!==0}}"
       size="large"
-      title="小程序码"
+      title="小程序业务码"
       is-link
       icon="qr"
       bindtap="previewQrCode"

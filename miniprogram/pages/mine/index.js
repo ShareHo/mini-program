@@ -25,6 +25,11 @@ Page({
         name: '授权为业务员',
         openType: 'share',
       },
+      {
+        id: 3,
+        name: '授权为风控',
+        openType: 'share',
+      },
     ],
     selectPermWay: 2,
   },
@@ -59,13 +64,40 @@ Page({
     });
   },
 
-  previewQrCode() {
-    wx.previewImage({
-      urls: [
-        'cloud://qiying-master-0gosoksr4fb5c562.7169-qiying-master-0gosoksr4fb5c562-1319845952/qrcode/gh_a9ea83aa8a7d_1280.jpg',
-      ],
-      showmenu: true,
+  async previewQrCode() {
+    if (!app.globalData.userInfo.phone) {
+      wx.navigateTo({ url: '../profile/index' });
+      return;
+    }
+    if (app.globalData.userInfo.referenceQr) {
+      wx.previewImage({
+        urls: [app.globalData.userInfo.referenceQr],
+        showmenu: true,
+      });
+      return;
+    }
+    Toast.loading({
+      message: '正在加载...',
+      forbidClick: true,
+      duration: 0,
     });
+    try {
+      const { result: res } = await wx.cloud.callFunction({
+        name: 'getQrCode',
+      });
+      if (res.code === 0) {
+        Toast.clear();
+        wx.previewImage({
+          urls: [res.data],
+          showmenu: true,
+        });
+      } else {
+        Toast.fail('获取失败');
+      }
+    } catch (e) {
+      console.log(e);
+      Toast.fail('获取失败');
+    }
   },
 
   linkToPermission() {
@@ -115,7 +147,9 @@ Page({
       isReview: app.globalData.isReview,
       reviewApiLoaded: app.globalData.reviewApiLoaded,
     });
-    Toast.clear();
+    setTimeout(() => {
+      Toast.clear();
+    }, 1000);
     if (app.globalData.isReview) return;
 
     // 审核后
@@ -131,7 +165,6 @@ Page({
         })
         .then(({ result: res }) => {
           console.log(res);
-          Toast.clear();
           if (res.code === 0) {
             Object.assign(app.globalData.userInfo, res.data);
             this.setData({
@@ -157,7 +190,6 @@ Page({
         })
         .then(({ result: res }) => {
           console.log(res);
-          Toast.clear();
           if (res.code === 0) {
             Object.assign(app.globalData.userInfo, res.data);
             this.setData({

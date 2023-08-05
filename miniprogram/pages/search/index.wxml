@@ -58,7 +58,12 @@
     >
       <van-cell is-link title="客户姓名" value="{{item.username}}" />
       <van-cell title="手机号" value="{{item.phone}}" />
-      <van-cell title="申请额度" value="{{item.loanAmount+'元'}}" />
+      <van-cell
+        wx:if="{{item.loanAmount}}"
+        title="申请额度"
+        value="{{item.loanAmount+'万元'}}"
+      />
+      <van-cell title="填表日期" value="{{item.applyDateTxt}}" />
     </van-cell-group>
     <view wx:if="{{searchList.length>=total}}" class="all-loaded">到底了~</view>
   </view>
