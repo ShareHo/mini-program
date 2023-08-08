@@ -55,6 +55,8 @@ exports.main = async (event, context) => {
       .get();
     if (referenceData.data.length === 0) {
       return { code: 2, msg: '推荐人代码有误' };
+    } else if (!referenceData.data[0].role) {
+      return { code: 2, msg: '推荐人非公司成员' };
     } else {
       referenceOpenid = referenceData.data[0]._openid;
     }

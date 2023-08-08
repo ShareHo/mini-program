@@ -1,0 +1,96 @@
+<!--pages/member/index.wxml-->
+<van-toast id="van-toast" class="van-toast" />
+<view class="search-page">
+  <van-cell-group inset title="筛选条件">
+    <van-field
+      size="large"
+      clearable
+      model:value="{{ referenceCode }}"
+      label="员工代码"
+      placeholder="请输入员工代码"
+    />
+    <van-field
+      size="large"
+      clearable
+      model:value="{{ nickname }}"
+      label="成员名称"
+      placeholder="请输入成员名称"
+    />
+    <van-field
+      size="large"
+      clearable
+      model:value="{{ phone }}"
+      label="手机号"
+      placeholder="请输入手机号"
+    />
+    <van-cell
+      size="large"
+      is-link
+      title="员工角色"
+      placeholder="请选择员工角色"
+      value="{{ roleTxt }}"
+      data-role="{{selectRole}}"
+      data-role-show-type="search"
+      bindtap="openRolePicker"
+    />
+  </van-cell-group>
+  <view class="btn-wrap">
+    <button
+      class="btn-reset"
+      type="primary"
+      plain
+      size="mini"
+      bindtap="onReset"
+    >
+      重置
+    </button>
+    <button class="btn-search" type="primary" size="mini" bindtap="onSearch">
+      查询
+    </button>
+  </view>
+  <van-empty
+    wx:if="{{memberList.length===0}}"
+    class="van-empty"
+    description="暂无数据"
+  />
+  <view wx:else class="search-list">
+    <van-cell-group inset title="成员列表"> </van-cell-group>
+    <van-cell-group
+      class="search-item"
+      wx:for="{{memberList}}"
+      inset
+      wx:key="_id"
+    >
+      <van-cell title="员工代码" value="{{item.referenceCode}}" />
+      <van-cell title="昵称" value="{{item.nickname}}" />
+      <van-cell title="手机号" value="{{item.phone}}" />
+      <van-cell
+        is-link
+        title="角色"
+        value="{{roleMap[item.role]}}"
+        data-id="{{item._id}}"
+        data-role="{{item.role}}"
+        data-index="{{index}}"
+        data-role-show-type="member"
+        bindtap="openRolePicker"
+      />
+    </van-cell-group>
+    <view wx:if="{{memberList.length>=total}}" class="all-loaded">到底了~</view>
+  </view>
+</view>
+<!-- 角色 -->
+<van-popup
+  position="bottom"
+  show="{{ rolePickerShow }}"
+  bind:click-overlay="rolePickerClose"
+>
+  <van-picker
+    class="rolePicker"
+    show-toolbar="{{true}}"
+    columns="{{ roleColumns }}"
+    value-key="value"
+    title="角色"
+    bind:cancel="rolePickerClose"
+    bind:confirm="rolePickerConfirm"
+  />
+</van-popup>

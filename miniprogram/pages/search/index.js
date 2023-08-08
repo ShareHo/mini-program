@@ -74,15 +74,16 @@ Page({
       console.log(res);
       if (res.code === 0) {
         Toast.clear();
+        let searchList = res.data.map((d) => ({
+          ...d,
+          applyDateTxt: formatTime(d.applyDate, 'yyyy/MM/dd'),
+        }));
         this.setData({
           total: res.total,
           searchList:
             this.data.page === 1
-              ? res.data.map((d) => ({
-                  ...d,
-                  applyDateTxt: formatTime(d.applyDate, 'yyyy/MM/dd'),
-                }))
-              : this.data.searchList.concat(res.data),
+              ? searchList
+              : this.data.searchList.concat(searchList),
         });
       } else {
         Toast.fail(res.msg);

@@ -31,6 +31,14 @@
     <van-cell
       wx:if="{{role===1}}"
       size="large"
+      title="成员管理"
+      is-link
+      icon="cluster-o"
+      bindtap="linkToMember"
+    />
+    <van-cell
+      wx:if="{{role===1}}"
+      size="large"
       title="业务授权"
       is-link
       icon="friends-o"

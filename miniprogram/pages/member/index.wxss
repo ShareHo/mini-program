@@ -1,0 +1,24 @@
+.search-page .btn-wrap {
+  margin-top: 30rpx;
+  margin-right: 60rpx;
+  text-align: right;
+}
+.search-page .btn-wrap .btn-search {
+  margin-left: 40rpx;
+}
+.search-page .van-empty {
+  width: 750rpx;
+}
+.search-page .search-list {
+  width: 750rpx;
+  display: flex;
+  flex-direction: column;
+}
+.search-page .search-list .search-item {
+  margin-bottom: 40rpx;
+}
+.search-page .search-list .all-loaded {
+  text-align: center;
+  margin-bottom: 80rpx;
+  color: gray;
+}

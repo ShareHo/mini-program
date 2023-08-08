@@ -19,7 +19,7 @@
       disabled
       size="large"
       value="{{ referenceCode }}"
-      label="业务代码"
+      label="员工代码"
     />
     <van-field
       type="nickname"

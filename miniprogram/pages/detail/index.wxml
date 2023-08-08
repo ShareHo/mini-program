@@ -111,6 +111,7 @@
       value="{{detail.isEquipmentDetain?'是':'否'}}"
     />
     <van-cell
+      wx:if="{{detail.businessScaleTxt}}"
       size="large"
       title="企业规模"
       value="{{detail.businessScaleTxt}}"
@@ -281,25 +282,35 @@
     /> -->
     <van-cell size="large" title="审核状态" value="{{detail.applyStatusTxt}}" />
     <van-cell
-      wx:if="{{detail.judgeTimeTxt}}"
+      wx:if="{{detail.judgeTimeTxt && role!==0}}"
       size="large"
       title="审核时间"
       value="{{detail.judgeTimeTxt}}"
     />
     <van-cell
-      wx:if="{{detail.judgeByCode}}"
+      wx:if="{{detail.judgeByCode && role!==0}}"
       size="large"
       title="审核人代码"
       value="{{detail.judgeByCode}}"
     />
     <van-cell
-      wx:if="{{detail.judgeByName}}"
+      wx:if="{{detail.judgeByName && role!==0}}"
       size="large"
       title="审核人"
       value="{{detail.judgeByName}}"
     />
-    <van-cell size="large" title="推荐人代码" value="{{detail.reference}}" />
-    <van-cell size="large" title="推荐人" value="{{detail.referenceName}}" />
+    <van-cell
+      wx:if="{{role!==0}}"
+      size="large"
+      title="推荐人代码"
+      value="{{detail.reference}}"
+    />
+    <van-cell
+      wx:if="{{role!==0}}"
+      size="large"
+      title="推荐人"
+      value="{{detail.referenceName}}"
+    />
     <van-cell size="large" title="填表日期" value="{{detail.applyDateTxt}}" />
   </van-cell-group>
   <view

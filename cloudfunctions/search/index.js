@@ -191,9 +191,9 @@ exports.main = async (event, context) => {
           },
         },
       });
-      ctx.body = { code: 0, msg: '删除成功' };
+      ctx.body = { code: 0, msg: '审核成功' };
     } catch (e) {
-      ctx.body = { code: 2, msg: '删除失败' };
+      ctx.body = { code: 2, msg: '审核失败' };
     }
   });
   app.router('judgeDetail', async (ctx, next) => {
@@ -229,6 +229,80 @@ exports.main = async (event, context) => {
       ctx.body = { code: 0, msg: '审核成功' };
     } catch (e) {
       ctx.body = { code: 2, msg: '审核失败' };
+    }
+  });
+  app.router('memberList', async (ctx, next) => {
+    let params = {};
+    if (event.nickname)
+      params.nickname = db.RegExp({
+        regexp: event.nickname,
+        options: 'i',
+      });
+    if (event.phone)
+      params.phone = db.RegExp({
+        regexp: event.phone,
+        options: 'i',
+      });
+    if (event.referenceCode)
+      params.referenceCode = db.RegExp({
+        regexp: event.referenceCode,
+        options: 'i',
+      });
+    if (event.role) {
+      params.role = cmd.eq(event.role);
+    } else {
+      params.role = cmd.neq(0);
+    }
+    console.log(params);
+
+    try {
+      const dataAll = userCollection.where(params);
+      const { total } = await dataAll.count();
+      const { data } = await dataAll
+        .orderBy('createTime', 'desc')
+        .skip((event.page - 1) * event.size)
+        .limit(event.size)
+        .field({
+          nickname: true,
+          referenceCode: true,
+          phone: true,
+          role: true,
+        })
+        .get();
+
+      console.log(total, data);
+
+      ctx.body = {
+        code: 0,
+        data,
+        total,
+        msg: '查询成功',
+      };
+      return;
+    } catch (e) {
+      console.log(e);
+      ctx.body = { code: 2, msg: '查询失败' };
+    }
+  });
+  app.router('setRole', async (ctx, next) => {
+    try {
+      const user = await userCollection
+        .where({ _openid: cmd.eq(OPENID) })
+        .limit(1)
+        .get();
+      if (user.data.length && user.data[0].role === 1) {
+        let data = { role: event.role };
+        if (event.role === 0) data.referenceCode = 0;
+        await userCollection.doc(event.id).update({ data });
+        ctx.body = { code: 0, msg: '操作成功' };
+        return;
+      } else {
+        ctx.body = { code: 2, msg: '非管理员不可操作' };
+        return;
+      }
+    } catch (e) {
+      ctx.body = { code: 2, msg: '变更失败' };
+      return;
     }
   });
 

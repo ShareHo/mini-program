@@ -10,6 +10,7 @@ import {
   validateNumber,
   validateSmsCode,
   validateReference,
+  validateAmount,
 } from '../../utils/index';
 import Toast from '@vant/weapp/toast/toast';
 import { areaList } from '@vant/area-data';
@@ -481,7 +482,7 @@ Page({
         this.setData({ annualTurnoverMessage: message });
         break;
       case 'equipmentPrice':
-        message = validateNumber(amount);
+        message = validateAmount(amount);
         this.setData({ equipmentPriceMessage: message });
         break;
       case 'siteArea':
@@ -893,16 +894,16 @@ Page({
       messageData.annualTurnoverMessage = annualTurnoverMessage;
     }
     // 设备价值
-    const equipmentPriceMessage = validateNumber(this.data.equipmentPrice);
+    const equipmentPriceMessage = validateAmount(this.data.equipmentPrice);
     if (equipmentPriceMessage) {
       wrongSelector.push('#equipmentPrice');
       messageData.equipmentPriceMessage = equipmentPriceMessage;
     }
-    // 企业规模
-    if (!this.data.businessScaleTxt) {
-      wrongSelector.push('#businessScale');
-      messageData.businessScaleMessage = '企业规模不能为空';
-    }
+    // // 企业规模
+    // if (!this.data.businessScaleTxt) {
+    //   wrongSelector.push('#businessScale');
+    //   messageData.businessScaleMessage = '企业规模不能为空';
+    // }
     // 场地面积
     const siteAreaMessage = validateNumber(this.data.siteArea, '场地面积');
     if (siteAreaMessage) {

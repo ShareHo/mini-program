@@ -8,7 +8,8 @@
     "pages/detail/index",
     "pages/review/profile/index",
     "pages/review/search/index",
-    "pages/review/detail/index"
+    "pages/review/detail/index",
+    "pages/member/index"
   ],
   "tabBar": {
     "selectedColor": "#d53b33",

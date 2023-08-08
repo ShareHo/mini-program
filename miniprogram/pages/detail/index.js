@@ -205,7 +205,9 @@ Page({
           res.data.areaTxt = areaTxt;
           res.data.marryStatusTxt = marryStatusMap[res.data.marryStatus];
           res.data.useWayTxt = useWayMap[res.data.useWay];
-          res.data.businessScaleTxt = businessScaleMap[res.data.businessScale];
+          if ([0, 1, 2, 3].includes(res.data.businessScale))
+            res.data.businessScaleTxt =
+              businessScaleMap[res.data.businessScale];
           res.data.applyStatusTxt = applyStatusMap[res.data.applyStatus];
           // res.data.houseList.forEach((d) => {
           //   let areaTxt = '';
