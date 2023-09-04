@@ -56,7 +56,9 @@ exports.main = async (event, context) => {
   const app = new TcbRouter({ event });
 
   app.router('searchList', async (ctx, next) => {
-    let params = {};
+    let params = {
+      _is_deleted: cmd.eq(0),
+    };
     if (event.username)
       params.username = db.RegExp({
         regexp: event.username,
@@ -69,6 +71,9 @@ exports.main = async (event, context) => {
       });
     if (event.date.length)
       params.createTime = cmd.gte(event.date[0]).and(cmd.lte(event.date[1]));
+    console.log(params);
+    if (typeof event.applyStatus === 'number')
+      params.applyStatus = cmd.eq(event.applyStatus);
     console.log(params);
     let applyCollectioWhere = applyCollection;
     const userCache = userCollection
@@ -99,6 +104,7 @@ exports.main = async (event, context) => {
           loanAmount: true,
           phone: true,
           applyDate: true,
+          applyStatus: true,
         })
         .get();
 
@@ -119,7 +125,10 @@ exports.main = async (event, context) => {
   app.router('searchDetail', async (ctx, next) => {
     try {
       const { data } = await applyCollection.doc(event.id).get();
-
+      if (data._is_deleted) {
+        ctx.body = { code: 2, msg: '该申请已被删除，请联系管理员' };
+        return;
+      }
       const reference = await userCollection
         .where({ _openid: cmd.eq(data.referenceOpenid) })
         .limit(1)
@@ -176,9 +185,9 @@ exports.main = async (event, context) => {
         touser: apply.data._openid,
         page: `pages/detail/index?role=0&id=${event.id}`,
         lang: 'zh_CN',
-        miniprogram_state: 'developer',
+        miniprogram_state: 'formal',
         templateId: 'clyY5RJiJwLy7BUrAd1w2ylGwPqkF-rfJzoVvVHvZ-c',
-        miniprogramState: 'developer',
+        miniprogramState: 'formal',
         data: {
           phrase1: {
             value: '审批拒绝',
@@ -211,9 +220,9 @@ exports.main = async (event, context) => {
         touser: apply.data._openid,
         page: `pages/detail/index?role=0&id=${event.id}`,
         lang: 'zh_CN',
-        miniprogram_state: 'developer',
+        miniprogram_state: 'formal',
         templateId: 'clyY5RJiJwLy7BUrAd1w2ylGwPqkF-rfJzoVvVHvZ-c',
-        miniprogramState: 'developer',
+        miniprogramState: 'formal',
         data: {
           phrase1: {
             value: '审批通过',
@@ -303,6 +312,15 @@ exports.main = async (event, context) => {
     } catch (e) {
       ctx.body = { code: 2, msg: '变更失败' };
       return;
+    }
+  });
+  app.router('removeDetail', async (ctx, next) => {
+    try {
+      const apply = applyCollection.doc(event.id);
+      await apply.update({ data: { _is_deleted: 1 } });
+      ctx.body = { code: 0, msg: '删除成功' };
+    } catch (e) {
+      ctx.body = { code: 2, msg: '删除失败' };
     }
   });
 

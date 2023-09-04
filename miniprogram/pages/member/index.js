@@ -34,7 +34,7 @@ Page({
   // 角色
   openRolePicker(event) {
     const { roleShowType, index, role } = event.target.dataset;
-    console.log(role);
+    // console.log(event.target.dataset);
     let roleColumns = [];
     if (roleShowType === 'search') {
       roleColumns = [
@@ -42,7 +42,7 @@ Page({
         { id: 2, value: '业务员' },
         { id: 3, value: '风控' },
       ];
-      this.setData({ selectRole: role });
+      // this.setData({ selectRole: role });
     } else {
       roleColumns = [
         { id: 0, value: '普通用户' },
@@ -55,12 +55,13 @@ Page({
     this.setData(
       {
         rolePickerShow: true,
-        selectMemberIndex: index,
+        selectMemberIndex: roleShowType === 'search' ? 0 : index,
         roleColumns,
         roleShowType,
       },
       () => {
         if (roleShowType === 'search') {
+          console.log(role);
           this.selectComponent('.rolePicker').setColumnIndex(
             0,
             (role || 1) - 1,
@@ -81,6 +82,7 @@ Page({
     if (this.data.roleShowType === 'search') {
       this.setData({
         roleTxt,
+        selectRole,
         rolePickerShow: false,
       });
     } else {

@@ -63,7 +63,7 @@ Component({
     },
     makePhoneCall() {
       wx.makePhoneCall({
-        phoneNumber: '13726448726',
+        phoneNumber: '13189161102',
       });
     },
     linkToMyApply() {

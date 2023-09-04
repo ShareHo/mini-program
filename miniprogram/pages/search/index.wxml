@@ -26,10 +26,27 @@
       bind:click="openCalendar"
       title-width="6.2em"
     />
+    <van-cell
+      size="large"
+      is-link
+      title="审核状态"
+      value="{{ applyStatusTxt }}"
+      bind:click="openApplyStatusPicker"
+    />
   </van-cell-group>
   <view class="btn-wrap">
     <button
       class="btn-reset"
+      type="primary"
+      plain
+      size="mini"
+      bindtap="onListExport"
+      wx:if="{{role > 0}}"
+    >
+      导出excel
+    </button>
+    <button
+      class="btn-search"
       type="primary"
       plain
       size="mini"
@@ -48,23 +65,62 @@
   />
   <view wx:else class="search-list">
     <van-cell-group inset title="客户列表"> </van-cell-group>
-    <van-cell-group
+    <van-swipe-cell
       class="search-item"
+      right-width="{{ 90 }}"
       wx:for="{{searchList}}"
-      inset
       wx:key="_id"
-      data-id="{{item._id}}"
-      bindtap="linkToDetail"
+      disabled="{{!role}}"
     >
-      <van-cell is-link title="客户姓名" value="{{item.username}}" />
-      <van-cell title="手机号" value="{{item.phone}}" />
-      <van-cell
-        wx:if="{{item.loanAmount}}"
-        title="申请额度"
-        value="{{item.loanAmount+'万元'}}"
-      />
-      <van-cell title="填表日期" value="{{item.applyDateTxt}}" />
-    </van-cell-group>
+      <view slot="right" wx:if="{{role > 0}}" class="search-item-right">
+        <button
+          type="primary"
+          plain
+          size="mini"
+          data-id="{{item._id}}"
+          bindtap="onDetailExport"
+        >
+          导出
+        </button>
+        <!-- <view
+          class="search-item-export"
+          data-id="{{item._id}}"
+          bindtap="onDetailExport"
+          >导出</view
+        > -->
+        <button
+          class="search-item-delete"
+          wx:if="{{isAdmin}}"
+          type="warn"
+          plain
+          size="mini"
+          data-id="{{item._id}}"
+          data-username="{{item.username}}"
+          bindtap="onDetailDelete"
+        >
+          删除
+        </button>
+        <!-- <view
+          wx:if="{{isAdmin}}"
+          class="search-item-delete"
+          data-id="{{item._id}}"
+          data-username="{{item.username}}"
+          bindtap="onDetailDelete"
+          >删除</view
+        > -->
+      </view>
+      <van-cell-group inset data-id="{{item._id}}" bindtap="linkToDetail">
+        <van-cell is-link title="客户姓名" value="{{item.username}}" />
+        <van-cell title="手机号" value="{{item.phone}}" />
+        <van-cell
+          wx:if="{{item.loanAmount}}"
+          title="申请额度"
+          value="{{item.loanAmount+'万元'}}"
+        />
+        <van-cell title="审核状态" value="{{item.applyStatusTxt}}" />
+        <van-cell title="填表日期" value="{{item.applyDateTxt}}" />
+      </van-cell-group>
+    </van-swipe-cell>
     <view wx:if="{{searchList.length>=total}}" class="all-loaded">到底了~</view>
   </view>
 </view>
@@ -78,3 +134,19 @@
   bind:close="calendarClose"
   bind:confirm="calendarConfirm"
 />
+<!-- 审核状态 -->
+<van-popup
+  position="bottom"
+  show="{{ applyStatusPickerShow }}"
+  bind:click-overlay="closeApplyStatusPicker"
+>
+  <van-picker
+    class="applyStatusPicker"
+    show-toolbar="{{true}}"
+    columns="{{ applyStatusColumns }}"
+    value-key="value"
+    title="审核状态"
+    bind:cancel="closeApplyStatusPicker"
+    bind:confirm="applyStatusConfirm"
+  />
+</van-popup>

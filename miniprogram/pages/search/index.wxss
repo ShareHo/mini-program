@@ -17,6 +17,16 @@
 .search-page .search-list .search-item {
   margin-bottom: 40rpx;
 }
+.search-page .search-list .search-item .search-item-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 70px;
+  height: 100%;
+}
+.search-page .search-list .search-item .search-item-right .search-item-delete {
+  margin-top: 30px;
+}
 .search-page .search-list .all-loaded {
   text-align: center;
   margin-bottom: 80rpx;

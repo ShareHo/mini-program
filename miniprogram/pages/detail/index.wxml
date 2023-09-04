@@ -320,4 +320,10 @@
     <button type="warn" bindtap="deleteDetail">审批拒绝</button>
     <button type="primary" bindtap="judgeDetail">审批通过</button>
   </view>
+  <view wx:if="{{role>0}}" class="btn-wrap export-delete">
+    <button type="warn" bindtap="onDetailDelete" wx:if="{{isAdmin}}">
+      删除
+    </button>
+    <button type="primary" bindtap="onDetailExport">导出</button>
+  </view>
 </view>

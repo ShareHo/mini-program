@@ -30,6 +30,9 @@
   justify-content: center;
   margin-top: 80rpx;
 }
+.detail-page .btn-wrap.export-delete {
+  margin-top: 40rpx;
+}
 .detail-page .btn-wrap button {
   display: inline-block;
   width: 280rpx;

@@ -123,6 +123,16 @@
       >
         <text slot="right-icon">元</text>
       </van-field>
+      <van-field
+        size="large"
+        clearable
+        autosize
+        type="digit"
+        label="市场价"
+        placeholder="请输入市场价"
+      >
+        <text slot="right-icon">元</text>
+      </van-field>
     </van-cell-group>
   </view>
   <view

@@ -31,6 +31,7 @@ Page({
   data: {
     detail: null,
     role: 0,
+    isAdmin: false,
   },
 
   idCardPreview(e) {
@@ -169,7 +170,10 @@ Page({
    */
   onLoad(options) {
     console.log(options);
-    this.setData({ role: app.globalData.userInfo.role || 0 });
+    this.setData({
+      role: app.globalData.userInfo.role || 0,
+      isAdmin: app.globalData.userInfo.isAdmin || false,
+    });
     this.getDetail(options.id);
   },
 
@@ -233,6 +237,110 @@ Page({
       })
       .catch((e) => {
         Toast.fail('加载失败');
+      });
+  },
+
+  onDetailDelete() {
+    const { _id: id, username } = this.data.detail;
+    wx.showModal({
+      title: `确定删除【${username}】的申请？`,
+      confirmColor: '#FF0000',
+      complete: (res) => {
+        if (res.cancel) {
+        }
+
+        if (res.confirm) {
+          Toast.loading({
+            message: '正在删除...',
+            forbidClick: true,
+            duration: 0,
+          });
+          wx.cloud
+            .callFunction({
+              name: 'search',
+              data: {
+                $url: 'removeDetail',
+                id,
+              },
+            })
+            .then(({ result: res }) => {
+              if (res.code === 0) {
+                Toast.success({
+                  message: '删除成功',
+                  onClose: () => {
+                    wx.navigateBack();
+                  },
+                });
+              } else {
+                Toast.fail(res.msg);
+              }
+            })
+            .catch((e) => {
+              Toast.fail('删除失败');
+            });
+        }
+      },
+    });
+  },
+
+  onDetailExport() {
+    const { _id: id } = this.data.detail;
+    Toast.loading({
+      message: '正在导出...',
+      forbidClick: true,
+      duration: 0,
+    });
+
+    wx.cloud
+      .callFunction({
+        name: 'export',
+        data: {
+          $url: 'exportDetail',
+          id,
+        },
+      })
+      .then(({ result: res }) => {
+        if (res.code === 0) {
+          Toast.loading({
+            message: '正在下载...',
+            forbidClick: true,
+            duration: 0,
+          });
+          wx.downloadFile({
+            url: res.data,
+            success(resD) {
+              if (resD.statusCode === 200) {
+                const filePath = resD.tempFilePath;
+                Toast.loading({
+                  message: '正在打开...',
+                  forbidClick: true,
+                  duration: 0,
+                });
+                wx.openDocument({
+                  filePath: filePath,
+                  showMenu: true,
+                  success: function (res) {
+                    console.log(res, '打开文档成功');
+                    Toast.clear();
+                  },
+                  fail() {
+                    Toast.fail('打开失败');
+                  },
+                });
+              } else {
+                Toast.fail('下载失败');
+              }
+            },
+            fail() {
+              Toast.fail('下载失败');
+            },
+          });
+        } else {
+          Toast.fail(res.msg);
+        }
+      })
+      .catch((e) => {
+        Toast.fail('导出失败');
       });
   },
 
