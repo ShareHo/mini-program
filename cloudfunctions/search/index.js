@@ -148,9 +148,8 @@ exports.main = async (event, context) => {
           referenceName: reference.data[0].nickname,
         },
       };
-    } catch (e) {
-      console.log(e);
-      ctx.body = { code: 2, msg: '获取失败' };
+    } catch (err) {
+      ctx.body = { code: 2, msg: '获取失败', err };
     }
   });
   app.router('deleteDetail', async (ctx, next) => {
