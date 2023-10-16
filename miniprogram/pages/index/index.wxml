@@ -157,6 +157,7 @@
   <!-- 申请资料 -->
   <van-cell-group inset title="申请资料">
     <van-field
+      required
       id="loanAmount"
       size="large"
       clearable
@@ -326,7 +327,7 @@
     >
       <text slot="right-icon">万元</text>
     </van-field>
-    <van-cell required size="large" title="订单是否充足">
+    <van-cell size="large" title="订单是否充足">
       <van-radio-group
         slot="right-icon"
         value="{{ isSufficient }}"
@@ -339,7 +340,6 @@
     </van-cell>
     <van-field
       id="equipmentPrice"
-      required
       size="large"
       clearable
       value="{{ equipmentPrice }}"
@@ -353,7 +353,7 @@
     >
       <text slot="right-icon">万元</text>
     </van-field>
-    <van-cell required size="large" title="设备是否在押">
+    <van-cell size="large" title="设备是否在押">
       <van-radio-group
         slot="right-icon"
         value="{{ isEquipmentDetain }}"

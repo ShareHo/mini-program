@@ -466,7 +466,7 @@ Page({
     this.setData({ [type]: amount });
     switch (type) {
       case 'loanAmount':
-        message = validateNumber(amount);
+        message = validateAmount(amount);
         this.setData({ loanAmountMessage: message });
         break;
       // case 'salary':
@@ -482,7 +482,7 @@ Page({
         this.setData({ annualTurnoverMessage: message });
         break;
       case 'equipmentPrice':
-        message = validateAmount(amount);
+        message = validateNumber(amount);
         this.setData({ equipmentPriceMessage: message });
         break;
       case 'siteArea':
@@ -847,7 +847,7 @@ Page({
       wrongSelector.push('#idcardCamera');
     }
     // 申请额度
-    const loanAmountMessage = validateNumber(this.data.loanAmount);
+    const loanAmountMessage = validateAmount(this.data.loanAmount);
     if (loanAmountMessage) {
       wrongSelector.push('#loanAmount');
       messageData.loanAmountMessage = loanAmountMessage;
@@ -894,7 +894,7 @@ Page({
       messageData.annualTurnoverMessage = annualTurnoverMessage;
     }
     // 设备价值
-    const equipmentPriceMessage = validateAmount(this.data.equipmentPrice);
+    const equipmentPriceMessage = validateNumber(this.data.equipmentPrice);
     if (equipmentPriceMessage) {
       wrongSelector.push('#equipmentPrice');
       messageData.equipmentPriceMessage = equipmentPriceMessage;
