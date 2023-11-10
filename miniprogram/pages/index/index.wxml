@@ -154,6 +154,52 @@
       </view>
     </van-uploader>
   </view>
+  <view wx:if="{{marryStatus===0}}">
+    <!-- 身份证正反面 -->
+    <van-cell-group
+      id="idcardCameraMarry"
+      inset
+      title="配偶身份证"
+      border="{{false}}"
+    >
+    </van-cell-group>
+    <view class="idcard-upload-wrap">
+      <van-uploader
+        accept="image"
+        sizeType="{{['compressed']}}"
+        max-count="1"
+        deletable="{{ true }}"
+        file-list="{{ idCardMarryFront }}"
+        bind:after-read="afterIdCardMarryFrontRead"
+        show-upload="{{false}}"
+        preview-size="210rpx"
+        image-fit="aspectFit"
+        bind:delete="deleteIdCardMarryFront"
+      >
+        <view class="idcard-upload">
+          <image class="idcard-upload-img" src="../../images/idcard_add.png" />
+          <view class="idcard-desc">身份证人像面</view>
+        </view>
+      </van-uploader>
+      <van-uploader
+        accept="image"
+        sizeType="{{['compressed']}}"
+        max-count="1"
+        deletable="{{ true }}"
+        file-list="{{ idCardMarryBack }}"
+        bind:after-read="afterIdCardBackMarryRead"
+        show-upload="{{false}}"
+        preview-size="210rpx"
+        image-fit="aspectFit"
+        bind:delete="deleteIdCardMarryBack"
+      >
+        <view class="idcard-upload">
+          <image class="idcard-upload-img" src="../../images/idcard_add.png" />
+          <view class="idcard-desc">身份证国徽面</view>
+        </view>
+      </van-uploader>
+    </view>
+  </view>
   <!-- 申请资料 -->
   <van-cell-group inset title="申请资料">
     <van-field

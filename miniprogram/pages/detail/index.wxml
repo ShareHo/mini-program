@@ -34,6 +34,29 @@
       />
     </view>
   </van-cell-group>
+  <van-cell-group
+    wx:if="{{detail.idCardMarryFront && detail.idCardMarryBack}}"
+    inset
+    title="配偶身份证照"
+    border="{{false}}"
+  >
+    <view class="image-thumb-wrap">
+      <image
+        class="image-thumb"
+        src="{{detail.idCardMarryFront}}"
+        mode="aspectFit"
+        data-index="{{0}}"
+        bindtap="idCardMarryPreview"
+      />
+      <image
+        class="image-thumb"
+        src="{{detail.idCardMarryBack}}"
+        mode="aspectFit"
+        data-index="{{1}}"
+        bindtap="idCardMarryPreview"
+      />
+    </view>
+  </van-cell-group>
   <van-cell-group inset title="申请资料">
     <van-cell
       wx:if="{{detail.loanAmount}}"

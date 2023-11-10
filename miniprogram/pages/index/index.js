@@ -105,6 +105,8 @@ Page({
     idCard: '',
     idCardFront: [],
     idCardBack: [],
+    idCardMarryFront: [],
+    idCardMarryBack: [],
     // bornDate: new Date('2000/01/01').getTime(),
     marryStatus: '',
     marryname: '',
@@ -245,6 +247,27 @@ Page({
   // openBornPicker() {
   //   this.setData({ bornPickerShow: true });
   // },
+  // 身份证正面拉取
+  afterIdCardMarryFrontRead(event) {
+    this.setData({
+      idCardMarryFront: [{ ...event.detail.file, isImage: true }],
+    });
+  },
+
+  // 身份证反面拉取
+  afterIdCardMarryBackRead(event) {
+    this.setData({
+      idCardMarryBack: [{ ...event.detail.file, isImage: true }],
+    });
+  },
+
+  // 删除身份证
+  deleteIdCardMarryFront() {
+    this.setData({ idCardMarryFront: [] });
+  },
+  deleteIdCardMarryBack() {
+    this.setData({ idCardMarryBack: [] });
+  },
 
   // 身份证正面拉取
   async afterIdCardFrontRead(event) {
@@ -833,7 +856,7 @@ Page({
       wrongSelector.push('#marryStatus');
       messageData.marryStatusMessage = '婚姻状况不能为空';
     }
-    // 配偶姓名身份证
+    // 配偶姓名
     const marrynameMessage = validateRealName(this.data.marryname, '配偶姓名');
     if (this.data.marryStatus === 0 && marrynameMessage) {
       wrongSelector.push('#marryname');
@@ -845,6 +868,14 @@ Page({
       this.data.idCardBack.length === 0
     ) {
       wrongSelector.push('#idcardCamera');
+    }
+    // 配偶身份证
+    if (
+      this.data.marryStatus === 0 &&
+      (this.data.idCardMarryFront.length === 0 ||
+        this.data.idCardMarryBack.length === 0)
+    ) {
+      wrongSelector.push('#idcardCameraMarry');
     }
     // 申请额度
     const loanAmountMessage = validateAmount(this.data.loanAmount);
@@ -1022,6 +1053,9 @@ Page({
           case wrongSelector[0] === '#idcardCamera':
             Toast.fail('请上传身份证');
             break;
+          case wrongSelector[0] === '#idcardCameraMarry':
+            Toast.fail('请上传配偶身份证');
+            break;
           // case wrongSelector[0] === '#bizLicense':
           //   Toast.fail('请上传营业执照');
           //   break;
@@ -1048,6 +1082,12 @@ Page({
         idCardBack: wx.cloud.CDN(
           fs.readFileSync(this.data.idCardBack[0].tempFilePath),
         ),
+        // idCardMarryFront: wx.cloud.CDN(
+        //   fs.readFileSync(this.data.idCardMarryFront[0].tempFilePath),
+        // ),
+        // idCardMarryBack: wx.cloud.CDN(
+        //   fs.readFileSync(this.data.idCardMarryBack[0].tempFilePath),
+        // ),
         // bornDate: this.data.bornDate,
         marryStatus: this.data.marryStatus,
         loanAmount: this.data.loanAmount,
@@ -1087,7 +1127,15 @@ Page({
       };
       if (this.data.phone !== this.data.originPhone)
         params.smsCode = this.data.smsCode;
-      if (params.marryStatus === 0) params.marryname = this.data.marryname;
+      if (params.marryStatus === 0) {
+        params.marryname = this.data.marryname;
+        params.idCardMarryFront = wx.cloud.CDN(
+          fs.readFileSync(this.data.idCardMarryFront[0].tempFilePath),
+        );
+        params.idCardMarryBack = wx.cloud.CDN(
+          fs.readFileSync(this.data.idCardMarryBack[0].tempFilePath),
+        );
+      }
       if (this.data.bizLicense.length > 0)
         params.bizLicense = wx.cloud.CDN(
           fs.readFileSync(this.data.bizLicense[0].tempFilePath),
@@ -1203,6 +1251,8 @@ Page({
       idCard: '',
       idCardFront: [],
       idCardBack: [],
+      idCardMarryFront: [],
+      idCardMarryBack: [],
       // bornDate: new Date('2000/01/01').getTime(),
       marryStatus: '',
       marryname: '',

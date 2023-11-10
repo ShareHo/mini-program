@@ -142,6 +142,28 @@ exports.main = async (event, context) => {
     } catch (e) {
       event.idCardBack = '';
     }
+    if (event.marryStatus === 0) {
+      // 配偶身份证正
+      try {
+        const { fileID, statusCode } = await uploadFile(
+          event.idCardMarryFront,
+          OPENID,
+        );
+        if (fileID && statusCode === -1) event.idCardMarryFront = fileID;
+      } catch (e) {
+        event.idCardMarryFront = '';
+      }
+      // 配偶身份证反
+      try {
+        const { fileID, statusCode } = await uploadFile(
+          event.idCardMarryBack,
+          OPENID,
+        );
+        if (fileID && statusCode === -1) event.idCardMarryBack = fileID;
+      } catch (e) {
+        event.idCardMarryBack = '';
+      }
+    }
     // 营业执照
     if (event.bizLicense) {
       try {
@@ -205,6 +227,8 @@ exports.main = async (event, context) => {
       address: event.address,
       marryStatus: event.marryStatus,
       marryname: event.marryname,
+      idCardMarryFront: event.idCardMarryFront,
+      idCardMarryBack: event.idCardMarryBack,
     };
     if (userInfoRes.data.length === 0) {
       userCollection.add({

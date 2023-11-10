@@ -46,6 +46,18 @@ Page({
     });
   },
 
+  idCardMarryPreview(e) {
+    console.log(e);
+    const { index } = e.currentTarget.dataset;
+    const { idCardMarryFront, idCardMarryBack } = this.data.detail;
+    const urls = [idCardMarryFront, idCardMarryBack];
+    wx.previewImage({
+      urls,
+      current: urls[index],
+      showmenu: true,
+    });
+  },
+
   bizLicensePreview(e) {
     wx.previewImage({
       urls: [this.data.detail.bizLicense],
