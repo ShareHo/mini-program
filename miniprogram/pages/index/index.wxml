@@ -187,7 +187,7 @@
         max-count="1"
         deletable="{{ true }}"
         file-list="{{ idCardMarryBack }}"
-        bind:after-read="afterIdCardBackMarryRead"
+        bind:after-read="afterIdCardMarryBackRead"
         show-upload="{{false}}"
         preview-size="210rpx"
         image-fit="aspectFit"
